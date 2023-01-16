@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="DialogHost.Avalonia" Version="0.7.0-preview3" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Dialogs\MessageDialog.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Dialog.axaml.cs">
+      <DependentUpon>Dialog.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Dialogs\MessageDialog.axaml.cs">
+      <DependentUpon>MessageDialog.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,7 @@
+﻿<routeNav:Page xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:routeNav="clr-namespace:NSE.RouteNav"
+             x:Class="NSE.RouteNav.Pages.NotFoundPage"
+             Title="Page Not Found">
+    <TextBlock Text="404 - Page Not Found!" Foreground="Red" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+</routeNav:Page>
