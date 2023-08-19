@@ -1,11 +1,10 @@
 ﻿using System;
-using Avalonia.Controls;
-using NSE.RouteNav.Dialogs;
-using NSE.RouteNav.Pages;
-using NSE.RouteNav.Routes;
-using NSE.RouteNav.Stacks.Internal;
+using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Routing;
+using RouteNav.Avalonia.StackControls;
 
-namespace NSE.RouteNav.Stacks;
+namespace RouteNav.Avalonia.Stacks;
 
 public enum NavigationTarget
 {
@@ -29,11 +28,9 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
 
     public event Action Exited;
 
-    LazyValue<ContentControl> ContainerPage { get; }
+    LazyValue<NavigationContainer> ContainerPage { get; }
 
     Page RootPage { get; }
-
-    Page CurrentPage { get; }
 
     INavigationStack? RequestStack(string stackName);
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NSE.RouteNav;
+namespace RouteNav.Avalonia;
 
 public class NavigationException : Exception
 {

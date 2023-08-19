@@ -2,19 +2,19 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media;
-using NSE.RouteNav.Stacks;
+using RouteNav.Avalonia.Stacks;
 
-namespace NSE.RouteNav.Dialogs;
+namespace RouteNav.Avalonia.Dialogs;
 
 public static class DialogPageExtensions
 {
-    public static Task PushDialogAsync(this INavigationStack stack, Page page, DialogSizeUtility.DialogSize dialogSize = DialogSizeUtility.DialogSize.Medium,
+    public static Task PushDialogAsync(this INavigationStack stack, Page page, DialogSize dialogSize = DialogSize.Medium,
                                        Size? minSize = null, Size? maxSize = null)
     {
         return stack.PushDialogAsync(page.ToDialog(stack.CurrentPage, dialogSize, minSize, maxSize));
     }
 
-    public static Dialog ToDialog(this Page page, Page parentPage, DialogSizeUtility.DialogSize dialogSize = DialogSizeUtility.DialogSize.Medium,
+    public static Dialog ToDialog(this Page page, Page parentPage, DialogSize dialogSize = DialogSize.Medium,
                                   Size? minSize = null, Size? maxSize = null)
     {
         if (page == null)
@@ -23,9 +23,8 @@ public static class DialogPageExtensions
         // Build Dialog from Page
         return new Dialog
         {
-            Title = page.Title,
+            Title = page.Title ?? "Dialog",
             Content = page.Content,
-            CloseOnClickAway = true,
             DataContext = page.DataContext,
             Resources = page.Resources,
             Background = page.Background ?? Brushes.LightGray,
@@ -33,4 +32,3 @@ public static class DialogPageExtensions
         };
     }
 }
-

@@ -1,7 +1,0 @@
-﻿<routeNav:Page xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:routeNav="clr-namespace:NSE.RouteNav"
-             x:Class="NSE.RouteNav.Pages.InternalErrorPage"
-             Title="Internal Error">
-    <TextBlock Text="500 - Internal Error!" Foreground="Red" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
-</routeNav:Page>

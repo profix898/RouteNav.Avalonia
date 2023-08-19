@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using DialogHostAvalonia;
-using NSE.RouteNav.Bootstrap;
-using NSE.RouteNav.Platform;
 
-namespace NSE.RouteNav;
+namespace RouteNav.Avalonia;
 
 public class Window : ContentControl
 {
@@ -50,15 +46,7 @@ public class Window : ContentControl
         set { SetValue(IconProperty, value); }
     }
 
-    #region WindowContent
-
-    public void SetContent(object content)
-    {
-        if (DialogHost == null)
-            throw new InvalidOperationException("Can't set or update window content before platform window/view was created.");
-
-        DialogHost.Content = content;
-    }
+    #region Events
 
     /// <summary>
     /// Fired when the window is opened
@@ -82,44 +70,15 @@ public class Window : ContentControl
 
     #endregion
 
-    #region DialogContent
-
-    public void SetDialogContent(object content)
+    public void SetContent(Control content)
     {
-        if (DialogHost == null)
-            throw new InvalidOperationException("Can't set or update dialog content before platform window/view was created.");
-
-        DialogHost.DialogContent = content;
+        if (PlatformControl != null)
+            PlatformControl.Content = content;
+        else
+            throw new NavigationException("Main window/view does not have a backing platform control.");
     }
 
-    /// <summary>
-    /// Fired when the window is opened
-    /// </summary>
-    public event EventHandler? DialogOpened;
-
-    internal void OnDialogOpened()
-    {
-        DialogOpened?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
-    /// Fired when the window is closed
-    /// </summary>
-    public event EventHandler? DialogClosed;
-
-    internal void OnDialogClosed()
-    {
-        DialogClosed?.Invoke(this, EventArgs.Empty);
-    }
-
-    #endregion
-
-    #region Lifecycle
-
-    /// <summary>
-    /// Gets the associated platform window
-    /// </summary>
-    public Avalonia.Controls.Window? PlatformWindow { get; private set; }
+    #region Platform
 
     /// <summary>
     /// Gets the associated application lifetime
@@ -127,96 +86,22 @@ public class Window : ContentControl
     public IApplicationLifetime? ApplicationLifetime { get; private set; }
 
     /// <summary>
-    /// Informs wether the window represents a dialog window (overlay) or a standard platform window/view (with embedded dialog host)
+    /// Gets the associated platform control
     /// </summary>
-    public bool IsDialogWindow => (DialogHost == null);
+    public ContentControl? PlatformControl { get; private set; }
 
-    /// <summary>
-    /// Gets the DialogHost for this window (after ToPlatformView/Window conversion)
-    /// </summary>
-    public DialogHost? DialogHost { get; private set; }
-
-    #endregion
-
-    #region Platform
-
-    public Avalonia.Controls.Window ToPlatformWindow(IClassicDesktopStyleApplicationLifetime desktopLifetime, Action<Avalonia.Controls.Window>? windowCustomization = null)
+    public void RegisterPlatform(IApplicationLifetime appLifetime, ContentControl platformControl)
     {
-        PlatformWindow = new Avalonia.Controls.Window
+        ApplicationLifetime = appLifetime;
+        PlatformControl = platformControl;
+
+        if (platformControl is TopLevel topLevel)
         {
-            Title = Title,
-            Icon = Icon,
-
-            // ContentControl
-            Content = DialogHost = new DialogHost
-            {
-                Content = Content,
-                ContentTemplate = ContentTemplate,
-                CloseOnClickAway = true
-            },
-            HorizontalContentAlignment = HorizontalContentAlignment,
-            VerticalContentAlignment = VerticalContentAlignment,
-
-            // TemplatedControl
-            Background = Background,
-            BorderBrush = BorderBrush,
-            BorderThickness = BorderThickness,
-            CornerRadius = CornerRadius,
-            FontFamily = FontFamily,
-            FontSize = FontSize,
-            FontStyle = FontStyle,
-            FontWeight = FontWeight,
-            FontStretch = FontStretch,
-            Foreground = Foreground,
-            Padding = Padding,
-
-            // Control
-            FocusAdorner = FocusAdorner,
-            Tag = this,
-            ContextMenu = ContextMenu,
-            ContextFlyout = ContextFlyout
-        };
-#if DEBUG
-        PlatformWindow.AttachDevTools();
-#endif
-        PlatformWindow.Opened += (_, _) => OnOpened();
-        PlatformWindow.Closed += (_, _) => OnClosed();
-        windowCustomization?.Invoke(PlatformWindow);
-        ApplicationLifetime = desktopLifetime;
-
-        return PlatformWindow;
-    }
-
-    public Control ToPlatformView(ISingleViewApplicationLifetime singleViewLifetime)
-    {
-        PlatformWindow = null;
-        ApplicationLifetime = singleViewLifetime;
-
-        return DialogHost = new DialogHost
-        {
-            Content = Content,
-            ContentTemplate = ContentTemplate,
-            CloseOnClickAway = true,
-
-            // TemplatedControl
-            Background = Background,
-            BorderBrush = BorderBrush,
-            BorderThickness = BorderThickness,
-            CornerRadius = CornerRadius,
-            FontFamily = FontFamily,
-            FontSize = FontSize,
-            FontStyle = FontStyle,
-            FontWeight = FontWeight,
-            FontStretch = FontStretch,
-            Foreground = Foreground,
-            Padding = Padding,
-
-            // Control
-            FocusAdorner = FocusAdorner,
-            Tag = this,
-            ContextMenu = ContextMenu,
-            ContextFlyout = ContextFlyout
-        };
+            topLevel.Opened += (_, _) => OnOpened();
+            topLevel.Closed += (_, _) => OnClosed();
+        }
+        else
+            OnOpened();
     }
 
     #endregion

@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:pages="clr-namespace:RouteNav.Avalonia.Pages">
+    <Design.PreviewWith>
+        <Border Padding="50">
+            <pages:InternalErrorPage Title="Internal Error" Content="Content goes here" />
+        </Border>
+    </Design.PreviewWith>
+    <ControlTheme x:Key="{x:Type pages:InternalErrorPage}" TargetType="pages:InternalErrorPage">
+        <Setter Property="Template">
+            <ControlTemplate>
+    <TextBlock Text="500 - Internal Error!" Foreground="Red" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

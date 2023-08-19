@@ -4,9 +4,9 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace NSE.RouteNav.Dialogs;
+namespace RouteNav.Avalonia.Dialogs;
 
-internal sealed class MessageDialogButtonsTemplate : IDataTemplate
+public sealed class MessageDialogButtonsTemplate : IDataTemplate
 {
     #region Implementation of IDataTemplate
 
@@ -15,7 +15,7 @@ internal sealed class MessageDialogButtonsTemplate : IDataTemplate
         return data is MessageDialog;
     }
 
-    public IControl Build(object data)
+    public Control Build(object data)
     {
         var messageDialog = data as MessageDialog;
         Debug.Assert(messageDialog != null);

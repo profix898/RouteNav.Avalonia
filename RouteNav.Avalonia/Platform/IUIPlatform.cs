@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Threading.Tasks;
-using NSE.RouteNav.Stacks;
+using RouteNav.Avalonia.Stacks;
 
-namespace NSE.RouteNav.Platform;
+namespace RouteNav.Avalonia.Platform;
 
 public interface IUIPlatform
 {
+    public IWindowManager WindowManager { get; }
+
     #region Pages
 
-    void RegisterPages(params Type[] pageTypes);
+    void RegisterPage(params Type[] pageTypes);
 
-    Page GetPage(Type pageType);
+    Page GetPage(Type pageType, params object[] parameters);
 
     #endregion
 
@@ -38,19 +39,9 @@ public interface IUIPlatform
 
     #region Targets
 
-    INavigationStack? PushToView(string stackName, INavigationStack? sourceStack = null);
+    INavigationStack? ActivateStack(string stackName, INavigationStack? sourceStack = null);
 
-    INavigationStack? PushToDialog(string stackName, out Window? parentWindow, INavigationStack? sourceStack = null);
-
-    INavigationStack? PushToWindow(string stackName);
-
-    #endregion
-
-    #region PlatformOpen
-
-    Task OpenDialog(Dialog dialog, Window? parentWindow = null);
-
-    bool OpenWindow(Window window, Window? parentWindow = null);
+    INavigationStack? ActivateStackWindow(string stackName);
 
     #endregion
 }

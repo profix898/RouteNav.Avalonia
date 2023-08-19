@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Threading;
-using NSE.RouteNav.Dialogs;
-using NSE.RouteNav.Pages;
-using NSE.RouteNav.Routes;
-using NSE.RouteNav.Stacks.Internal;
+using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Routing;
+using RouteNav.Avalonia.StackControls;
 
-namespace NSE.RouteNav.Stacks;
+namespace RouteNav.Avalonia.Stacks;
 
 public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
 {
@@ -42,7 +41,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     /// <summary>Event 'Exited' not supported for event stack.</summary>
     public event Action? Exited;
 
-    public LazyValue<ContentControl> ContainerPage => new LazyValue<ContentControl>(() => RootPage);
+    public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => new NavigationContainer { Content = RootPage });
 
     public Page RootPage { get; } = new Page();
 
@@ -104,6 +103,8 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     #region Implementation of IDialogNavigation
 
     public IReadOnlyList<Dialog> DialogStack { get; } = new List<Dialog>();
+
+    public Dialog? CurrentDialog { get; } = null;
 
     /// <summary>Event 'DialogNavigated' not supported for event stack.</summary>
     public event Action<(Dialog? dialogFrom, Dialog? dialogTo)>? DialogNavigated;

@@ -1,14 +1,14 @@
-<platform:Page xmlns="https://github.com/avaloniaui"
-           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-           xmlns:platform="clr-namespace:NSE.RouteNav;assembly=NSE.RouteNav"
-           xmlns:routes="clr-namespace:NSE.RouteNav.Routes;assembly=NSE.RouteNav"
-           mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-           Title="Main Page"
-           x:Class="DemoApp.Pages.PageMain">
+<avalonia:Page xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
+               xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+               Title="Main Page"
+               x:Class="DemoApp.Pages.PageMain">
     <StackPanel>
         <TextBlock>Welcome to Avalonia! We are on the MAIN PAGE.</TextBlock>
-        <routes:RouteButton RoutePath="/main/page1">To Page1</routes:RouteButton>
+        <routing:RouteButton RoutePath="/main/page1">To Page1</routing:RouteButton>
     </StackPanel>
-</platform:Page>
+</avalonia:Page>

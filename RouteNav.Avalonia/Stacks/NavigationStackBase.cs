@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using NSE.RouteNav.Dialogs;
-using NSE.RouteNav.Pages;
-using NSE.RouteNav.Routes;
-using NSE.RouteNav.Stacks.Internal;
+using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Routing;
+using RouteNav.Avalonia.StackControls;
 
-namespace NSE.RouteNav.Stacks;
+namespace RouteNav.Avalonia.Stacks;
 
 public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
-    where TC : ContentControl, new()
+    where TC : NavigationContainer, new()
 {
     protected readonly List<Page> pageStack = new List<Page>();
     protected readonly List<Dialog> dialogStack = new List<Dialog>();
@@ -56,11 +55,9 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public event Action? Exited;
 
-    public LazyValue<ContentControl> ContainerPage => new LazyValue<ContentControl>(() => Container.Value);
+    public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => Container.Value);
 
     public Page RootPage { get; protected set; }
-
-    public Page CurrentPage { get; protected set; }
 
     protected abstract TC InitContainer();
 
@@ -105,14 +102,16 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IPageNavigation
 
-    public virtual IReadOnlyList<Page> PageStack => pageStack;
-
     public event Action<(Page? pageFrom, Page? pageTo)>? PageNavigated;
 
     protected void OnPageNavigated(Page? pageFrom, Page? pageTo)
     {
         PageNavigated?.Invoke((pageFrom, pageTo));
     }
+
+    public virtual IReadOnlyList<Page> PageStack => pageStack;
+
+    public virtual Page CurrentPage { get; protected set; }
 
     public virtual void InsertPageBefore(Page page, Page beforePage)
     {
@@ -174,8 +173,6 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IDialogNavigation
 
-    public IReadOnlyList<Dialog> DialogStack => dialogStack;
-
     public event Action<(Dialog? dialogFrom, Dialog? dialogTo)>? DialogNavigated;
 
     protected void OnDialogNavigated(Dialog? dialogFrom, Dialog? dialogTo)
@@ -183,11 +180,16 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         DialogNavigated?.Invoke((dialogFrom, dialogTo));
     }
 
+    public virtual IReadOnlyList<Dialog> DialogStack => dialogStack;
+
+    public virtual Dialog? CurrentDialog { get; protected set; }
+
     public virtual Task PushDialogAsync(Dialog dialog)
     {
         var previousDialog = dialogStack.LastOrDefault();
 
         dialogStack.Add(dialog);
+        CurrentDialog = dialog;
 
         OnDialogNavigated(previousDialog, dialog);
 
@@ -202,6 +204,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         var previousDialog = dialogStack.Last();
         dialogStack.Remove(previousDialog);
         var nextDialog = dialogStack.LastOrDefault();
+        CurrentDialog = nextDialog;
 
         OnDialogNavigated(previousDialog, nextDialog);
 
@@ -212,6 +215,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     {
         var previousDialog = dialogStack.LastOrDefault();
         dialogStack.Clear();
+        CurrentDialog = null;
 
         OnDialogNavigated(previousDialog, null);
 

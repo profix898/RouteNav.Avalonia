@@ -1,5 +1,4 @@
-using Avalonia.Markup.Xaml;
-using NSE.RouteNav;
+using RouteNav.Avalonia;
 
 namespace DemoApp
 {
@@ -7,7 +6,7 @@ namespace DemoApp
     {
         public MainWindow()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();
         }
     }
 }

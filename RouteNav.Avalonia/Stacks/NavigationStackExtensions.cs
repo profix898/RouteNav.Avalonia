@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NSE.RouteNav.Routes;
+using RouteNav.Avalonia.Routing;
 
-namespace NSE.RouteNav.Stacks;
+namespace RouteNav.Avalonia.Stacks;
 
 public static class NavigationStackExtensions
 {
@@ -106,6 +106,15 @@ public static class NavigationStackExtensions
         stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageType);
     }
 
+    public static void Add<T1>(this INavigationStack stack, RouteMenuItem routeMenuItem)
+        where T1 : Page
+    {
+        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
+            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
+
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
+    }
+
     public static void Add(this INavigationStack stack, RouteButton routeButton, Func<Page> pageFactory)
     {
         if (!routeButton.RouteUri.IsAbsoluteUri)
@@ -120,6 +129,15 @@ public static class NavigationStackExtensions
             routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName
 
         stack.AddPage(stack.GetRoutePath(routeButton.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), pageType);
+    }
+
+    public static void Add<T1>(this INavigationStack stack, RouteButton routeButton)
+        where T1 : Page
+    {
+        if (!routeButton.RouteUri.IsAbsoluteUri)
+            routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName
+
+        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), typeof(T1));
     }
 
     #endregion

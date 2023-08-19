@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NSE.RouteNav.Dialogs;
+namespace RouteNav.Avalonia.Dialogs;
 
 public interface IDialogNavigation
 {
+    public event Action<(Dialog? dialogFrom, Dialog? dialogTo)> DialogNavigated;
+
     IReadOnlyList<Dialog> DialogStack { get; }
 
-    public event Action<(Dialog? dialogFrom, Dialog? dialogTo)> DialogNavigated;
+    Dialog? CurrentDialog { get; }
 
     Task PushDialogAsync(Dialog dialog);
 

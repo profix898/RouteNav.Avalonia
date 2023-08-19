@@ -1,21 +1,63 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using RouteNav.Avalonia.Internal;
 
-namespace NSE.RouteNav;
+namespace RouteNav.Avalonia;
 
-public class Page : UserControl
+public class Page : ContentControl, ISafeAreaAware
 {
     /// <summary>
     /// Defines the <see cref="Title"/> property.
     /// </summary>
-    public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Page, string>(nameof(Title), "Page");
+    public static readonly StyledProperty<string?> TitleProperty = AvaloniaProperty.Register<Page, string?>(nameof(Title));
 
     /// <summary>
-    /// Gets or sets the title of the page.
+    /// Defines the <see cref="SafeAreaPadding"/> property.
     /// </summary>
-    public string Title
+    public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
+
+    /// <summary>
+    /// Gets or sets the title of the page
+    /// </summary>
+    public string? Title
     {
         get { return GetValue(TitleProperty); }
         set { SetValue(TitleProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the safe area padding of the page (from inset manager)
+    /// </summary>
+    public Thickness SafeAreaPadding
+    {
+        get { return GetValue(SafeAreaPaddingProperty); }
+        set { SetValue(SafeAreaPaddingProperty, value); }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+
+        UpdateContentSafeAreaPadding();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == SafeAreaPaddingProperty || change.Property == PaddingProperty || change.Property == ContentProperty)
+            UpdateContentSafeAreaPadding();
+    }
+
+    protected virtual void UpdateContentSafeAreaPadding()
+    {
+        if (Content != null && Presenter != null)
+        {
+            if (Presenter.Child is ISafeAreaAware safeAreaAware)
+                safeAreaAware.SafeAreaPadding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+            else
+                Presenter.Padding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+        }
     }
 }

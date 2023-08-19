@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
-using NSE.RouteNav.Bootstrap;
-using NSE.RouteNav.Pages;
-using NSE.RouteNav.Platform;
-using NSE.RouteNav.Stacks;
+using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Platform;
+using RouteNav.Avalonia.Stacks;
 
-namespace NSE.RouteNav;
+namespace RouteNav.Avalonia;
 
 public static class Navigation
 {
@@ -22,9 +21,10 @@ public static class Navigation
     {
         get
         {
-            return uiPlatform ?? (uiPlatform = AvaloniaLocator.Current.GetService<IUIPlatform>())
-                   ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavPlatform)}().");
+            return uiPlatform
+                   ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavUIPlatform)}().");
         }
+        set { uiPlatform = value; }
     }
 
     #endregion
@@ -41,7 +41,7 @@ public static class Navigation
 
     public static async Task<Page> EnterStack(INavigationStack? stack = null)
     {
-        var activeStack = UIPlatform.PushToView(stack?.Name ?? MainStackName)
+        var activeStack = UIPlatform.ActivateStack(stack?.Name ?? MainStackName)
                           ?? throw new NavigationException("No NavigationStack available.");
 
         return await activeStack.PushAsync(activeStack.BaseUri);
@@ -71,7 +71,7 @@ public static class Navigation
                 // Open in modal dialog (prefer in associated window)
                 return PushDialogAsync(routeUri);
             case NavigationTarget.Window:
-                // Open in new window (or overlay if not supported)
+                // Open in new window (or replacing current stack if unsupported)
                 return PushWindowAsync(routeUri);
             default:
                 throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -80,12 +80,17 @@ public static class Navigation
 
     public static Task PopAsync(Window? window = null)
     {
-        var activeStack = UIPlatform.GetActiveStackFromWindow(window)
+        return PopAsync(UIPlatform.GetActiveStackFromWindow(window));
+    }
+
+    public static Task PopAsync(INavigationStack? stack = null)
+    {
+        var activeStack = stack
                           ?? UIPlatform.GetMainStack()
                           ?? throw new NavigationException("No NavigationStack available.");
 
         if (activeStack.DialogStack.Count > 0)
-            return PopDialogAsync(); // There are pages on the dialog stack -> pop those first
+            return PopDialogAsync(activeStack); // There are pages on the dialog stack -> pop those first
 
         if (activeStack.PageStack.Count > 0)
             return activeStack.PopAsync();
@@ -93,7 +98,7 @@ public static class Navigation
         if (!activeStack.IsMainStack)
         {
             // Empty (extra) stack -> switch to main stack
-            var mainStack = UIPlatform.PushToView(MainStackName, activeStack)
+            var mainStack = UIPlatform.ActivateStack(MainStackName, activeStack)
                             ?? throw new NavigationException("Main NavigationStack not available.");
 
             return mainStack.PushAsync(mainStack.BaseUri);
@@ -104,14 +109,19 @@ public static class Navigation
 
     public static bool PopAvailable(Window? window = null)
     {
-        var activeStack = UIPlatform.GetActiveStackFromWindow(window)
+        return PopAvailable(UIPlatform.GetActiveStackFromWindow(window));
+    }
+
+    public static bool PopAvailable(INavigationStack? stack = null)
+    {
+        var activeStack = stack
                           ?? UIPlatform.GetMainStack()
                           ?? throw new NavigationException("No NavigationStack available.");
 
         if (activeStack.DialogStack.Count > 0)
             return true;
 
-        if (activeStack.PageStack.Count > 0)
+        if (activeStack.PageStack.Count > (activeStack.IsMainStack ? 1 : 0))
             return true;
 
         if (!activeStack.IsMainStack)
@@ -134,17 +144,17 @@ public static class Navigation
         if (!String.IsNullOrEmpty(stackName) && !stackName.Equals(activeStack.Name))
         {
             activeStack = activeStack.RequestStack(stackName)
-                          ?? UIPlatform.PushToView(stackName, activeStack)
+                          ?? UIPlatform.ActivateStack(stackName, activeStack)
                           ?? activeStack;
         }
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
-            var page = new NotFoundPage();
-            await activeStack.PushAsync(page);
+            var page404 = new NotFoundPage();
+            await activeStack.PushAsync(page404);
 
-            return page;
+            return page404;
         }
 
         return await activeStack.PushAsync(routeUri);
@@ -159,41 +169,47 @@ public static class Navigation
 
         // Open in parent container (replacing current stack or container)
         if (!String.IsNullOrEmpty(stackName) && !stackName.Equals(activeStack.Name))
-            activeStack = UIPlatform.PushToView(stackName, activeStack) ?? activeStack;
+            activeStack = UIPlatform.ActivateStack(stackName, activeStack) ?? activeStack;
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
-            var page = new NotFoundPage();
-            await activeStack.PushAsync(page);
+            var page404 = new NotFoundPage();
+            await activeStack.PushAsync(page404);
 
-            return page;
+            return page404;
         }
 
-        return await activeStack.PushAsync(routeUri);
+        return await activeStack.PushAsync(routeUri, NavigationTarget.Parent);
     }
 
     private static async Task<Page> PushDialogAsync(Uri routeUri)
     {
         // Open in modal dialog (prefer in associated window)
         var stackName = routeUri.GetStackName() ?? String.Empty;
-        var activeStack = UIPlatform.GetActiveStack(stackName);
-        var stack = UIPlatform.PushToDialog(stackName, out var parentWindow, activeStack);
-        if (stack != null)
-        {
-            var page = await stack.PushAsync(routeUri, NavigationTarget.Dialog);
-            //await UIPlatform.OpenDialog(page, parentWindow);
+        var activeStack = UIPlatform.GetActiveStack(stackName)
+                          ?? UIPlatform.GetMainStack()
+                          ?? throw new NavigationException("No NavigationStack available.");
 
-            return page;
+        // Open in parent container (replacing current stack or container)
+        if (!String.IsNullOrEmpty(stackName) && !stackName.Equals(activeStack.Name))
+            activeStack = UIPlatform.ActivateStack(stackName, activeStack) ?? activeStack;
+
+        // Check whether routeUri resolved to a valid stack
+        if (!activeStack.BaseUri.IsBaseOf(routeUri))
+        {
+            var page404 = new NotFoundPage();
+            await page404.ToDialog(activeStack.CurrentPage).ShowDialog();
+
+            return page404;
         }
 
-        // Fallback: Replace page in current window
-        return await PushParentAsync(routeUri);
+        return await activeStack.PushAsync(routeUri, NavigationTarget.Dialog);
     }
 
-    private static Task PopDialogAsync(Window? window = null)
+    private static Task PopDialogAsync(INavigationStack? stack = null)
     {
-        var activeStack = UIPlatform.GetActiveStackFromWindow(window)
+        var activeStack = stack
                           ?? UIPlatform.GetMainStack()
                           ?? throw new NavigationException("No NavigationStack available.");
 
@@ -204,12 +220,12 @@ public static class Navigation
     {
         // Open in new window (if supported)
         var stackName = routeUri.GetStackName() ?? String.Empty;
-        var stack = UIPlatform.PushToWindow(stackName);
+        var stack = UIPlatform.ActivateStackWindow(stackName);
         if (stack != null)
             return await stack.PushAsync(routeUri);
 
-        // Fallback: Dialog in current window
-        return await PushDialogAsync(routeUri);
+        // Fallback: Replace page/stack in current window
+        return await PushParentAsync(routeUri);
     }
     
     #endregion

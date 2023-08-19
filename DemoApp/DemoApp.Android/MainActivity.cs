@@ -1,11 +1,23 @@
 ﻿using Android.App;
 using Android.Content.PM;
+using Avalonia;
 using Avalonia.Android;
+using Avalonia.ReactiveUI;
 
-namespace DemoApp.Android
+namespace DemoApp.Android;
+
+[Activity(
+    Label = "DemoApp.Android",
+    Theme = "@style/MyTheme.NoActionBar",
+    Icon = "@drawable/icon",
+    MainLauncher = true,
+    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
+public class MainActivity : AvaloniaMainActivity<App>
 {
-    [Activity(Label = "DemoApp.Android", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
-    public class MainActivity : AvaloniaMainActivity
+    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
+        return base.CustomizeAppBuilder(builder)
+            .WithInterFont()
+            .UseReactiveUI();
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
-using NSE.RouteNav.Controls;
-using NSE.RouteNav.Stacks.Internal;
+using RouteNav.Avalonia.StackControls;
 
-namespace NSE.RouteNav.Stacks;
+namespace RouteNav.Avalonia.Stacks;
 
-public class NavigationPageStack : NavigationStackBase<NavigationControl>, INavigationStack
+public class NavigationPageStack : NavigationStackBase<NavigationPageContainer>, INavigationStack
 {
     public NavigationPageStack(string name)
         : base(name)
@@ -24,19 +23,23 @@ public class NavigationPageStack : NavigationStackBase<NavigationControl>, INavi
         return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory() : null;
     }
 
-    protected override NavigationControl InitContainer()
+    protected override NavigationPageContainer InitContainer()
     {
-        return new NavigationControl
+        return new NavigationPageContainer
         {
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            NavigationRouter = new PageStackNavigationRouter(this)
+            NavigationStack= this
         };
     }
 
     public override void AddPage(string relativeRoute, Func<Page> pageFactory)
     {
-        Pages.Set(relativeRoute.TrimStart('/'), pageFactory);
+        var key = relativeRoute.TrimStart('/');
+        if (!Pages.ContainsKey(key))
+            Pages.Add(key, pageFactory);
+        else
+            Pages[key] = pageFactory;
     }
 
     #endregion

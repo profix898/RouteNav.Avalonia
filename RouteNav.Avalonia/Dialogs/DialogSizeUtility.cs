@@ -1,21 +1,18 @@
 ﻿using System;
 using Avalonia;
+using static System.Math;
 
-namespace NSE.RouteNav.Dialogs;
+namespace RouteNav.Avalonia.Dialogs;
+
+public enum DialogSize
+{
+    Small,
+    Medium,
+    Large
+}
 
 public static class DialogSizeUtility
 {
-    #region DialogSize enum
-
-    public enum DialogSize
-    {
-        Small,
-        Medium,
-        Large
-    }
-
-    #endregion
-
     #region Default
 
     public static Size GetSize(this Page parentPage, DialogSize dialogSize, Size? minSize = null, Size? maxSize = null)
@@ -54,15 +51,15 @@ public static class DialogSizeUtility
         // Limit minimum size
         if (minSize.HasValue)
         {
-            width = System.Math.Max(width, minSize.Value.Width);
-            height = System.Math.Max(height, minSize.Value.Height);
+            width = Max(width, minSize.Value.Width);
+            height = Max(height, minSize.Value.Height);
         }
 
         // Limit maximum size
         if (maxSize.HasValue)
         {
-            width = System.Math.Min(width, maxSize.Value.Width);
-            height = System.Math.Min(height, maxSize.Value.Height);
+            width = Min(width, maxSize.Value.Width);
+            height = Min(height, maxSize.Value.Height);
         }
 
         return new Size(width, height);

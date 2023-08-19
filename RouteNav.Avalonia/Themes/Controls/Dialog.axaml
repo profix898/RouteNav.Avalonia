@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dialogs="clr-namespace:RouteNav.Avalonia.Dialogs">
+    <Design.PreviewWith>
+        <Border Padding="50">
+          <dialogs:Dialog Title="Title" Content="Content goes here" />
+        </Border>
+    </Design.PreviewWith>
+    <ControlTheme x:Key="{x:Type dialogs:Dialog}" TargetType="dialogs:Dialog">
+        <Setter Property="Template">
+          <ControlTemplate>
+              <Grid RowDefinitions="35,Auto" Margin="0">
+                  <Border Grid.Row="0" Background="{TemplateBinding TitleBarBackground}" />
+                  <TextBlock Grid.Row="0" Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}" FontSize="20" VerticalAlignment="Center" />
+                  <ContentPresenter Grid.Row="1" Padding="15,10,10,15" />
+              </Grid>
+          </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

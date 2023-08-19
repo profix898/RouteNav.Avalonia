@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NSE.RouteNav.Pages;
+namespace RouteNav.Avalonia.Pages;
 
 public interface IPageNavigation
 {
+    public event Action<(Page? pageFrom, Page? pageTo)> PageNavigated;
+
     IReadOnlyList<Page> PageStack { get; }
 
-    public event Action<(Page? pageFrom, Page? pageTo)> PageNavigated;
+    Page CurrentPage { get; }
 
     void InsertPageBefore(Page page, Page beforePage);
 

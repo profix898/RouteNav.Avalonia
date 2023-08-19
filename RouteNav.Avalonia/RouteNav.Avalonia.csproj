@@ -1,24 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="DialogHost.Avalonia" Version="0.7.0-preview3" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <UpToDateCheckInput Remove="Dialogs\MessageDialog.axaml" />
+    <AvaloniaResource Include="**/*.xaml" />
+    <AvaloniaResource Include="**/*.axaml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Dialog.axaml.cs">
-      <DependentUpon>Dialog.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Dialogs\MessageDialog.axaml.cs">
-      <DependentUpon>MessageDialog.axaml</DependentUpon>
-    </Compile>
+    <AvaloniaXaml Remove="Themes\Controls\Dialog.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Update="Themes\Controls\Dialog.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
   </ItemGroup>
 </Project>
