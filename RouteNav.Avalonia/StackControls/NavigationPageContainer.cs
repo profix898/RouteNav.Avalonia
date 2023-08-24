@@ -80,6 +80,13 @@ public class NavigationPageContainer : NavigationContainer
 
     #endregion
 
+    public override void UpdatePage(Page page)
+    {
+        RaisePropertyChanged(CanGoBackProperty, null, CanGoBack);
+        navBarTitle?.SetValue(ContentPresenter.ContentProperty, page.Title);
+        Presenter?.SetValue(ContentProperty, page);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -121,12 +128,5 @@ public class NavigationPageContainer : NavigationContainer
             else
                 Presenter.Padding = Presenter.Padding.ApplySafeAreaPadding(remainingSafeArea);
         }
-    }
-
-    protected override void OnPageNavigated((Page? pageFrom, Page? pageTo) e)
-    {
-        RaisePropertyChanged(CanGoBackProperty, null, CanGoBack);
-        navBarTitle?.SetValue(ContentPresenter.ContentProperty, e.pageTo?.Title ?? String.Empty);
-        Presenter?.SetValue(ContentProperty, e.pageTo);
     }
 }

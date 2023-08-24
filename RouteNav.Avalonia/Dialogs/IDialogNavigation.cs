@@ -6,13 +6,13 @@ namespace RouteNav.Avalonia.Dialogs;
 
 public interface IDialogNavigation
 {
-    public event Action<(Dialog? dialogFrom, Dialog? dialogTo)> DialogNavigated;
+    public event Action<NavigationEventArgs<Dialog>> DialogNavigated;
 
     IReadOnlyList<Dialog> DialogStack { get; }
 
     Dialog? CurrentDialog { get; }
 
-    Task PushDialogAsync(Dialog dialog);
+    Task<object?> PushDialogAsync(Dialog dialog);
 
     Task<Dialog> PopDialogAsync();
 

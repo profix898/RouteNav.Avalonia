@@ -163,7 +163,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         return stack ?? GetMainStack();
     }
 
-    public INavigationStack? ActivateStackWindow(string stackName)
+    public INavigationStack? ActivateStackInWindow(string stackName)
     {
         if (String.IsNullOrEmpty(stackName))
             return null;

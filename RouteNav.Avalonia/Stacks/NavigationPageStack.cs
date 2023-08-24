@@ -29,7 +29,7 @@ public class NavigationPageStack : NavigationStackBase<NavigationPageContainer>,
         {
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch,
-            NavigationStack= this
+            NavigationStack = this
         };
     }
 

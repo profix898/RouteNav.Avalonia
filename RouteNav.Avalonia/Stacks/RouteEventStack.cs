@@ -73,7 +73,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     public IReadOnlyList<Page> PageStack { get; } = new List<Page>();
 
     /// <summary>Event 'PageNavigated' not supported for event stack.</summary>
-    public event Action<(Page? pageFrom, Page? pageTo)>? PageNavigated;
+    public event Action<NavigationEventArgs<Page>>? PageNavigated;
 
     public void InsertPageBefore(Page page, Page beforePage)
     {
@@ -107,11 +107,11 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     public Dialog? CurrentDialog { get; } = null;
 
     /// <summary>Event 'DialogNavigated' not supported for event stack.</summary>
-    public event Action<(Dialog? dialogFrom, Dialog? dialogTo)>? DialogNavigated;
+    public event Action<NavigationEventArgs<Dialog>>? DialogNavigated;
 
-    public Task PushDialogAsync(Dialog dialog)
+    public Task<object?> PushDialogAsync(Dialog dialog)
     {
-        return Task.FromException<Page>(new NotSupportedException($"{nameof(RouteEventStack)} does not implement IDialogNavigation."));
+        return Task.FromException<object?>(new NotSupportedException($"{nameof(RouteEventStack)} does not implement IDialogNavigation."));
     }
 
     public Task<Dialog> PopDialogAsync()
@@ -129,7 +129,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     #region Implementation of IRouteNavigation
 
     /// <summary>Event 'RouteNavigated' not supported for event stack.</summary>
-    public event Action<(Uri? routeFrom, Uri? routeTo)>? RouteNavigated;
+    public event Action<NavigationEventArgs<Uri>>? RouteNavigated;
 
     public Task<Page> PushAsync(string relativeRoute, NavigationTarget target = NavigationTarget.Self)
     {

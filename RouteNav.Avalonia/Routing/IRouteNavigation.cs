@@ -6,7 +6,7 @@ namespace RouteNav.Avalonia.Routing;
 
 public interface IRouteNavigation
 {
-    public event Action<(Uri? routeFrom, Uri? routeTo)> RouteNavigated;
+    public event Action<NavigationEventArgs<Uri>> RouteNavigated;
 
     Task<Page> PushAsync(string relativeRoute, NavigationTarget target = NavigationTarget.Self);
 

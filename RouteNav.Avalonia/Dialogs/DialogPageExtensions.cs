@@ -8,8 +8,8 @@ namespace RouteNav.Avalonia.Dialogs;
 
 public static class DialogPageExtensions
 {
-    public static Task PushDialogAsync(this INavigationStack stack, Page page, DialogSize dialogSize = DialogSize.Medium,
-                                       Size? minSize = null, Size? maxSize = null)
+    public static Task<object?> PushDialogAsync(this INavigationStack stack, Page page, DialogSize dialogSize = DialogSize.Medium,
+                                                Size? minSize = null, Size? maxSize = null)
     {
         return stack.PushDialogAsync(page.ToDialog(stack.CurrentPage, dialogSize, minSize, maxSize));
     }

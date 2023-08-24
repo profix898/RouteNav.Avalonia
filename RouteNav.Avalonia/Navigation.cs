@@ -199,7 +199,7 @@ public static class Navigation
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
             var page404 = new NotFoundPage();
-            await page404.ToDialog(activeStack.CurrentPage).ShowDialog();
+            await activeStack.PushDialogAsync(page404);
 
             return page404;
         }
@@ -220,7 +220,7 @@ public static class Navigation
     {
         // Open in new window (if supported)
         var stackName = routeUri.GetStackName() ?? String.Empty;
-        var stack = UIPlatform.ActivateStackWindow(stackName);
+        var stack = UIPlatform.ActivateStackInWindow(stackName);
         if (stack != null)
             return await stack.PushAsync(routeUri);
 

@@ -11,7 +11,7 @@
     <Copyright>Copyright (c) Thilo Viereck 2022-2023</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
     <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2023/01/01"))).TotalDays.ToString("0"))</BuildNumber>
-    <Version>1.0.0.$(BuildNumber)</Version>
+    <Version>1.0.$(BuildNumber)</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageIcon>logo.png</PackageIcon>

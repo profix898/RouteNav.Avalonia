@@ -1,24 +1,19 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Media;
 using RouteNav.Avalonia.Internal;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open)]
+[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow)]
 public partial class Dialog : ContentControl
 {
-    protected Control? originalHost;
-    protected int originalHostIndex;
-    protected IInputElement? lastFocus;
-    protected OverlayHost? overlayHost;
-    protected TaskCompletionSource<object>? taskCompletionSource;
+    private TaskCompletionSource<object?>? taskCompletionSource;
 
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Dialog, string>(nameof(Title), "Dialog");
 
@@ -64,9 +59,25 @@ public partial class Dialog : ContentControl
     /// </summary>
     public event EventHandler? Opened;
 
-    private void OnOpened()
+    protected internal virtual Task<object?> Open()
     {
-        Opened?.Invoke(this, EventArgs.Empty);
+        taskCompletionSource = new TaskCompletionSource<object?>();
+
+        if (PlatformWindow == null) // Shown in overlay display
+        {
+            PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
+            PseudoClasses.Set(SharedPseudoClasses.Open, true);
+
+            Opened?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            PseudoClasses.Set(SharedPseudoClasses.DialogWindow, true);
+            PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
+            PseudoClasses.Set(SharedPseudoClasses.Open, true);
+        }
+
+        return taskCompletionSource.Task;
     }
 
     /// <summary>
@@ -74,111 +85,70 @@ public partial class Dialog : ContentControl
     /// </summary>
     public event EventHandler? Closed;
 
-    private void OnClosed()
+    public virtual void Close(object? result = null)
     {
-        Closed?.Invoke(this, EventArgs.Empty);
+        if (taskCompletionSource == null)
+            return;
+
+        Result = result;
+        taskCompletionSource.TrySetResult(result);
+
+        if (PlatformWindow == null) // Shown in overlay display
+        {
+            IsHitTestVisible = false;
+            Focus();
+
+            PseudoClasses.Set(SharedPseudoClasses.Hidden, true);
+            PseudoClasses.Set(SharedPseudoClasses.Open, false);
+
+            // Animation delay
+            Task.Delay(200).ContinueWith(_ => Closed?.Invoke(this, EventArgs.Empty));
+        }
+        else
+        {
+            PlatformWindow.Close(result);
+        }
     }
 
     #endregion
 
-    #region Lifecycle
+    #region Result
 
-    public virtual Task<object> ShowDialog()
+    [MemberNotNullWhen(true, nameof(ResultTask))]
+    public bool IsOpen => taskCompletionSource != null;
+
+    internal Task<object?>? ResultTask => taskCompletionSource?.Task;
+
+    public object? Result { get; private set; }
+
+    #endregion
+
+    #region Platform
+
+    /// <summary>
+    /// Gets the associated platform window
+    /// </summary>
+    public AvaloniaWindow? PlatformWindow { get; private set; }
+
+    internal void RegisterPlatform(AvaloniaWindow platformWindow)
     {
-        taskCompletionSource = new TaskCompletionSource<object>();
+        PlatformWindow = platformWindow;
 
-        if (Parent != null)
+        platformWindow.Opened += (_, _) => Opened?.Invoke(this, EventArgs.Empty);
+        platformWindow.Closed += (_, _) =>
         {
-            originalHost = (Control) Parent;
-            switch (originalHost)
+            if (taskCompletionSource == null)
+                return; // Dialog was never opened
+
+            if (!taskCompletionSource.Task.IsCompleted)
             {
-                case Panel panel:
-                    originalHostIndex = panel.Children.IndexOf(this);
-                    panel.Children.Remove(this);
-                    break;
-                case Decorator decorator:
-                    decorator.Child = null;
-                    break;
-                case ContentControl contentControl:
-                    contentControl.Content = null;
-                    break;
-                case ContentPresenter contentPresenter:
-                    contentPresenter.Content = null;
-                    break;
+                // Dialog window closed directly (set result and finalize task)
+                Result = null;
+                taskCompletionSource.TrySetResult(null);
             }
-        }
 
-        overlayHost ??= new OverlayHost();
-        overlayHost.Content = this;
-
-        var topLevel = ApplicationExtensions.GetTopLevel();
-        lastFocus = topLevel.FocusManager?.GetFocusedElement();
-
-        var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel);
-        if (overlayLayer == null)
-            throw new InvalidOperationException();
-        overlayLayer.Children.Add(overlayHost);
-
-        IsVisible = true;
-        overlayLayer.UpdateLayout();
-
-        PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
-        PseudoClasses.Set(SharedPseudoClasses.Open, true);
-
-        OnOpened();
-
-        return taskCompletionSource.Task;
-    }
-
-    protected virtual async Task CloseDialog(object? result = null)
-    {
-        if (taskCompletionSource == null || overlayHost == null)
-            return;
-
-        IsHitTestVisible = false;
-
-        Focus();
-
-        PseudoClasses.Set(SharedPseudoClasses.Hidden, true);
-        PseudoClasses.Set(SharedPseudoClasses.Open, false);
-
-        await Task.Delay(200);
-
-        OnClosed();
-
-        if (lastFocus != null)
-        {
-            lastFocus.Focus();
-            lastFocus = null;
-        }
-
-        var overlayLayer = OverlayLayer.GetOverlayLayer(overlayHost);
-        if (overlayLayer == null)
-            return;
-
-        overlayLayer.Children.Remove(overlayHost);
-        overlayHost.Content = null;
-
-        if (originalHost != null)
-        {
-            switch (originalHost)
-            {
-                case Panel panel:
-                    panel.Children.Insert(originalHostIndex, this);
-                    break;
-                case Decorator decorator:
-                    decorator.Child = this;
-                    break;
-                case ContentControl contentControl:
-                    contentControl.Content = this;
-                    break;
-                case ContentPresenter contentPresenter:
-                    contentPresenter.Content = this;
-                    break;
-            }
-        }
-
-        taskCompletionSource.TrySetResult(result);
+            Closed?.Invoke(this, EventArgs.Empty);
+        };
     }
 
     #endregion

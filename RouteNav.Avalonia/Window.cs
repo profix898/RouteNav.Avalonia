@@ -90,7 +90,7 @@ public class Window : ContentControl
     /// </summary>
     public ContentControl? PlatformControl { get; private set; }
 
-    public void RegisterPlatform(IApplicationLifetime appLifetime, ContentControl platformControl)
+    internal void RegisterPlatform(IApplicationLifetime appLifetime, ContentControl platformControl)
     {
         ApplicationLifetime = appLifetime;
         PlatformControl = platformControl;

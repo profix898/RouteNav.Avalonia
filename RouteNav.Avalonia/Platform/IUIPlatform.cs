@@ -41,7 +41,7 @@ public interface IUIPlatform
 
     INavigationStack? ActivateStack(string stackName, INavigationStack? sourceStack = null);
 
-    INavigationStack? ActivateStackWindow(string stackName);
+    INavigationStack? ActivateStackInWindow(string stackName);
 
     #endregion
 }

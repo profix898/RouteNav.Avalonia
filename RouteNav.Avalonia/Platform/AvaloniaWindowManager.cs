@@ -1,17 +1,23 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using RouteNav.Avalonia.Dialogs;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Platform;
 
 public class AvaloniaWindowManager : IWindowManager
 {
-    public bool ForceSingleWindow { get; set; }
+    private static IApplicationLifetime? ApplicationLifetime => Application.Current!.ApplicationLifetime;
 
-    public IApplicationLifetime? ApplicationLifetime => Application.Current!.ApplicationLifetime;
+    public virtual bool SupportsMultiWindow => ApplicationLifetime is IClassicDesktopStyleApplicationLifetime;
+
+    public bool ForceSingleWindow { get; init; }
+
+    public bool ForceOverlayDialogs { get; init; }
 
     public virtual bool OpenWindow(Window window, Window? parentWindow = null)
     {
@@ -32,10 +38,10 @@ public class AvaloniaWindowManager : IWindowManager
         return false;
     }
 
-    public virtual Task<object> OpenDialog(Dialogs.Dialog dialog, Window? parentWindow = null)
+    public virtual bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform -> open dialog window
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceSingleWindow)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceOverlayDialogs)
         {
             var platformWindow = new AvaloniaWindow
             {
@@ -49,6 +55,8 @@ public class AvaloniaWindowManager : IWindowManager
 
                 CanResize = false
             };
+            dialog.RegisterPlatform(platformWindow);
+            dialogTask = dialog.Open();
 
             // TODO: Customize to show platform dialog (border style, etc.)
             
@@ -56,11 +64,13 @@ public class AvaloniaWindowManager : IWindowManager
             if (ownerWindow == null)
                 throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
-            return platformWindow.ShowDialog<object>(ownerWindow);
+            platformWindow.ShowDialog(ownerWindow);
+            return true;
         }
 
         // Variant B: Mobile/Browser (single window/view) platform + Fallback -> open dialog in overlay
-        return dialog.ShowDialog();
+        dialogTask = Task.FromCanceled<object?>(CancellationToken.None);
+        return false;
     }
 
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime, Action<AvaloniaWindow>? windowCustomization = null)

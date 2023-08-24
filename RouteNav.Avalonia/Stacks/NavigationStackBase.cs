@@ -102,11 +102,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IPageNavigation
 
-    public event Action<(Page? pageFrom, Page? pageTo)>? PageNavigated;
+    public event Action<NavigationEventArgs<Page>>? PageNavigated;
 
     protected void OnPageNavigated(Page? pageFrom, Page? pageTo)
     {
-        PageNavigated?.Invoke((pageFrom, pageTo));
+        PageNavigated?.Invoke(new NavigationEventArgs<Page>(pageFrom, pageTo));
     }
 
     public virtual IReadOnlyList<Page> PageStack => pageStack;
@@ -120,6 +120,12 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public virtual void RemovePage(Page page)
     {
+        if (pageStack.LastOrDefault() == page)
+        {
+            PopAsync();
+            return;
+        }
+
         pageStack.Remove(page);
     }
 
@@ -133,6 +139,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         pageStack.Add(page);
         CurrentPage = page;
 
+        ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
         return Task.CompletedTask;
@@ -151,6 +158,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
             pageStack.Add(nextPage = RootPage);
         CurrentPage = nextPage;
 
+        ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
         return Task.FromResult(previousPage);
@@ -164,6 +172,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         pageStack.Add(RootPage);
         CurrentPage = RootPage;
 
+        ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
         return Task.FromResult(previousPage);
@@ -173,27 +182,28 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IDialogNavigation
 
-    public event Action<(Dialog? dialogFrom, Dialog? dialogTo)>? DialogNavigated;
+    public event Action<NavigationEventArgs<Dialog>>? DialogNavigated;
 
     protected void OnDialogNavigated(Dialog? dialogFrom, Dialog? dialogTo)
     {
-        DialogNavigated?.Invoke((dialogFrom, dialogTo));
+        DialogNavigated?.Invoke(new NavigationEventArgs<Dialog>(dialogFrom, dialogTo));
     }
 
     public virtual IReadOnlyList<Dialog> DialogStack => dialogStack;
 
     public virtual Dialog? CurrentDialog { get; protected set; }
 
-    public virtual Task PushDialogAsync(Dialog dialog)
+    public virtual Task<object?> PushDialogAsync(Dialog dialog)
     {
         var previousDialog = dialogStack.LastOrDefault();
 
         dialogStack.Add(dialog);
         CurrentDialog = dialog;
 
+        var dialogTask = ContainerPage.Value.UpdateDialog(dialog);
         OnDialogNavigated(previousDialog, dialog);
 
-        return Task.CompletedTask;
+        return dialogTask;
     }
 
     public virtual Task<Dialog> PopDialogAsync()
@@ -202,10 +212,12 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
             throw new NavigationException("Can't pop dialog from empty dialog stack.");
 
         var previousDialog = dialogStack.Last();
+        previousDialog.Close();
         dialogStack.Remove(previousDialog);
         var nextDialog = dialogStack.LastOrDefault();
         CurrentDialog = nextDialog;
 
+        ContainerPage.Value.UpdateDialog(nextDialog);
         OnDialogNavigated(previousDialog, nextDialog);
 
         return Task.FromResult(previousDialog);
@@ -214,9 +226,12 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     public virtual Task PopDialogAllAsync()
     {
         var previousDialog = dialogStack.LastOrDefault();
+        foreach (var dialog in dialogStack)
+            dialog.Close();
         dialogStack.Clear();
         CurrentDialog = null;
 
+        ContainerPage.Value.UpdateDialog(null);
         OnDialogNavigated(previousDialog, null);
 
         return Task.FromResult(previousDialog);
@@ -226,11 +241,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IRouteNavigation
 
-    public event Action<(Uri? routeFrom, Uri? routeTo)>? RouteNavigated;
+    public event Action<NavigationEventArgs<Uri>>? RouteNavigated;
 
     protected void OnRouteNavigated(Uri? routeFrom, Uri? routeTo)
     {
-        RouteNavigated?.Invoke((routeFrom, routeTo));
+        RouteNavigated?.Invoke(new NavigationEventArgs<Uri>(routeFrom, routeTo));
     }
 
     public Task<Page> PushAsync(string relativeRoute, NavigationTarget target = NavigationTarget.Self)

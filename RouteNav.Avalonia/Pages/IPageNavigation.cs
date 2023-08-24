@@ -6,7 +6,7 @@ namespace RouteNav.Avalonia.Pages;
 
 public interface IPageNavigation
 {
-    public event Action<(Page? pageFrom, Page? pageTo)> PageNavigated;
+    public event Action<NavigationEventArgs<Page>> PageNavigated;
 
     IReadOnlyList<Page> PageStack { get; }
 

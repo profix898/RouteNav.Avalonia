@@ -8,18 +8,26 @@ using Avalonia.Reactive;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-public class OverlayHost : ContentControl
+public class DialogOverlayHost : ContentControl, IDisposable
 {
+    private IInputElement? lastFocusElement;
     private IDisposable? boundsWatcher;
 
-    public OverlayHost()
+    public DialogOverlayHost(TopLevel topLevel, OverlayLayer overlayLayer)
     {
+        OverlayLayer = overlayLayer;
+        OverlayLayer.Children.Add(this);
+
+        lastFocusElement = topLevel.FocusManager?.GetFocusedElement();
+
         Background = null;
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment = VerticalAlignment.Center;
     }
 
     protected override Type StyleKeyOverride => typeof(OverlayPopupHost);
+
+    internal OverlayLayer OverlayLayer { get; }
 
     protected override Size MeasureOverride(Size availableSize)
     {
@@ -86,4 +94,20 @@ public class OverlayHost : ContentControl
     {
         e.Handled = true;
     }
+
+    #region Implementation of IDisposable
+
+    public void Dispose()
+    {
+        Content = null;
+        OverlayLayer.Children.Remove(this);
+
+        if (lastFocusElement != null)
+        {
+            lastFocusElement.Focus();
+            lastFocusElement = null;
+        }
+    }
+
+    #endregion
 }
