@@ -1,12 +1,19 @@
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-public partial class MessageDialog : Dialog
+[TemplatePart("PART_DialogButtons", typeof(ContentPresenter))]
+public class MessageDialog : Dialog
 {
     #region MessageDialogButtons enum
 
@@ -33,22 +40,11 @@ public partial class MessageDialog : Dialog
 
     #endregion
 
-    public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<MessageDialog, string>(nameof(Text));
+    private ContentPresenter? dialogButtons;
 
     public static readonly StyledProperty<MessageDialogButtons> ButtonsProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtons>(nameof(Buttons));
 
-    public static readonly StyledProperty<MessageDialogButtonsTemplate> DialogButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(DialogButtonsTemplate));
-
-    public MessageDialog()
-    {
-        DialogButtonsTemplate = new MessageDialogButtonsTemplate();
-    }
-
-    public string Text
-    {
-        get { return GetValue(TextProperty); }
-        set { SetValue(TextProperty, value); }
-    }
+    public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
 
     public MessageDialogButtons Buttons
     {
@@ -56,41 +52,79 @@ public partial class MessageDialog : Dialog
         set { SetValue(ButtonsProperty, value); }
     }
 
-    public MessageDialogResult Result { get; internal set; } = MessageDialogResult.None;
-
-    public MessageDialogButtonsTemplate DialogButtonsTemplate
+    public MessageDialogButtonsTemplate ButtonsTemplate
     {
-        get { return GetValue(DialogButtonsTemplateProperty); }
-        set { SetValue(DialogButtonsTemplateProperty, value); }
+        get { return GetValue(ButtonsTemplateProperty); }
+        set { SetValue(ButtonsTemplateProperty, value); }
     }
 
-    #region StaticHelper
+    protected override Type StyleKeyOverride => typeof(MessageDialog);
 
-    //public static Task<MessageDialogResult> Show(string title, string text, MessageDialogButtons buttons, Window? parentWindow = null)
-    //{
-    //    var tcs = new TaskCompletionSource<MessageDialogResult>();
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
 
-    //    var messageDialog = new MessageDialog { Title = title, Text = text, Buttons = buttons };
-    //    messageDialog.Closed += (_, _) => tcs.TrySetResult(messageDialog.Result);
+        if (dialogButtons != null)
+            dialogButtons.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
+        dialogButtons = e.NameScope.Get<ContentPresenter>("PART_DialogButtons");
+        dialogButtons.PropertyChanged += ContentPresenter_ChildPropertyChanged;
 
-    //    Navigation.UIPlatform.WindowManager.OpenDialog(messageDialog, parentWindow); // TODO: Replaces any open dialog (dangerous!)
+        dialogButtons.ContentTemplate = ButtonsTemplate;
+        dialogButtons.Content = this;
+    }
 
-    //    return tcs.Task;
-    //}
+    private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
+        {
+            if (e.OldValue is ILogical oldChild)
+                LogicalChildren.Remove(oldChild);
+            if (e.NewValue is ILogical newLogical)
+                LogicalChildren.Add(newLogical);
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if ((change.Property == ButtonsTemplateProperty || change.Property == ButtonsProperty) && dialogButtons != null)
+        {
+            dialogButtons.ContentTemplate = ButtonsTemplate;
+            dialogButtons.Content = this;
+        }
+    }
+
+    #region ShowStatic
+
+    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Window? parentWindow = null)
+    {
+        var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
+        var dialogTask = messageDialog.ShowDialog(parentWindow);
+
+        return (MessageDialogResult) (await dialogTask ?? throw new InvalidOperationException($"{nameof(MessageDialog)} did not return a valid result."));
+    }
 
     #region Error
 
-    public static Task Error(string message)
+    public static Task Error(string message, Window? parentWindow = null)
     {
-        return Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Navigation.GetMainStack().PushDialogAsync(ErrorPage(message));
-        }).GetTask();
+        return Dispatcher.UIThread.InvokeAsync(() => ErrorPage(message).ShowDialog(parentWindow));
     }
 
     public static Dialog ErrorPage(string message)
     {
-        return new MessageDialog() { Title = "Exception", Content = new TextBlock { Text = message, Foreground = Brushes.Red } };
+        return new MessageDialog
+        {
+            Title = "Exception",
+            Content = new TextBlock
+            {
+                Text = message,
+                Foreground = Brushes.Red,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center
+            }
+        };
     }
 
     #endregion

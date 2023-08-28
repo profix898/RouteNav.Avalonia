@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using RouteNav.Avalonia.Internal;
+using System;
 
 namespace RouteNav.Avalonia;
 
@@ -35,6 +36,8 @@ public class Page : ContentControl, ISafeAreaAware
         set { SetValue(SafeAreaPaddingProperty, value); }
     }
 
+    protected override Type StyleKeyOverride => typeof(Page);
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -54,10 +57,10 @@ public class Page : ContentControl, ISafeAreaAware
     {
         if (Content != null && Presenter != null)
         {
-            if (Presenter.Child is ISafeAreaAware safeAreaAware)
-                safeAreaAware.SafeAreaPadding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+            if (Presenter.Child is ISafeAreaAware safeAreaAwareChild)
+                safeAreaAwareChild.SafeAreaPadding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
             else
-                Presenter.Padding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+                Presenter.Padding = Presenter.Padding.ApplySafeAreaPadding(Padding.GetRemainingSafeAreaPadding(SafeAreaPadding));
         }
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Platform;
@@ -27,6 +29,8 @@ public class AvaloniaUIPlatform : IUIPlatform
 
         this.serviceCollection = serviceCollection ?? throw new NotSupportedException("Navigation DI container (IServiceCollection) is not available.");
         this.serviceProvider = serviceProvider ?? throw new NotSupportedException("Navigation DI container (IServiceProvider) is not available.");
+
+        RegisterPage(typeof(NotFoundPage), typeof(InternalErrorPage));
     }
 
     #region IUIPlatform Members

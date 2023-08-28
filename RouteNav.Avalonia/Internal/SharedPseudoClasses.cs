@@ -2,10 +2,8 @@
 
 internal class SharedPseudoClasses
 {
-    public const string Accent = "accent";
-
     public const string Open = ":open";
     public const string Hidden = ":hidden";
 
-    public const string DialogWindow = ":dlgwnd";
+    public const string DialogWindow = ":dialog-window";
 }

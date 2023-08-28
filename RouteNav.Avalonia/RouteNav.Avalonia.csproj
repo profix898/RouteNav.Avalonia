@@ -16,8 +16,14 @@
     <AvaloniaXaml Remove="Themes\Controls\Dialog.axaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Themes\Controls\Page.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <AvaloniaResource Update="Themes\Controls\Dialog.axaml">
       <SubType>Designer</SubType>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Themes\Controls\Page.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
   </ItemGroup>
 </Project>

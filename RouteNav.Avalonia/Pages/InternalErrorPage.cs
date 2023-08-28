@@ -1,8 +1,8 @@
-﻿namespace RouteNav.Avalonia.Pages;
+﻿using System;
 
-public partial class InternalErrorPage : Page
+namespace RouteNav.Avalonia.Pages;
+
+public class InternalErrorPage : Page
 {
-    public InternalErrorPage()
-    {
-    }
+    protected override Type StyleKeyOverride => typeof(InternalErrorPage);
 }

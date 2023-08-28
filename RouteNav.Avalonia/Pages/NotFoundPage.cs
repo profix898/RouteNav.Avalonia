@@ -1,8 +1,8 @@
-﻿namespace RouteNav.Avalonia.Pages;
+﻿using System;
 
-public partial class NotFoundPage : Page
+namespace RouteNav.Avalonia.Pages;
+
+public class NotFoundPage : Page
 {
-    public NotFoundPage()
-    {
-    }
+    protected override Type StyleKeyOverride => typeof(NotFoundPage);
 }

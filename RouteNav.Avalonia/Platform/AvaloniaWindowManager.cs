@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using RouteNav.Avalonia.Dialogs;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
@@ -47,14 +48,19 @@ public class AvaloniaWindowManager : IWindowManager
             {
                 Title = dialog.Title,
 
-                Content = dialog.Content,
+                Content = dialog,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                VerticalContentAlignment = VerticalAlignment.Stretch,
+
                 Width = dialog.Size.Width,
                 Height = dialog.Size.Height,
                 MinWidth = dialog.Size.Width,
                 MinHeight = dialog.Size.Height,
-
                 CanResize = false
             };
+#if DEBUG
+            platformWindow.AttachDevTools();
+#endif
             dialog.RegisterPlatform(platformWindow);
             dialogTask = dialog.Open();
 

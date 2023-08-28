@@ -6,6 +6,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using RouteNav.Avalonia.Internal;
 
@@ -14,16 +15,17 @@ namespace RouteNav.Avalonia.StackControls;
 [TemplatePart("PART_NavigationBar", typeof(Border))]
 [TemplatePart("PART_NavigationBarBackButton", typeof(Button))]
 [TemplatePart("PART_NavigationBarTitle", typeof(ContentPresenter))]
-public class NavigationPageContainer : NavigationContainer
+[TemplatePart("PART_NavigationContent", typeof(TransitioningContentControl))]
+public sealed class NavigationPageContainer : NavigationContainer
 {
     private Border? navBarBorder;
     private Button? navBarBackButton;
     private ContentPresenter? navBarTitle;
-    private TransitioningContentControl? contentControl;
+    private TransitioningContentControl? navContentControl;
 
-    public static readonly StyledProperty<IBrush?> NavBarBackgroundProperty = AvaloniaProperty.Register<NavigationPageContainer, IBrush?>(nameof(NavBarBackground));
+    public static readonly StyledProperty<IBrush> NavBarBackgroundProperty = AvaloniaProperty.Register<NavigationPageContainer, IBrush>(nameof(NavBarBackground));
 
-    public static readonly StyledProperty<IBrush?> NavBarTextColorProperty = AvaloniaProperty.Register<NavigationPageContainer, IBrush?>(nameof(NavBarTextColor));
+    public static readonly StyledProperty<IBrush> NavBarTextColorProperty = AvaloniaProperty.Register<NavigationPageContainer, IBrush>(nameof(NavBarTextColor));
 
     public static readonly StyledProperty<bool> NavBarVisibleProperty = AvaloniaProperty.Register<NavigationPageContainer, bool>(nameof(NavBarVisible), true);
 
@@ -57,6 +59,8 @@ public class NavigationPageContainer : NavigationContainer
         set { SetValue(PageTransitionProperty, value); }
     }
 
+    protected override Type StyleKeyOverride => typeof(NavigationPageContainer);
+
     #region InternalNavigation
 
     public bool CanGoBack
@@ -75,16 +79,21 @@ public class NavigationPageContainer : NavigationContainer
     private void NavBarBackButton_Clicked(object? sender, RoutedEventArgs e)
     {
         if (CanGoBack)
-            NavigationStack?.PopAsync();
+            Navigation.PopAsync(NavigationStack);
     }
 
     #endregion
 
     public override void UpdatePage(Page page)
     {
-        RaisePropertyChanged(CanGoBackProperty, null, CanGoBack);
+        // Title
         navBarTitle?.SetValue(ContentPresenter.ContentProperty, page.Title);
-        Presenter?.SetValue(ContentProperty, page);
+
+        // Content
+        navContentControl?.SetValue(ContentProperty, page);
+        RaisePropertyChanged(CanGoBackProperty, null, CanGoBack);
+
+        UpdateContentSafeAreaPadding();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -92,41 +101,72 @@ public class NavigationPageContainer : NavigationContainer
         base.OnApplyTemplate(e);
 
         navBarBorder = e.NameScope.Get<Border>("PART_NavigationBar");
+
         if (navBarBackButton != null)
             navBarBackButton.Click -= NavBarBackButton_Clicked;
         navBarBackButton = e.NameScope.Get<Button>("PART_NavigationBarBackButton");
         if (navBarBackButton != null)
             navBarBackButton.Click += NavBarBackButton_Clicked;
-        navBarTitle = e.NameScope.Get<ContentPresenter>("PART_NavigationBarTitle");
 
-        contentControl = e.NameScope.Get<TransitioningContentControl>("PART_ContentPresenter");
-        contentControl.PageTransition = PageTransition;
+        if (navBarTitle != null)
+            navBarTitle.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
+        navBarTitle = e.NameScope.Get<ContentPresenter>("PART_NavigationBarTitle");
+        navBarTitle.PropertyChanged += ContentPresenter_ChildPropertyChanged;
+
+        if (navContentControl != null)
+        {
+            navContentControl.TemplateApplied -= NavContentControl_OnTemplateApplied;
+            if (navContentControl?.Presenter != null)
+                navContentControl.Presenter.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
+        }
+        navContentControl = e.NameScope.Get<TransitioningContentControl>("PART_NavigationContent");
+        navContentControl.PageTransition = PageTransition;
+        navContentControl.TemplateApplied += NavContentControl_OnTemplateApplied;
+
+        UpdatePage(CurrentPage);
+    }
+
+    private void NavContentControl_OnTemplateApplied(object? sender, TemplateAppliedEventArgs e)
+    {
+        if (navContentControl?.Presenter != null)
+            navContentControl.Presenter.PropertyChanged += ContentPresenter_ChildPropertyChanged;
+    }
+
+    private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
+        {
+            if (e.OldValue is ILogical oldChild)
+                LogicalChildren.Remove(oldChild);
+            if (e.NewValue is ILogical newLogical)
+                LogicalChildren.Add(newLogical);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == PageTransitionProperty && contentControl != null)
-            contentControl.PageTransition = PageTransition;
+        if (change.Property == PageTransitionProperty && navContentControl != null)
+            navContentControl.PageTransition = PageTransition;
     }
 
     protected override void UpdateContentSafeAreaPadding()
     {
-        if (Content != null && Presenter != null)
+        if (navContentControl == null)
+            return;
+
+        var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+
+        if (navBarBorder != null)
         {
-            var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
-
-            if (navBarBorder != null)
-            {
-                navBarBorder.Padding = new Thickness(SafeAreaPadding.Left, SafeAreaPadding.Top, SafeAreaPadding.Right, 0);
-                remainingSafeArea = navBarBorder.Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
-            }
-
-            if (Presenter.Child is ISafeAreaAware safeAreaAware)
-                safeAreaAware.SafeAreaPadding = remainingSafeArea;
-            else
-                Presenter.Padding = Presenter.Padding.ApplySafeAreaPadding(remainingSafeArea);
+            navBarBorder.Padding = navBarBorder.Padding.ApplySafeAreaPadding(new Thickness(SafeAreaPadding.Left, SafeAreaPadding.Top, SafeAreaPadding.Right, 0));
+            remainingSafeArea = navBarBorder.Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
         }
+
+        if (navContentControl.Content is ISafeAreaAware safeAreaAwareChild)
+            safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
+        else
+            navContentControl.Padding = navContentControl.Padding.ApplySafeAreaPadding(remainingSafeArea);
     }
 }

@@ -4,16 +4,26 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Metadata;
 using RouteNav.Avalonia.Internal;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Dialogs;
 
+[TemplatePart("PART_DialogCloseButton", typeof(Button))]
+[TemplatePart("PART_DialogContent", typeof(ContentPresenter))]
 [PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow)]
-public partial class Dialog : ContentControl
+public class Dialog : TemplatedControl
 {
-    private TaskCompletionSource<object?>? taskCompletionSource;
+    protected TaskCompletionSource<object?>? taskCompletionSource;
+    protected Button? dialogCloseButton;
+    protected ContentPresenter? dialogContent;
 
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Dialog, string>(nameof(Title), "Dialog");
 
@@ -21,8 +31,12 @@ public partial class Dialog : ContentControl
 
     public static readonly StyledProperty<Brush> TitleBarTextColorProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarTextColor));
 
-    public static readonly StyledProperty<Size> SizeProperty = AvaloniaProperty.Register<Dialog, Size>(nameof(Size));
-    
+    public static readonly StyledProperty<object?> ContentProperty = AvaloniaProperty.Register<Dialog, object?>(nameof(Content));
+
+    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = AvaloniaProperty.Register<TemplatedControl, IDataTemplate?>(nameof(ContentTemplate));
+
+    public static readonly StyledProperty<Size> SizeProperty = AvaloniaProperty.Register<Dialog, Size>(nameof(Size), new Size(400, 300));
+
     public Dialog()
     {
         PseudoClasses.Add(SharedPseudoClasses.Hidden);
@@ -46,10 +60,69 @@ public partial class Dialog : ContentControl
         set { SetValue(TitleBarTextColorProperty, value); }
     }
 
+    [Content]
+    [DependsOn(nameof(ContentTemplate))]
+    public object? Content
+    {
+        get { return GetValue(ContentProperty); }
+        set
+        {
+            if (value is string strValue)
+                value = new TextBlock { Text = strValue };
+
+            SetValue(ContentProperty, value);
+        }
+    }
+
+    public IDataTemplate? ContentTemplate
+    {
+        get { return GetValue(ContentTemplateProperty); }
+        set { SetValue(ContentTemplateProperty, value); }
+    }
+
     public Size Size
     {
         get { return GetValue(SizeProperty); }
         set { SetValue(SizeProperty, value); }
+    }
+
+    protected override Type StyleKeyOverride => typeof(Dialog);
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+
+        if (dialogCloseButton != null)
+            dialogCloseButton.Click -= CloseDialog;
+        dialogCloseButton = e.NameScope.Find<Button>("PART_DialogCloseButton");
+        if (dialogCloseButton != null) // MessageDialog does not have a close button
+            dialogCloseButton.Click += CloseDialog;
+
+        if (dialogContent != null)
+            dialogContent.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
+        dialogContent = e.NameScope.Get<ContentPresenter>("PART_DialogContent");
+        dialogContent.PropertyChanged += ContentPresenter_ChildPropertyChanged;
+
+        dialogContent.Content = Content;
+    }
+
+    private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
+        {
+            if (e.OldValue is ILogical oldChild)
+                LogicalChildren.Remove(oldChild);
+            if (e.NewValue is ILogical newLogical)
+                LogicalChildren.Add(newLogical);
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == ContentProperty && dialogContent != null)
+            dialogContent.Content = Content;
     }
 
     #region Events
@@ -65,6 +138,7 @@ public partial class Dialog : ContentControl
 
         if (PlatformWindow == null) // Shown in overlay display
         {
+            PseudoClasses.Set(SharedPseudoClasses.DialogWindow, false);
             PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
             PseudoClasses.Set(SharedPseudoClasses.Open, true);
 
@@ -114,6 +188,11 @@ public partial class Dialog : ContentControl
 
     #region Result
 
+    private void CloseDialog(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
     [MemberNotNullWhen(true, nameof(ResultTask))]
     public bool IsOpen => taskCompletionSource != null;
 
@@ -149,6 +228,17 @@ public partial class Dialog : ContentControl
 
             Closed?.Invoke(this, EventArgs.Empty);
         };
+    }
+
+    #endregion
+
+    #region ShowDialog
+
+    public Task<object?> ShowDialog(Window? parentWindow = null)
+    {
+        var stack = Navigation.UIPlatform.GetActiveStackFromWindow(parentWindow) ?? Navigation.GetMainStack();
+        
+        return stack.PushDialogAsync(this);
     }
 
     #endregion

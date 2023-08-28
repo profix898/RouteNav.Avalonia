@@ -4,7 +4,7 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 2"
-               x:Class="DemoApp.Pages.Page2">
-    <TextBlock>Welcome to Avalonia Page 2!</TextBlock>
+               Title="Page 3"
+               x:Class="DemoApp.Pages.Page3">
+    <TextBlock>Welcome to Avalonia Page 3!</TextBlock>
 </routeNav:Page>

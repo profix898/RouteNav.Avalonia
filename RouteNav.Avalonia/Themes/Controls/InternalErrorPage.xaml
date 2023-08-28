@@ -3,13 +3,16 @@
                     xmlns:pages="clr-namespace:RouteNav.Avalonia.Pages">
     <Design.PreviewWith>
         <Border Padding="50">
-            <pages:InternalErrorPage Title="Internal Error" Content="Content goes here" />
+            <pages:InternalErrorPage />
         </Border>
     </Design.PreviewWith>
     <ControlTheme x:Key="{x:Type pages:InternalErrorPage}" TargetType="pages:InternalErrorPage">
+        <Setter Property="Title" Value="Internal Error" />
         <Setter Property="Template">
             <ControlTemplate>
-    <TextBlock Text="500 - Internal Error!" Foreground="Red" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White">
+                    <TextBlock Text="500 - Internal Error!" Foreground="Red" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Panel>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

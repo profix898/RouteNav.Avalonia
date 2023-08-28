@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
@@ -20,8 +21,8 @@ public sealed class MessageDialogButtonsTemplate : IDataTemplate
         var messageDialog = data as MessageDialog;
         Debug.Assert(messageDialog != null);
 
-        var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, Orientation = Orientation.Horizontal };
-        stackPanel.Styles.Add(new Style(selector => selector.OfType<Button>()) { Setters = { new Setter(Layoutable.MarginProperty, 5) } });
+        var stackPanel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Right, Orientation = Orientation.Horizontal };
+        stackPanel.Styles.Add(new Style(selector => selector.OfType<Button>()) { Setters = { new Setter(Layoutable.MarginProperty, new Thickness(5, 0)) } });
 
         if (messageDialog.Buttons is MessageDialog.MessageDialogButtons.Ok or MessageDialog.MessageDialogButtons.OkCancel)
             AddButton(messageDialog, stackPanel, "Ok", MessageDialog.MessageDialogResult.Ok);
@@ -41,7 +42,7 @@ public sealed class MessageDialogButtonsTemplate : IDataTemplate
     private static void AddButton(MessageDialog messageDialog, Panel stackPanel, string caption, MessageDialog.MessageDialogResult result)
     {
         var button = new Button { Content = caption };
-        button.Click += (_, _) => messageDialog.Result = result;
+        button.Click += (_, _) => messageDialog.Close(result);
 
         stackPanel.Children.Add(button);
     }

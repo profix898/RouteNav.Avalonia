@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
+using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.StackControls;
 
 namespace RouteNav.Avalonia.Stacks;
@@ -25,6 +26,8 @@ public class NavigationPageStack : NavigationStackBase<NavigationPageContainer>,
 
     protected override NavigationPageContainer InitContainer()
     {
+        RootPage = Pages.TryGetValue(String.Empty, out var rootPageFactory) ? rootPageFactory() : new NotFoundPage();
+
         return new NavigationPageContainer
         {
             VerticalAlignment = VerticalAlignment.Stretch,

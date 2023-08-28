@@ -6,6 +6,7 @@
       <ResourceDictionary.MergedDictionaries>
         <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/Dialog.axaml" />
         <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/MessageDialog.xaml" />
+        <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/Page.xaml" />
         <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/InternalErrorPage.xaml" />
         <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/NotFoundPage.xaml" />
         <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Controls/NavigationPage.xaml" />

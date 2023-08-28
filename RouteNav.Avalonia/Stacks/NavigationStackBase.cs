@@ -34,10 +34,12 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
             }
         });
 
-        CurrentPage = RootPage = new NotFoundPage();
+        CurrentPage = RootPage = new Page();
     }
 
     public LazyValue<TC> Container { get; }
+
+    public Page RootPage { get; protected set; }
 
     protected abstract Page? ResolveRoute(Uri routeUri);
 
@@ -56,8 +58,6 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     public event Action? Exited;
 
     public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => Container.Value);
-
-    public Page RootPage { get; protected set; }
 
     protected abstract TC InitContainer();
 
@@ -155,7 +155,17 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         
         var nextPage = pageStack.LastOrDefault();
         if (nextPage == null)
-            pageStack.Add(nextPage = RootPage);
+        {
+            if (IsMainStack)
+                pageStack.Add(nextPage = RootPage);
+            else
+            {
+                OnPageNavigated(previousPage, null);
+                Navigation.PopAsync(this);
+
+                return Task.FromResult(previousPage);
+            }
+        }
         CurrentPage = nextPage;
 
         ContainerPage.Value.UpdatePage(CurrentPage);

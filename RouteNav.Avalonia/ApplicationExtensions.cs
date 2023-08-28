@@ -15,14 +15,11 @@ public static class ApplicationExtensions
 
     public static void SetMainWindow(this IApplicationLifetime? lifetime, Window mainWindow, bool initMainRoute = true)
     {
-        if (lifetime == null)
-            throw new ArgumentNullException(nameof(lifetime), "IApplicationLifetime must not be null.");
-
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
             desktopLifetime.SetMainWindow(mainWindow, null, initMainRoute);
         else if (lifetime is ISingleViewApplicationLifetime singleViewLifetime)
             singleViewLifetime.SetMainWindow(mainWindow, initMainRoute);
-        else
+        else if (!Design.IsDesignMode)
             throw new NotSupportedException($"IApplicationLifetime of type '{lifetime.GetType()}' not supported.");
     }
 

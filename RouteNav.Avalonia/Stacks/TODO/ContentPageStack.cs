@@ -11,7 +11,7 @@ public class ContentPageStack : NavigationPageStack, INavigationStack
     public ContentPageStack(string name)
         : base(name)
     {
-        if (string.IsNullOrEmpty(name))
+        if (String.IsNullOrEmpty(name))
             throw new ArgumentNullException(nameof(name));
     }
 

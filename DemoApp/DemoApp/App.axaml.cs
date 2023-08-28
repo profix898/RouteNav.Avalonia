@@ -8,14 +8,16 @@ using RouteNav.Avalonia.Stacks;
 
 namespace DemoApp;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
 
+        // Register pages
         Navigation.UIPlatform.RegisterPage<Page1, Page2>();
 
+        /* Main stack */
         var mainStack = new NavigationPageStack(Navigation.MainStackName);
         Navigation.UIPlatform.AddStack(mainStack);
 
@@ -24,6 +26,16 @@ public partial class App : Application
 
         mainStack.AddPage<Page1>("page1");
         mainStack.AddPage<Page2>("page2");
+
+        mainStack.AddPage<NotFoundPage>("error404");
+        mainStack.AddPage<InternalErrorPage>("error500");
+
+        /* Second stack */
+        var secondStack = new NavigationPageStack("second");
+        Navigation.UIPlatform.AddStack(secondStack);
+
+        secondStack.AddPage<Page3>(String.Empty);
+        secondStack.AddPage<Page2>("page2");
     }
 
     public override void OnFrameworkInitializationCompleted()

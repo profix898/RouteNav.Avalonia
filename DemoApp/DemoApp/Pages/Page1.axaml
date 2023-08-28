@@ -1,14 +1,17 @@
-<avalonia:Page xmlns="https://github.com/avaloniaui"
+<routeNav:Page xmlns="https://github.com/avaloniaui"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
-                      xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+                      xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                       Title="Page 1"
                       x:Class="DemoApp.Pages.Page1">
   <StackPanel>
       <TextBlock>Welcome to Avalonia! We are on Page 1.</TextBlock>
       <routing:RouteButton RoutePath="/main/page2">To Page2</routing:RouteButton>
+      <routing:RouteButton RoutePath="/main/error500">InternalErrorPage</routing:RouteButton>
+      <routing:RouteButton RoutePath="/main/error404">NotFoundPage</routing:RouteButton>
+      <Button Click="OpenDlgCommand">Open Dialog</Button>
   </StackPanel>
-</avalonia:Page>
+</routeNav:Page>

@@ -16,7 +16,7 @@ public static class AppBuilderExtensions
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri,
                                                    IServiceCollection serviceCollection, IServiceProvider serviceProvider)
     {
-        if (!string.IsNullOrEmpty(baseRouteUri))
+        if (!String.IsNullOrEmpty(baseRouteUri))
             Navigation.BaseRouteUri = new Uri(baseRouteUri);
 
         Navigation.UIPlatform = new AvaloniaUIPlatform(serviceCollection, serviceProvider);
@@ -26,7 +26,7 @@ public static class AppBuilderExtensions
 
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri, IUIPlatform uiPlatform)
     {
-        if (!string.IsNullOrEmpty(baseRouteUri))
+        if (!String.IsNullOrEmpty(baseRouteUri))
             Navigation.BaseRouteUri = new Uri(baseRouteUri);
 
         Navigation.UIPlatform = uiPlatform;

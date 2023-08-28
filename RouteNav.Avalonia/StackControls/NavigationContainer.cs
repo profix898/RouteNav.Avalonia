@@ -13,7 +13,7 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackControls;
 
-public class NavigationContainer : ContentControl
+public class NavigationContainer : ContentControl, ISafeAreaAware
 {
     private TopLevel? topLevel;
     private IInsetsManager? insetsManager;
@@ -21,8 +21,6 @@ public class NavigationContainer : ContentControl
     private DialogOverlayHost? dialogOverlayHost;
 
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
-
-    protected override Type StyleKeyOverride => typeof(ContentControl);
 
     #region NavigationContainer
 
@@ -51,6 +49,8 @@ public class NavigationContainer : ContentControl
             return dialogOverlayHost;
         }
     }
+
+    protected override Type StyleKeyOverride => typeof(ContentControl);
 
     public virtual void UpdatePage(Page? page)
     {
@@ -170,8 +170,9 @@ public class NavigationContainer : ContentControl
         if (Content != null && Presenter != null)
         {
             var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
-            if (Presenter.Child is ISafeAreaAware safeAreaAware)
-                safeAreaAware.SafeAreaPadding = remainingSafeArea;
+
+            if (Presenter.Child is ISafeAreaAware safeAreaAwareChild)
+                safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
             else
                 Presenter.Padding = Presenter.Padding.ApplySafeAreaPadding(remainingSafeArea);
         }
