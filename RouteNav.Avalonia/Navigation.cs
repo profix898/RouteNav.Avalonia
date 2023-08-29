@@ -58,24 +58,23 @@ public static class Navigation
 
     public static Task<Page> PushAsync(Uri routeUri, NavigationTarget target = NavigationTarget.Self)
     {
-        switch (target)
+        return target switch
         {
-            case NavigationTarget.Self:
-                // Open in current navigation container (potentially replacing current stack), with the exception of flyout-detail page
-                // where we want to switch details content only (but only if flyout menu contains reference to requested stack root)
-                return PushSelfAsync(routeUri);
-            case NavigationTarget.Parent:
-                // Open in parent container (replacing current stack or container)
-                return PushParentAsync(routeUri);
-            case NavigationTarget.Dialog:
-                // Open in modal dialog (prefer in associated window)
-                return PushDialogAsync(routeUri);
-            case NavigationTarget.Window:
-                // Open in new window (or replacing current stack if unsupported)
-                return PushWindowAsync(routeUri);
-            default:
-                throw new ArgumentOutOfRangeException(nameof(target), target, null);
-        }
+            // Open in current navigation container (potentially replacing current stack), with the exception of flyout-detail page
+            // where we want to switch details content only (but only if flyout menu contains reference to requested stack root)
+            NavigationTarget.Self => PushSelfAsync(routeUri),
+
+            // Open in parent container (replacing current stack or container)
+            NavigationTarget.Parent => PushParentAsync(routeUri),
+
+            // Open in modal dialog (prefer in associated window)
+            NavigationTarget.Dialog => PushDialogAsync(routeUri),
+
+            // Open in new window (or replacing current stack if unsupported)
+            NavigationTarget.Window => PushWindowAsync(routeUri),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+        };
     }
 
     public static Task PopAsync(Window? window = null)

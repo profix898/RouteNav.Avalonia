@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Avalonia;
-using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Platform;
@@ -53,21 +52,18 @@ public class AvaloniaUIPlatform : IUIPlatform
         }
     }
 
-    public Page GetPage(Type pageType, params object[] parameters)
+    public Page GetPage(Type pageType, Uri uri, params object[] parameters)
     {
         if (pageType == null)
             throw new ArgumentNullException(nameof(pageType));
 
-        try
-        {
-            return (Page) serviceProvider.GetRequiredService(pageType);
-        }
-        catch (Exception)
-        {
-            Debug.WriteLine($"Warning: Page of type '{pageType}' is not registered.");
+        //var page = (Page) serviceProvider.GetRequiredService(pageType);
+        var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider, pageType, parameters);
 
-            return (Page) ActivatorUtilities.CreateInstance(serviceProvider, pageType, parameters);
-        }
+        // Supply page with query parameters (if available)
+        page.PageQuery = uri.ParseQueryString();
+
+        return page;
     }
 
     #endregion
@@ -146,10 +142,11 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (stack != null && !stack.IsEventStack)
         {
             var window = GetActiveWindowFromStack(stack);
+            var sourceWindow = (sourceStack != null) ? GetActiveWindowFromStack(sourceStack) : null;
             if (window == null)
             {
                 // Display in window associated with sourceStack or fall back to main/first application window
-                var sourceWindow = (sourceStack != null) ? GetActiveWindowFromStack(sourceStack) : Application.Current?.GetMainWindow();
+                sourceWindow ??= Application.Current?.GetMainWindow();
                 if (sourceWindow == null)
                     throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
@@ -159,8 +156,15 @@ public class AvaloniaUIPlatform : IUIPlatform
 
                 // Switch current/active stack
                 activeStacks[sourceWindow] = stack;
-                sourceStack?.Reset();
                 sourceWindow.SetContent(stack.ContainerPage.Value);
+                sourceStack?.Reset();
+            }
+            else if (sourceWindow != null && window != sourceWindow)
+            {
+                // Close source window
+                activeStacks.Remove(sourceWindow);
+                sourceWindow.Close();
+                sourceStack?.Reset();
             }
         }
 
@@ -179,12 +183,17 @@ public class AvaloniaUIPlatform : IUIPlatform
             if (window == null)
             {
                 window = new Window(stack.ContainerPage.Value);
-                window.Closed += (_, _) => { stack.Reset(); };
-                activeStacks.Add(window, stack);
+                window.Closed += (_, _) =>
+                {
+                    activeStacks.Remove(window);
+                    stack.Reset();
+                };
 
                 // Open in (new) window
                 if (!WindowManager.OpenWindow(window))
                     return null;
+
+                activeStacks.Add(window, stack);
             }
         }
 

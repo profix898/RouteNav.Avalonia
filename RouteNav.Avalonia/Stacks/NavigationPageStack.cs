@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
-using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.StackControls;
 
 namespace RouteNav.Avalonia.Stacks;
@@ -15,19 +14,17 @@ public class NavigationPageStack : NavigationStackBase<NavigationPageContainer>,
             throw new ArgumentNullException(nameof(name));
     }
 
-    private Dictionary<string, Func<Page>> Pages { get; } = new Dictionary<string, Func<Page>>();
+    private Dictionary<string, Func<Uri, Page>> Pages { get; } = new Dictionary<string, Func<Uri, Page>>();
 
     #region Overrides of NavigationStackBase<NavigationPage>
 
     protected override Page? ResolveRoute(Uri routeUri)
     {
-        return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory() : null;
+        return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
     }
 
     protected override NavigationPageContainer InitContainer()
     {
-        RootPage = Pages.TryGetValue(String.Empty, out var rootPageFactory) ? rootPageFactory() : new NotFoundPage();
-
         return new NavigationPageContainer
         {
             VerticalAlignment = VerticalAlignment.Stretch,
@@ -36,13 +33,17 @@ public class NavigationPageStack : NavigationStackBase<NavigationPageContainer>,
         };
     }
 
-    public override void AddPage(string relativeRoute, Func<Page> pageFactory)
+    public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        var key = relativeRoute.TrimStart('/');
-        if (!Pages.ContainsKey(key))
-            Pages.Add(key, pageFactory);
+        var pageKey = relativeRoute.TrimStart('/');
+        if (!Pages.ContainsKey(pageKey))
+            Pages.Add(pageKey, pageFactory);
         else
-            Pages[key] = pageFactory;
+            Pages[pageKey] = pageFactory;
+
+        // RootPage
+        if (String.IsNullOrEmpty(pageKey))
+            RootPage = new LazyValue<Page>(() => pageFactory(this.BuildRoute(String.Empty)));
     }
 
     #endregion

@@ -27,7 +27,7 @@ public static class DialogPageExtensions
             Content = page.Content,
             DataContext = page.DataContext,
             Resources = page.Resources,
-            Background = page.Background ?? Brushes.LightGray,
+            Background = page.Background ?? Brushes.White,
             Size = parentPage.GetSize(dialogSize, minSize, maxSize)
         };
     }

@@ -11,7 +11,7 @@
         <TextBlock Foreground="Blue">Welcome on the MainPage!</TextBlock>
         <routing:RouteButton RoutePath="/main/page1">To Page1</routing:RouteButton>
         <TextBlock Foreground="Gray" Margin="0,20,0,0">Secondary navigation stack</TextBlock>
-        <routing:RouteButton RoutePath="/second/">To 2nd Main</routing:RouteButton>
-        <routing:RouteButton RoutePath="/second/page2">To 2nd Page2</routing:RouteButton>
+        <routing:RouteButton RoutePath="/second/" Target="Window">To 2nd Main</routing:RouteButton>
+        <routing:RouteButton RoutePath="/second/page2" Target="Window">To 2nd Page2</routing:RouteButton>
     </StackPanel>
 </routeNav:Page>

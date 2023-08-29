@@ -90,7 +90,7 @@ public static class NavigationStackExtensions
 
     #region RegisterRoute
 
-    public static void Add(this INavigationStack stack, RouteMenuItem routeMenuItem, Func<Page> pageFactory)
+    public static void Add(this INavigationStack stack, RouteMenuItem routeMenuItem, Func<Uri, Page> pageFactory)
     {
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
             routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
@@ -115,7 +115,7 @@ public static class NavigationStackExtensions
         stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
     }
 
-    public static void Add(this INavigationStack stack, RouteButton routeButton, Func<Page> pageFactory)
+    public static void Add(this INavigationStack stack, RouteButton routeButton, Func<Uri, Page> pageFactory)
     {
         if (!routeButton.RouteUri.IsAbsoluteUri)
             routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName

@@ -67,6 +67,7 @@
             </Style>
             <Style Selector="dialogs|Dialog:dialog-window Border#BackgroundElement">
                 <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Margin" Value="0" />
                 <Setter Property="BoxShadow" Value="none" />
                 <Setter Property="MaxHeight" Value="{x:Static system:Double.PositiveInfinity}" />
                 <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />

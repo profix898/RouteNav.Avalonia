@@ -11,7 +11,7 @@ public interface IUIPlatform
 
     void RegisterPage(params Type[] pageTypes);
 
-    Page GetPage(Type pageType, params object[] parameters);
+    Page GetPage(Type pageType, Uri uri, params object[] parameters);
 
     #endregion
 

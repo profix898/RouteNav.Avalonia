@@ -33,13 +33,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
                 Entered?.Invoke();
             }
         });
-
-        CurrentPage = RootPage = new Page();
     }
 
     public LazyValue<TC> Container { get; }
 
-    public Page RootPage { get; protected set; }
+    public LazyValue<Page> RootPage { get; protected set; }
 
     protected abstract Page? ResolveRoute(Uri routeUri);
 
@@ -82,11 +80,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (!pageType.IsSubclassOf(typeof(Page)))
             throw new ArgumentException($"Type '{pageType.FullName}' is not a page.", nameof(pageType));
 
-        AddPage(relativeRoute.TrimStart('/'), () => Navigation.UIPlatform.GetPage(pageType)
-                                                    ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
+        AddPage(relativeRoute.TrimStart('/'), uri => Navigation.UIPlatform.GetPage(pageType, uri)
+                                                     ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
     }
 
-    public abstract void AddPage(string relativeRoute, Func<Page> pageFactory);
+    public abstract void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);
 
     public virtual void Reset()
     {
@@ -96,6 +94,8 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         ContainerPage.Reset();
         Container.Reset();
+        RootPage.Reset();
+        CurrentPage = null;
     }
 
     #endregion
@@ -111,7 +111,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public virtual IReadOnlyList<Page> PageStack => pageStack;
 
-    public virtual Page CurrentPage { get; protected set; }
+    public virtual Page? CurrentPage { get; protected set; }
 
     public virtual void InsertPageBefore(Page page, Page beforePage)
     {
@@ -131,7 +131,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public virtual Task PushAsync(Page page)
     {
-        if (Equals(page, CurrentPage))
+        if (page.Equals(CurrentPage))
             return Task.CompletedTask;
 
         var previousPage = CurrentPage;
@@ -152,24 +152,18 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         var previousPage = pageStack.Last();
         pageStack.Remove(previousPage);
-        
-        var nextPage = pageStack.LastOrDefault();
-        if (nextPage == null)
-        {
-            if (IsMainStack)
-                pageStack.Add(nextPage = RootPage);
-            else
-            {
-                OnPageNavigated(previousPage, null);
-                Navigation.PopAsync(this);
 
-                return Task.FromResult(previousPage);
-            }
-        }
+        var nextPage = pageStack.LastOrDefault();
+        if (nextPage == null && IsMainStack)
+            pageStack.Add(nextPage = RootPage.Value); // Default to RootPage for MainStack
         CurrentPage = nextPage;
 
-        ContainerPage.Value.UpdatePage(CurrentPage);
+        if (CurrentPage != null)
+            ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
+
+        if (CurrentPage == null)
+            Navigation.PopAsync(this);
 
         return Task.FromResult(previousPage);
     }
@@ -179,8 +173,8 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         var previousPage = pageStack.Last();
         pageStack.Clear();
 
-        pageStack.Add(RootPage);
-        CurrentPage = RootPage;
+        pageStack.Add(RootPage.Value);
+        CurrentPage = RootPage.Value;
 
         ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
@@ -211,6 +205,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         CurrentDialog = dialog;
 
         var dialogTask = ContainerPage.Value.UpdateDialog(dialog);
+        dialog.Closed += (_, _) => { dialogStack.Remove(dialog); };
         OnDialogNavigated(previousDialog, dialog);
 
         return dialogTask;
@@ -223,7 +218,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         var previousDialog = dialogStack.Last();
         previousDialog.Close();
-        dialogStack.Remove(previousDialog);
+        //dialogStack.Remove(previousDialog);
         var nextDialog = dialogStack.LastOrDefault();
         CurrentDialog = nextDialog;
 

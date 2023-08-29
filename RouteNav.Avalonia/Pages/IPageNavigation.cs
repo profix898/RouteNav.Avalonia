@@ -10,7 +10,7 @@ public interface IPageNavigation
 
     IReadOnlyList<Page> PageStack { get; }
 
-    Page CurrentPage { get; }
+    Page? CurrentPage { get; }
 
     void InsertPageBefore(Page page, Page beforePage);
 

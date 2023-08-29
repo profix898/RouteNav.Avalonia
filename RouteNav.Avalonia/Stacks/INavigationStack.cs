@@ -32,7 +32,7 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
 
     INavigationStack? RequestStack(string stackName);
 
-    void AddPage(string relativeRoute, Func<Page> pageFactory);
+    void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);
 
     void AddPage(string relativeRoute, Type pageType);
 

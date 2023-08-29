@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
@@ -76,6 +77,16 @@ public class Window : ContentControl
             PlatformControl.Content = content;
         else
             throw new NavigationException("Main window/view does not have a backing platform control.");
+    }
+
+    public void Close()
+    {
+        if (PlatformControl is AvaloniaWindow window)
+            window.Close();
+        else if (ApplicationLifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
+            desktopLifetime.TryShutdown();
+
+        // Note: We can't shutdown other lifetimes (e.g. on mobile) -> ignore the request
     }
 
     #region Platform

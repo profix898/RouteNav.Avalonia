@@ -3,10 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using RouteNav.Avalonia.Internal;
 using System;
+using System.Collections.Generic;
 
 namespace RouteNav.Avalonia;
 
-public class Page : ContentControl, ISafeAreaAware
+public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
 {
     /// <summary>
     /// Defines the <see cref="Title"/> property.
@@ -17,6 +18,8 @@ public class Page : ContentControl, ISafeAreaAware
     /// Defines the <see cref="SafeAreaPadding"/> property.
     /// </summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
+
+    public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 
     /// <summary>
     /// Gets or sets the title of the page
@@ -63,4 +66,19 @@ public class Page : ContentControl, ISafeAreaAware
                 Presenter.Padding = Presenter.Padding.ApplySafeAreaPadding(Padding.GetRemainingSafeAreaPadding(SafeAreaPadding));
         }
     }
+
+    #region Implementation of IEquatable<Page>
+
+    public bool Equals(Page? other)
+    {
+        if (other == null)
+            return false;
+
+        if (GetType() != other.GetType())
+            return false;
+
+        return PageQuery.EqualsContent(other.PageQuery);
+    }
+
+    #endregion
 }

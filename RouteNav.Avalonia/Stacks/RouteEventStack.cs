@@ -45,14 +45,14 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
 
     public Page RootPage { get; } = new Page();
 
-    public Page CurrentPage => RootPage;
+    public Page? CurrentPage => RootPage;
 
     public INavigationStack? RequestStack(string stackName)
     {
         return null;
     }
 
-    public void AddPage(string relativeRoute, Func<Page> pageFactory)
+    public void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         throw new NotSupportedException($"{nameof(RouteEventStack)} does not support pages.");
     }

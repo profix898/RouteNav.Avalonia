@@ -1,4 +1,5 @@
 ﻿using RouteNav.Avalonia.Platform;
+using System;
 
 namespace RouteNav.Avalonia.Pages;
 
@@ -103,7 +104,13 @@ public static class PageExtensions
     public static Page GetPage<T1>(this IUIPlatform uiPlatform, params object[] parameters)
         where T1 : Page
     {
-        return uiPlatform.GetPage(typeof(T1), parameters);
+        return uiPlatform.GetPage(typeof(T1), Navigation.BaseRouteUri, parameters);
+    }
+
+    public static Page GetPage<T1>(this IUIPlatform uiPlatform, Uri uri, params object[] parameters)
+        where T1 : Page
+    {
+        return uiPlatform.GetPage(typeof(T1), uri, parameters);
     }
 
     #endregion

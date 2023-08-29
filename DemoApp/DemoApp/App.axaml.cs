@@ -15,7 +15,8 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
 
         // Register pages
-        Navigation.UIPlatform.RegisterPage<Page1, Page2>();
+        Navigation.UIPlatform.RegisterPage<PageMain, Page1, Page2>();
+        Navigation.UIPlatform.RegisterPage<Page3>();
 
         /* Main stack */
         var mainStack = new NavigationPageStack(Navigation.MainStackName);

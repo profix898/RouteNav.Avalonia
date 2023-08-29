@@ -46,6 +46,13 @@ public class MessageDialog : Dialog
 
     public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
 
+    public static readonly StyledProperty<MessageDialogResult> DefaultResultProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogResult>(nameof(DefaultResult));
+
+    public MessageDialog()
+    {
+        DefaultResult = MessageDialogResult.None;
+    }
+
     public MessageDialogButtons Buttons
     {
         get { return GetValue(ButtonsProperty); }
@@ -56,6 +63,12 @@ public class MessageDialog : Dialog
     {
         get { return GetValue(ButtonsTemplateProperty); }
         set { SetValue(ButtonsTemplateProperty, value); }
+    }
+
+    public MessageDialogResult DefaultResult
+    {
+        get { return GetValue(DefaultResultProperty); }
+        set { SetValue(DefaultResultProperty, value); }
     }
 
     protected override Type StyleKeyOverride => typeof(MessageDialog);
@@ -102,7 +115,7 @@ public class MessageDialog : Dialog
         var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
         var dialogTask = messageDialog.ShowDialog(parentWindow);
 
-        return (MessageDialogResult) (await dialogTask ?? throw new InvalidOperationException($"{nameof(MessageDialog)} did not return a valid result."));
+        return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
     }
 
     #region Error
