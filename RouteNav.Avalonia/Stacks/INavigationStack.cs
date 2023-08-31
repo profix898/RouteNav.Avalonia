@@ -1,8 +1,9 @@
 ﻿using System;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
-using RouteNav.Avalonia.StackControls;
+using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
@@ -17,6 +18,8 @@ public enum NavigationTarget
 public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNavigation
 {
     string Name { get; }
+
+    string Title { get; }
 
     Uri BaseUri { get; }
 

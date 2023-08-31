@@ -1,10 +1,12 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:avalonia="clr-namespace:RouteNav.Avalonia">
+
+    <Thickness x:Key="PagePadding">8,5</Thickness>
   
     <ControlTheme x:Key="{x:Type avalonia:Page}" TargetType="avalonia:Page">
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Background" Value="{DynamicResource PageBackground}" />
+        <Setter Property="Padding" Value="{StaticResource PagePadding}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter x:Name="PART_ContentPresenter"

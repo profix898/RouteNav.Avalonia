@@ -1,44 +1,44 @@
 ﻿using System;
 using RouteNav.Avalonia.Routing;
 
-namespace RouteNav.Avalonia.Stacks.TODO.Flyout;
+namespace RouteNav.Avalonia.Stacks;
 
-public sealed class FlyoutMenuItem
+public sealed class SidebarMenuItem
 {
-    public FlyoutMenuItem()
+    public SidebarMenuItem()
     {
         RouteUri = null!;
         Text = null!;
     }
 
-    public FlyoutMenuItem(Uri routeUri, string text)
+    public SidebarMenuItem(Uri routeUri, string text)
     {
         RouteUri = routeUri;
         Text = text;
     }
 
-    public FlyoutMenuItem(Uri routeUri, string text, Type pageType)
+    public SidebarMenuItem(Uri routeUri, string text, Type pageType)
     {
         RouteUri = routeUri;
         Text = text;
         PageType = pageType;
     }
 
-    public FlyoutMenuItem(Uri routeUri, string text, Func<Page> pageFactory)
+    public SidebarMenuItem(Uri routeUri, string text, Func<Uri, Page> pageFactory)
     {
         RouteUri = routeUri;
         Text = text;
         PageFactory = pageFactory;
     }
 
-    public FlyoutMenuItem(string routePath, string text)
+    public SidebarMenuItem(string routePath, string text)
     {
         RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
         RoutePath = routePath;
         Text = text;
     }
 
-    public FlyoutMenuItem(string routePath, string text, Type pageType)
+    public SidebarMenuItem(string routePath, string text, Type pageType)
     {
         RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
         RoutePath = routePath;
@@ -46,7 +46,7 @@ public sealed class FlyoutMenuItem
         PageType = pageType;
     }
 
-    public FlyoutMenuItem(string routePath, string text, Func<Page> pageFactory)
+    public SidebarMenuItem(string routePath, string text, Func<Uri, Page> pageFactory)
     {
         RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
         RoutePath = routePath;
@@ -60,7 +60,7 @@ public sealed class FlyoutMenuItem
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
-        set { RouteUri = value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative); }
+        set { RouteUri = value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value + "/") : new Uri(value, UriKind.Relative); }
     }
 
     public NavigationTarget Target { get; set; } = NavigationTarget.Self;
@@ -71,7 +71,7 @@ public sealed class FlyoutMenuItem
 
     public Type? PageType { get; set; }
 
-    public Func<Page?>? PageFactory { get; set; }
+    public Func<Uri, Page>? PageFactory { get; set; }
 
     public RouteMenuItem ToMenuItem()
     {

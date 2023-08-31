@@ -19,7 +19,7 @@ public class App : Application
         Navigation.UIPlatform.RegisterPage<Page3>();
 
         /* Main stack */
-        var mainStack = new NavigationPageStack(Navigation.MainStackName);
+        var mainStack = new NavigationPageStack(Navigation.MainStackName, "Demo App");
         Navigation.UIPlatform.AddStack(mainStack);
 
         mainStack.AddPage<PageMain>(String.Empty); // MainPage (initial page)
@@ -32,7 +32,7 @@ public class App : Application
         mainStack.AddPage<InternalErrorPage>("error500");
 
         /* Second stack */
-        var secondStack = new NavigationPageStack("second");
+        var secondStack = new NavigationPageStack("second", "Secondary");
         Navigation.UIPlatform.AddStack(secondStack);
 
         secondStack.AddPage<Page3>(String.Empty);

@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 
-namespace RouteNav.Avalonia;
+namespace RouteNav.Avalonia.Platform;
 
 public interface ISafeAreaAware
 {

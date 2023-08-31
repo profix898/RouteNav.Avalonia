@@ -2,7 +2,8 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>false</ImplicitUsings>
-    <AvaloniaVersion>11.0.3</AvaloniaVersion>
+    <AvaloniaVersion>11.0.4</AvaloniaVersion>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup>
     <Product>RouteNav.Avalonia</Product>
@@ -11,11 +12,12 @@
     <Copyright>Copyright (c) Thilo Viereck 2022-2023</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
     <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2023/01/01"))).TotalDays.ToString("0"))</BuildNumber>
-    <Version>1.0.$(BuildNumber)</Version>
+    <Version>0.8.$(BuildNumber)</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/profix898/RouteNav.Avalonia</PackageProjectUrl>
   </PropertyGroup>
   <PropertyGroup>

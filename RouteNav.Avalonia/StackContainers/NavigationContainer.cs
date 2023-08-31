@@ -9,9 +9,10 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Stacks;
 
-namespace RouteNav.Avalonia.StackControls;
+namespace RouteNav.Avalonia.StackContainers;
 
 public class NavigationContainer : ContentControl, ISafeAreaAware
 {
@@ -49,8 +50,6 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             return dialogOverlayHost;
         }
     }
-
-    protected override Type StyleKeyOverride => typeof(ContentControl);
 
     public virtual void UpdatePage(Page? page)
     {
@@ -128,6 +127,8 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     }
 
     #endregion
+
+    protected override Type StyleKeyOverride => typeof(ContentControl);
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {

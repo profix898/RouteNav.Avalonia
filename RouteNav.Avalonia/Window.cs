@@ -116,4 +116,37 @@ public class Window : ContentControl
     }
 
     #endregion
+
+    #region Factory
+
+    internal static Window Create(object content, string? title = null, WindowIcon? icon = null, Window? templateWindow = null)
+    {
+        templateWindow ??= Application.Current!.GetMainWindow();
+
+        return new Window
+        {
+            Title = title ?? templateWindow.Title,
+            Icon = icon ?? templateWindow.Icon,
+
+            // ContentControl
+            Content = content,
+            HorizontalContentAlignment = templateWindow.HorizontalContentAlignment,
+            VerticalContentAlignment = templateWindow.VerticalContentAlignment,
+
+            // TemplatedControl
+            Background = templateWindow.Background,
+            BorderBrush = templateWindow.BorderBrush,
+            BorderThickness = templateWindow.BorderThickness,
+            CornerRadius = templateWindow.CornerRadius,
+            FontFamily = templateWindow.FontFamily,
+            FontSize = templateWindow.FontSize,
+            FontStyle = templateWindow.FontStyle,
+            FontWeight = templateWindow.FontWeight,
+            FontStretch = templateWindow.FontStretch,
+            Foreground = templateWindow.Foreground,
+            Padding = templateWindow.Padding
+        };
+    }
+
+    #endregion
 }

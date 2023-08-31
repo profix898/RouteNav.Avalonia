@@ -8,8 +8,8 @@
         </Border>
     </Design.PreviewWith>
   
-    <StaticResource x:Key="DialogTitleBarBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-    <StaticResource x:Key="DialogTitleBarTextColor" ResourceKey="SystemControlForegroundBaseHighBrush" />
+    <x:Double x:Key="DialogTitleBarHeight">35</x:Double>
+    <x:Double x:Key="DialogTitleBarFontSize">20</x:Double>
     <x:Double x:Key="DialogMinWidth">350</x:Double>
     <x:Double x:Key="DialogMinHeight">200</x:Double>
   
@@ -36,9 +36,10 @@
                                 BoxShadow="0 8 32 0 #66000000">
                             <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
                                 <DockPanel x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar" Height="35">
+                                    <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar" Height="{StaticResource DialogTitleBarHeight}">
                                         <Border Background="{TemplateBinding TitleBarBackground}" />
-                                        <TextBlock Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}" FontSize="20" VerticalAlignment="Center" />
+                                        <TextBlock Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}"
+                                                   FontSize="{StaticResource DialogTitleBarFontSize}" VerticalAlignment="Center" />
                                         <Button x:Name="PART_DialogCloseButton" Margin="0,0,5,0" Background="Transparent" HorizontalAlignment="Right">X</Button>
                                     </Panel>
                                     <ContentPresenter DockPanel.Dock="Top" x:Name="PART_DialogContent" Padding="15,10,15,10"
@@ -63,7 +64,7 @@
         <!-- Dialog window -->
         <Styles>
             <Style Selector="dialogs|Dialog:dialog-window Panel#LayoutRoot">
-                <Setter Property="Background" Value="" />
+                <Setter Property="Background" Value="{x:Null}" />
             </Style>
             <Style Selector="dialogs|Dialog:dialog-window Border#BackgroundElement">
                 <Setter Property="BorderThickness" Value="0" />

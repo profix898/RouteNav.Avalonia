@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
-using RouteNav.Avalonia.StackControls;
+using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
@@ -15,12 +16,15 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     protected readonly List<Page> pageStack = new List<Page>();
     protected readonly List<Dialog> dialogStack = new List<Dialog>();
     
-    protected NavigationStackBase(string name)
+    protected NavigationStackBase(string name, string title)
     {
         if (String.IsNullOrEmpty(name))
             throw new ArgumentNullException(nameof(name));
+        if (String.IsNullOrEmpty(title))
+            throw new ArgumentNullException(nameof(title));
 
         Name = name;
+        Title = title;
         BaseUri = new Uri(Navigation.BaseRouteUri, name);
         Container = new LazyValue<TC>(() =>
         {
@@ -44,6 +48,8 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     #region Implementation of INavigationStack
 
     public virtual string Name { get; }
+
+    public virtual string Title { get; }
 
     public virtual Uri BaseUri { get; }
 

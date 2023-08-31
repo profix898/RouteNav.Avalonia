@@ -1,0 +1,20 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:ClassModifier="internal">
+  
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <MergeResourceInclude Source="/Themes/Controls/Dialog.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/MessageDialog.xaml" />
+
+                <MergeResourceInclude Source="/Themes/Controls/Page.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/InternalErrorPage.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/NotFoundPage.xaml" />
+
+                <MergeResourceInclude Source="/Themes/Controls/NavigationControl.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenu.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+</Styles>

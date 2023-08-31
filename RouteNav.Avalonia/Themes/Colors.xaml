@@ -1,0 +1,55 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <!-- Default / Light -->
+        <ResourceDictionary x:Key="Default">
+            <!-- Dialog -->
+            <SolidColorBrush x:Key="DialogTitleBarBackground" Color="#FFF2F2F2" />
+            <SolidColorBrush x:Key="DialogTitleBarTextColor" Color="#99000000" />
+            <!-- MessageDialog -->
+            <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#FFF2F2F2" />
+            <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#99000000" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
+            <!-- Page -->
+            <SolidColorBrush x:Key="PageBackground" Color="White" />
+            <!-- InternalErrorPage -->
+            <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
+            <!-- NotFoundErrorPage -->
+            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
+            <!-- NavigationControl -->
+            <SolidColorBrush x:Key="NavigationControlNavigationBarBackground" Color="#FFF2F2F2" />
+            <SolidColorBrush x:Key="NavigationControlNavigationBarTextColor" Color="#99000000" />
+            <!-- SidebarMenu -->
+            <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#FFE6E6E6" />
+            <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="SidebarMenuHamburgerTextColor" Color="#99000000" />
+            <SolidColorBrush x:Key="SidebarMenuHamburgerBackground" Color="#FFF2F2F2" />
+        </ResourceDictionary>
+
+        <!-- Dark -->
+        <ResourceDictionary x:Key="Dark">
+            <!-- Dialog -->
+            <SolidColorBrush x:Key="DialogTitleBarBackground" Color="#FF171717" />
+            <SolidColorBrush x:Key="DialogTitleBarTextColor" Color="#99FFFFFF" />
+            <!-- MessageDialog -->
+            <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#FF171717" />
+            <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#99FFFFFF" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
+            <!-- Page -->
+            <SolidColorBrush x:Key="PageBackground" Color="#454545" />
+            <!-- InternalErrorPage -->
+            <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
+            <!-- NotFoundErrorPage -->
+            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
+            <!-- NavigationControl -->
+            <SolidColorBrush x:Key="NavigationControlNavigationBarBackground" Color="#FF171717" />
+            <SolidColorBrush x:Key="NavigationControlNavigationBarTextColor" Color="#99FFFFFF" />
+            <!-- SidebarMenu -->
+            <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#FF1F1F1F" />
+            <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FF000000" />
+            <SolidColorBrush x:Key="SidebarMenuHamburgerTextColor" Color="#99FFFFFF" />
+            <SolidColorBrush x:Key="SidebarMenuHamburgerBackground" Color="#FF171717" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

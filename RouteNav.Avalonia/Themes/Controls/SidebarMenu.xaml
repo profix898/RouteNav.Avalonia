@@ -1,0 +1,231 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:RouteNav.Avalonia.Controls">
+    <Design.PreviewWith>
+        <Border Width="400" Height="150">
+            <controls:SidebarMenu>
+                <TabItem Header="Item1" IsSelected="True">
+                    <UserControl>
+                        <Border Height="400" Background="Purple" />
+                    </UserControl>
+                </TabItem>
+                <TabItem Header="Item2" />
+            </controls:SidebarMenu>
+        </Border>
+    </Design.PreviewWith>
+
+    <x:Double x:Key="SidebarMenuCompactWidth">40</x:Double>
+    <x:Double x:Key="SidebarMenuExpandWidth">220</x:Double>
+    <x:Double x:Key="SidebarMenuHeaderPaddingHeight">36</x:Double>
+    <x:Double x:Key="SidebarMenuHamburgerButtonHeight">32</x:Double>
+    <StreamGeometry x:Key="SidebarMenuHamburgerIcon">M3 17h18a1 1 0 0 1 .117 1.993L21 19H3a1 1 0 0 1-.117-1.993L3 17h18H3Zm0-6 18-.002a1 1 0 0 1 .117 1.993l-.117.007L3 13a1 1 0 0 1-.117-1.993L3 11l18-.002L3 11Zm0-6h18a1 1 0 0 1 .117 1.993L21 7H3a1 1 0 0 1-.117-1.993L3 5h18H3Z</StreamGeometry>
+    <x:Double x:Key="SidebarMenuItemHeight">36</x:Double>
+    <BoxShadows x:Key="SidebarMenuItemShadow">1 1 1 1 #2000, 0 0 1 1 #2fff</BoxShadows>
+    <BoxShadows x:Key="SidebarMenuContentShadow">0 0 1 1 #2000</BoxShadows>
+    <Thickness x:Key="SidebarMenuHeaderMarginCollapsedPane">12,0,0,0</Thickness>
+    <Thickness x:Key="SidebarMenuHeaderMarginExpandedPane">52,0,0,0</Thickness>
+    <Thickness x:Key="SidebarMenuHeaderMarginExpandedOverlayPane">212,0,0,0</Thickness>
+
+    <!-- Hamburger Button -->
+    <ControlTheme x:Key="SidebarMenuHamburgerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Height" Value="{StaticResource SidebarMenuHamburgerButtonHeight}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="12,0,4,0" />
+        <Setter Property="Margin" Value="4,0,8,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter x:Name="PART_ContentPresenter"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                  TextElement.FontSize="{TemplateBinding FontSize}"
+                                  TextElement.FontWeight="{TemplateBinding FontWeight}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Border.Background" Value="{DynamicResource SidebarMenuHamburgerBackground}" />
+            <Setter Property="Border.BoxShadow" Value="{StaticResource SidebarMenuItemShadow}" />
+            <Setter Property="TextElement.Foreground"
+                    Value="{DynamicResource TabItemHeaderForegroundUnselectedPointerOver}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Sidebar MenuItem -->
+    <ControlTheme x:Key="SidebarMenuItem" TargetType="TabItem">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Height" Value="{StaticResource SidebarMenuItemHeight}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="12,0,4,0" />
+        <Setter Property="Margin" Value="4,0,8,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="PART_LayoutRoot"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel>
+                        <Border x:Name="PART_SelectedPipe"
+                                Width="{DynamicResource TabItemPipeThickness}"
+                                Height="{DynamicResource TabItemVerticalPipeHeight}"
+                                Margin="6,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource TabItemHeaderSelectedPipeFill}"
+                                IsVisible="False"
+                                CornerRadius="4" />
+                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                          Padding="{TemplateBinding Padding}"
+                                          Margin="0"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                          TextElement.FontSize="{TemplateBinding FontSize}"
+                                          TextElement.FontWeight="{TemplateBinding FontWeight}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeControlHighlightMidBrush}" />
+            <Style Selector="^ /template/ Border#PART_LayoutRoot">
+                <Setter Property="Background" Value="{DynamicResource SidebarMenuHamburgerBackground}" />
+                <Setter Property="BoxShadow" Value="{StaticResource SidebarMenuItemShadow}" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource SidebarMenuHamburgerTextColor}" />
+            </Style>
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush4}" />
+
+            <Style Selector="^ /template/ Border#PART_SelectedPipe">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{DynamicResource SidebarMenuHamburgerBackground}" />
+            <Setter Property="BoxShadow" Value="{StaticResource SidebarMenuItemShadow}" />
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource SidebarMenuHamburgerTextColor}" />
+        </Style>
+    </ControlTheme>
+
+    <!--  SidebarMenu  -->
+    <ControlTheme x:Key="{x:Type controls:SidebarMenu}" TargetType="controls:SidebarMenu">
+        <Setter Property="Padding" Value="12 8 4 0" />
+        <Setter Property="SidebarBackground" Value="{DynamicResource SidebarMenuSidebarBackground}" />
+        <Setter Property="Background" Value="{DynamicResource SidebarMenuSidebarBackground}" />
+        <Setter Property="ContentBackground" Value="{DynamicResource SidebarMenuContentBackground}" />
+        <Setter Property="ItemContainerTheme" Value="{StaticResource SidebarMenuItem}" />
+        <Setter Property="TabStripPlacement" Value="Left" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding SidebarBackground}">
+                    <ToggleButton x:Name="SidebarMenuButton"
+                                  Width="{StaticResource SidebarMenuCompactWidth}"
+                                  Height="{StaticResource SidebarMenuHamburgerButtonHeight}"
+                                  Margin="4,2,0,0" Padding="0" CornerRadius="4" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"
+                                  Theme="{StaticResource SidebarMenuHamburgerButton}"
+                                  IsChecked="{Binding #PART_NavigationPane.IsPaneOpen, Mode=TwoWay}">
+                        <PathIcon Data="{StaticResource SidebarMenuHamburgerIcon}" Foreground="{TemplateBinding Foreground}" />
+                    </ToggleButton>
+                    <SplitView x:Name="PART_NavigationPane"
+                               CompactPaneLength="{StaticResource SidebarMenuCompactWidth}"
+                               DisplayMode="Inline"
+                               IsPaneOpen="True" OpenPaneLength="{StaticResource SidebarMenuExpandWidth}" PaneBackground="Transparent">
+                        <SplitView.Pane>
+                            <Grid Margin="0,0,1,5" RowDefinitions="Auto,Auto,*,Auto">
+                                <Panel Grid.Row="0" Height="{StaticResource SidebarMenuHeaderPaddingHeight}" />
+                                <ContentControl Grid.Row="1" Content="{TemplateBinding SidebarHeader}" IsVisible="{TemplateBinding SidebarHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <ScrollViewer x:Name="PART_ScrollViewer" Grid.Row="2" HorizontalAlignment="Stretch"
+                                              HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                              VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                                    <ItemsPresenter x:Name="PART_ItemsPresenter" HorizontalAlignment="Stretch">
+                                        <ItemsPresenter.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel x:Name="HamburgerItemsPanel" Margin="0,2" Orientation="Vertical" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsPresenter.ItemsPanel>
+                                    </ItemsPresenter>
+                                </ScrollViewer>
+                                <ContentControl Grid.Row="3" Content="{TemplateBinding SidebarFooter}" IsVisible="{TemplateBinding SidebarFooter, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </Grid>
+                        </SplitView.Pane>
+                        <SplitView.Content>
+                            <DockPanel>
+                                <Border Height="{StaticResource SidebarMenuHeaderPaddingHeight}" DockPanel.Dock="Top">
+                                    <TextBlock x:Name="HeaderHolder" VerticalAlignment="Center" Classes="h1" Margin="{StaticResource SidebarMenuHeaderMarginExpandedPane}"
+                                               Text="{Binding $parent[TabControl].SelectedItem.(TabItem.Header), FallbackValue=''}">
+                                        <TextBlock.Transitions>
+                                            <Transitions>
+                                                <ThicknessTransition Easing="{StaticResource SplitViewPaneAnimationEasing}" Property="Margin" Duration="{StaticResource SplitViewPaneAnimationCloseDuration}" />
+                                            </Transitions>
+                                        </TextBlock.Transitions>
+                                    </TextBlock>
+                                </Border>
+                                <Border x:Name="BackgroundBorder">
+                                    <Border.Transitions>
+                                        <Transitions>
+                                            <CornerRadiusTransition Property="CornerRadius" Duration="{StaticResource SplitViewPaneAnimationCloseDuration}" />
+                                        </Transitions>
+                                    </Border.Transitions>
+                                    <ScrollViewer x:Name="HamburgerContentScroller"
+                                                  HorizontalScrollBarVisibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedItem.(ScrollViewer.HorizontalScrollBarVisibility)}"
+                                                  VerticalScrollBarVisibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedItem.(ScrollViewer.VerticalScrollBarVisibility)}">
+                                        <ContentPresenter x:Name="PART_SelectedContentHost" Background="Transparent" Padding="{TemplateBinding Padding}"
+                                                          Content="{TemplateBinding SelectedContent}" ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                                    </ScrollViewer>
+                                </Border>
+                            </DockPanel>
+                        </SplitView.Content>
+                    </SplitView>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ SplitView[IsPaneOpen=True] TextBlock#HeaderHolder">
+            <Setter Property="Margin" Value="{StaticResource SidebarMenuHeaderMarginCollapsedPane}" />
+        </Style>
+        <Style Selector="^ /template/ SplitView[DisplayMode=Overlay][IsPaneOpen=True] TextBlock#HeaderHolder">
+            <Setter Property="Margin" Value="{StaticResource SidebarMenuHeaderMarginExpandedOverlayPane}" />
+        </Style>
+        <Style Selector="^ /template/ SplitView[DisplayMode=Overlay]">
+            <Setter Property="PaneBackground" Value="{Binding $parent[controls:SidebarMenu].SidebarBackground}" />
+        </Style>
+        <Style Selector="^ /template/ SplitView[DisplayMode=Overlay]">
+            <Setter Property="Background" Value="{Binding $parent[controls:SidebarMenu].ContentBackground}" />
+        </Style>
+        <Style Selector="^ /template/ SplitView[DisplayMode=Inline] Border#BackgroundBorder">
+            <Setter Property="Background" Value="{Binding $parent[controls:SidebarMenu].ContentBackground}" />
+            <Setter Property="BoxShadow" Value="{StaticResource SidebarMenuContentShadow}" />
+        </Style>
+        <Style Selector="^ /template/ SplitView[DisplayMode=Inline][IsPaneOpen=True] Border#BackgroundBorder">
+            <Setter Property="CornerRadius" Value="8 0 0 0" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

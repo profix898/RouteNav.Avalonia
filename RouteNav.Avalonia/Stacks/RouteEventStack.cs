@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
-using RouteNav.Avalonia.StackControls;
+using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
@@ -17,6 +18,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
             throw new ArgumentNullException(nameof(name));
 
         Name = name;
+        Title = "EventStack";
         BaseUri = new Uri(Navigation.BaseRouteUri, name);
 
         if (eventHandler != null)
@@ -28,6 +30,8 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     #region Implementation of INavigationStack
 
     public string Name { get; }
+
+    public string Title { get; }
 
     public Uri BaseUri { get; }
 

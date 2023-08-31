@@ -182,7 +182,7 @@ public class AvaloniaUIPlatform : IUIPlatform
             var window = GetActiveWindowFromStack(stack);
             if (window == null)
             {
-                window = new Window(stack.ContainerPage.Value);
+                window = Window.Create(stack.ContainerPage.Value, stack.Title);
                 window.Closed += (_, _) =>
                 {
                     activeStacks.Remove(window);

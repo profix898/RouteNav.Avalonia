@@ -6,7 +6,7 @@
 
     <Application.Styles>
         <FluentTheme />
-        <routeNav:ControlThemes />
+        <routeNav:RouteNavStyles />
     </Application.Styles>
   
 </Application>

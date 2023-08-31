@@ -4,9 +4,9 @@ using Avalonia.Styling;
 
 namespace RouteNav.Avalonia.Themes
 {
-    public class ControlThemes : Styles
+    public class RouteNavStyles : Styles
     {
-        public ControlThemes(IServiceProvider? sp = null)
+        public RouteNavStyles(IServiceProvider? sp = null)
         {
             AvaloniaXamlLoader.Load(sp, this);
         }

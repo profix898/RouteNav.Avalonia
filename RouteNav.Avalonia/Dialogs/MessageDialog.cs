@@ -46,6 +46,8 @@ public class MessageDialog : Dialog
 
     public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
 
+    public static readonly StyledProperty<Brush> ButtonsBarBackgroundProperty = AvaloniaProperty.Register<MessageDialog, Brush>(nameof(ButtonsBarBackground));
+
     public static readonly StyledProperty<MessageDialogResult> DefaultResultProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogResult>(nameof(DefaultResult));
 
     public MessageDialog()
@@ -63,6 +65,12 @@ public class MessageDialog : Dialog
     {
         get { return GetValue(ButtonsTemplateProperty); }
         set { SetValue(ButtonsTemplateProperty, value); }
+    }
+
+    public Brush ButtonsBarBackground
+    {
+        get { return GetValue(ButtonsBarBackgroundProperty); }
+        set { SetValue(ButtonsBarBackgroundProperty, value); }
     }
 
     public MessageDialogResult DefaultResult
