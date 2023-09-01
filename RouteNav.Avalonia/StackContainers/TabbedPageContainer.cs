@@ -71,7 +71,7 @@ public class TabbedPageContainer : NavigationContainer
 
     #region Private
 
-    private static Page? FindPage(TabItem tabItem)
+    internal static Page? FindPage(TabItem tabItem)
     {
         if (tabItem.Content is Page tabPage)
             return tabPage;
@@ -79,7 +79,7 @@ public class TabbedPageContainer : NavigationContainer
         return null;
     }
 
-    private static TabItem? FindTabItem(TabControl tabControl, Page page)
+    internal static TabItem? FindTabItem(TabControl tabControl, Page page)
     {
         foreach (var item in tabControl.Items)
         {

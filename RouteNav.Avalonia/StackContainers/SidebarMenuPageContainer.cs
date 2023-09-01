@@ -26,7 +26,7 @@ public class SidebarMenuPageContainer : NavigationContainer
 
     public override void UpdatePage(Page page)
     {
-        if (SidebarMenu != null)
+        if (SidebarMenu != null && NavigationStack != null)
             SidebarMenu.Page = page;
     }
 
@@ -37,6 +37,7 @@ public class SidebarMenuPageContainer : NavigationContainer
         if (SidebarMenu != null)
             SidebarMenu.SelectedMenuItemChanged -= SidebarMenu_OnSelectedMenuItemChanged;
         SidebarMenu = this.GetControl<SidebarMenu>(SidebarMenuName);
+        SidebarMenu.NavigationStack = NavigationStack;
         if (SidebarMenu != null)
             SidebarMenu.SelectedMenuItemChanged += SidebarMenu_OnSelectedMenuItemChanged;
         
@@ -52,6 +53,7 @@ public class SidebarMenuPageContainer : NavigationContainer
             if (SidebarMenu != null)
                 SidebarMenu.SelectedMenuItemChanged -= SidebarMenu_OnSelectedMenuItemChanged;
             SidebarMenu = this.GetControl<SidebarMenu>(SidebarMenuName);
+            SidebarMenu.NavigationStack = NavigationStack;
             if (SidebarMenu != null)
                 SidebarMenu.SelectedMenuItemChanged += SidebarMenu_OnSelectedMenuItemChanged;
 
@@ -65,13 +67,7 @@ public class SidebarMenuPageContainer : NavigationContainer
             return;
 
         if (SidebarMenu.SelectedMenuItem != null)
-        {
-            var routeUri = SidebarMenu.SelectedMenuItem.RouteUri;
-            if (!routeUri.IsAbsoluteUri)
-                    routeUri = NavigationStack.BuildRoute(routeUri);
-
-            Navigation.PushAsync(routeUri, SidebarMenu.SelectedMenuItem.Target);
-        }
+            Navigation.PushAsync(NavigationStack.BuildRoute(SidebarMenu.SelectedMenuItem.RouteUri), SidebarMenu.SelectedMenuItem.Target);
     }
 
     protected override void UpdateContentSafeAreaPadding()

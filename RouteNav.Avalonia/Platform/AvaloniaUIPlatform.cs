@@ -62,6 +62,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
         // Supply page with query parameters (if available)
         page.PageQuery = uri.ParseQueryString();
+        page.PageQuery.Add("routeUri", uri.ToString());
 
         return page;
     }

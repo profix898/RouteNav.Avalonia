@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Platform;
+using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Controls;
 
@@ -158,6 +159,8 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         set { SetValue(PageProperty, value); }
     }
 
+    public INavigationStack? NavigationStack { get; internal set; }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -169,8 +172,8 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         listBox = e.NameScope.Find<ListBox>("PART_MenuItemList");
         if (listBox != null)
         {
-            listBox.SelectionMode = SelectionMode.AlwaysSelected;
-            listBox.SelectedIndex = 0;
+            listBox.SelectionMode = NavigationStack != null ? SelectionMode.AlwaysSelected : SelectionMode.Single;
+            listBox.SelectedIndex = 0; // Initial selection
             listBox.SelectionChanged += ListBox_OnSelectionChanged;
         }
 
@@ -189,7 +192,23 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         else if ((change.Property == DisplayModeProperty || change.Property == InlineThresholdWidthProperty) && splitView != null)
             EnsureSplitViewDisplayMode(Bounds);
         else if (change.Property == PageProperty && contentPresenter != null)
+        {
             contentPresenter.Content = Page;
+
+            // Validate (and potentially fix) listbox selection
+            if (Page != null && NavigationStack != null && listBox != null)
+            {
+                if (Page.PageQuery.TryGetValue("routeUri", out var routeUriString))
+                {
+                    var routeUri = new Uri(routeUriString);
+                    var idx = MenuItems.FindIndex(item => NavigationStack.EqualsRoutePath(NavigationStack.BuildRoute(item.RouteUri), routeUri));
+                    if (listBox.SelectedIndex != idx)
+                        listBox.SelectedIndex = idx;
+                }
+                else
+                    listBox.SelectedIndex = -1;
+            }
+        }
         else if (change.Property == SafeAreaPaddingProperty || change.Property == PaddingProperty)
             UpdateContentSafeAreaPadding();
     }

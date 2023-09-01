@@ -58,20 +58,21 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             if (tabbedPageContainer.TabControl == null)
                 throw new InvalidOperationException($"No {nameof(TabControl)} found in NavigationContainer.");
 
+            var items = new List<TabItem>();
             foreach (var pageKvp in Pages)
             {
                 var page = pageKvp.Value(this.BuildRoute(pageKvp.Key));
                 var tabItem = new TabItem { Header = page.Title, Content = page };
-                tabbedPageContainer.TabControl.Items.Add(tabItem);
+                items.Add(tabItem);
 
                 if (pageKvp.Key == String.Empty) // Initial page
-                {
                     rootPage = page;
-                    tabbedPageContainer.TabControl.SelectedItem = tabItem;
-                }
             }
             rootPage ??= tabbedPageContainer.TabControl.SelectedItem as Page ?? new NotFoundPage();
             RootPage = new LazyValue<Page>(() => rootPage);
+
+            tabbedPageContainer.TabControl.ItemsSource = items;
+            tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, rootPage);
         };
 
         return tabbedPageContainer;
