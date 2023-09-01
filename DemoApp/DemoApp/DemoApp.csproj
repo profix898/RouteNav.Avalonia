@@ -25,8 +25,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Pages\Page3.axaml.cs">
-      <DependentUpon>Page3.axaml</DependentUpon>
+    <Compile Update="Pages\Main\MainPage1.axaml.cs">
+      <DependentUpon>MainPage1.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Main\MainPage2.axaml.cs">
+      <DependentUpon>MainPage2.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Main\MainPage3.axaml.cs">
+      <DependentUpon>MainPage3.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Main\MainRootPage.axaml.cs">
+      <DependentUpon>MainRootPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\SidebarMenu\SidebarMenuRootPage.axaml.cs">
+      <DependentUpon>SidebarMenuRootPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\SidebarMenu\SidebarMenuPage1.axaml.cs">
+      <DependentUpon>SidebarMenuPage1.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Tabbed\TabbedPage1.axaml.cs">
+      <DependentUpon>TabbedPage1.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Tabbed\TabbedRootPage.axaml.cs">
+      <DependentUpon>TabbedRootPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

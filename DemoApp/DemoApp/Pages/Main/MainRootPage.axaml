@@ -1,0 +1,31 @@
+<routeNav:Page xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
+               xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+               Title="Root Page"
+               x:Class="DemoApp.Pages.Main.MainRootPage">
+    <StackPanel>
+        <TextBlock Margin="0,0,0,10" FontWeight="Bold">Welcome on the Main stack!</TextBlock>
+        <routing:RouteButton RoutePath="/main/page1">To Page1</routing:RouteButton>
+        <routing:RouteButton RoutePath="/main/page2">To Page2</routing:RouteButton>
+        <routing:RouteButton RoutePath="/main/page3">To Page3</routing:RouteButton>
+
+        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+            <StackPanel>
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">SidebarMenu stack</TextBlock>
+                <routing:RouteButton RoutePath="/sidebar/" Target="Window">To Sidebar Root</routing:RouteButton>
+                <routing:RouteButton RoutePath="/sidebar/page1" Target="Window">To Sidebar Page1</routing:RouteButton>
+            </StackPanel>
+        </Border>
+        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+            <StackPanel>
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Tabbed stack</TextBlock>
+                <routing:RouteButton RoutePath="/tabbed/" Target="Window">To Tabbed Root</routing:RouteButton>
+                <routing:RouteButton RoutePath="/tabbed/page1" Target="Window">To Tabbed Page1</routing:RouteButton>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</routeNav:Page>

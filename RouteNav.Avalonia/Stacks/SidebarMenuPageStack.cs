@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using RouteNav.Avalonia.Controls;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.StackContainers;
 using static RouteNav.Avalonia.Controls.SidebarMenu;
 
 namespace RouteNav.Avalonia.Stacks;
 
-public class SidebarMenuStack : SidebarMenuStack<SidebarMenuContainer>
+public class SidebarMenuPageStack : SidebarMenuPageStack<SidebarMenuPageContainer>
 {
-    public SidebarMenuStack(string name, string title)
+    public SidebarMenuPageStack(string name, string title)
         : base(name, title)
     {
         if (string.IsNullOrEmpty(name))
@@ -19,12 +20,12 @@ public class SidebarMenuStack : SidebarMenuStack<SidebarMenuContainer>
     }
 }
 
-public class SidebarMenuStack<TC> : NavigationStackBase<TC>, INavigationStack
-    where TC : SidebarMenuContainer, new()
+public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStack, ISidebarMenuPageStack
+    where TC : SidebarMenuPageContainer, new()
 {
     private readonly List<SidebarMenuItem> menuItems = new List<SidebarMenuItem>();
 
-    public SidebarMenuStack(string name, string title)
+    public SidebarMenuPageStack(string name, string title)
         : base(name, title)
     {
         if (string.IsNullOrEmpty(name))
@@ -54,15 +55,15 @@ public class SidebarMenuStack<TC> : NavigationStackBase<TC>, INavigationStack
         if (!routeUri.IsAbsoluteUri)
             routeUri = this.BuildRoute(routeUri);
 
-        var flyoutPageItem = menuItems.FirstOrDefault(item => this.GetRoutePath(routeUri).Equals(this.GetRoutePath(item.RouteUri)));
+        var menuItem = menuItems.FirstOrDefault(item => this.EqualsRoutePath(routeUri, item.RouteUri));
 
         // Try page factory first ...
-        if (flyoutPageItem?.PageFactory != null)
-            return flyoutPageItem.PageFactory(routeUri);
+        if (menuItem?.PageFactory != null)
+            return menuItem.PageFactory(routeUri);
 
         // ... or create instance of page type
-        if (flyoutPageItem?.PageType != null)
-            return Navigation.UIPlatform.GetPage(flyoutPageItem.PageType, routeUri);
+        if (menuItem?.PageType != null)
+            return Navigation.UIPlatform.GetPage(menuItem.PageType, routeUri);
 
         return null;
     }
@@ -70,11 +71,15 @@ public class SidebarMenuStack<TC> : NavigationStackBase<TC>, INavigationStack
     protected override TC InitContainer()
     {
         var sidebarMenuContainer = new TC { NavigationStack = this };
-        if (sidebarMenuContainer.SidebarMenu == null)
-            throw new InvalidOperationException($"No {nameof(SidebarMenu)} found in NavigationContainer.");
+        sidebarMenuContainer.HostControlAttached += () =>
+        {
+            if (sidebarMenuContainer.SidebarMenu == null)
+                throw new InvalidOperationException($"No {nameof(SidebarMenu)} found in NavigationContainer.");
 
-        sidebarMenuContainer.SidebarMenu.DisplayMode = DisplayMode;
-        sidebarMenuContainer.SidebarMenu.ItemsSource = MenuItems;
+            sidebarMenuContainer.SidebarMenu.DisplayMode = DisplayMode;
+            sidebarMenuContainer.SidebarMenu.MenuItemsSource = menuItems;
+        };
+        RootPage = new LazyValue<Page>(() => new Page());
 
         return sidebarMenuContainer;
     }
@@ -89,7 +94,7 @@ public class SidebarMenuStack<TC> : NavigationStackBase<TC>, INavigationStack
 
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        throw new NotSupportedException($"Use .{nameof(AddMenuItem)}() for {nameof(SidebarMenuStack<TC>)} instead.");
+        throw new NotSupportedException($"Use .{nameof(AddMenuItem)}() for {nameof(SidebarMenuPageStack)} instead.");
     }
 
     #endregion

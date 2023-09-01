@@ -25,6 +25,13 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
 
     #region NavigationContainer
 
+    public event Action? HostControlAttached;
+
+    protected void OnHostControlAttached()
+    {
+        HostControlAttached?.Invoke();
+    }
+
     public INavigationStack? NavigationStack
     {
         get { return navigationStack; }
@@ -191,6 +198,17 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     private void SafeAreaChanged(object? sender, SafeAreaChangedArgs e)
     {
         SafeAreaPadding = e.SafeAreaPadding;
+    }
+
+    #endregion
+
+    #region Internal
+
+    protected static void RegisterScopedControl(StyledElement styledElement, string name, object element)
+    {
+        var nameScope = new NameScope();
+        NameScope.SetNameScope(styledElement, nameScope);
+        nameScope.Register(name, element);
     }
 
     #endregion

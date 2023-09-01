@@ -146,6 +146,10 @@ public static class Navigation
                           ?? UIPlatform.ActivateStack(stackName, activeStack)
                           ?? activeStack;
         }
+        
+        // Ensure that we can always return to the main stack
+        if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
+            activeStack = UIPlatform.ActivateStack(stackName);
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
@@ -170,6 +174,10 @@ public static class Navigation
         if (!String.IsNullOrEmpty(stackName) && !stackName.Equals(activeStack.Name))
             activeStack = UIPlatform.ActivateStack(stackName, activeStack) ?? activeStack;
 
+        // Ensure that we can always return to the main stack
+        if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
+            activeStack = UIPlatform.ActivateStack(stackName);
+
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
@@ -193,6 +201,10 @@ public static class Navigation
         // Open in parent container (replacing current stack or container)
         if (!String.IsNullOrEmpty(stackName) && !stackName.Equals(activeStack.Name))
             activeStack = UIPlatform.ActivateStack(stackName, activeStack) ?? activeStack;
+
+        // Ensure that we can always return to the main stack
+        if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
+            activeStack = UIPlatform.ActivateStack(stackName);
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))

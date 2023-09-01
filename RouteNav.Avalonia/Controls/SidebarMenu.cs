@@ -1,14 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Metadata;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Platform;
 
 namespace RouteNav.Avalonia.Controls;
 
-public class SidebarMenu : TabControl, ISafeAreaAware
+[TemplatePart("PART_SidebarMenuPane", typeof(SplitView))]
+[TemplatePart("PART_MenuItemList", typeof(ListBox))]
+[TemplatePart("PART_NavigationContent", typeof(ContentPresenter))]
+public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 {
     #region DisplayModeEnum
 
@@ -36,6 +45,8 @@ public class SidebarMenu : TabControl, ISafeAreaAware
     #endregion
 
     private SplitView? splitView;
+    private ListBox? listBox;
+    private ContentPresenter? contentPresenter;
 
     public static readonly StyledProperty<IBrush?> SidebarBackgroundProperty = SplitView.PaneBackgroundProperty.AddOwner<SidebarMenu>();
 
@@ -50,6 +61,21 @@ public class SidebarMenu : TabControl, ISafeAreaAware
     public static readonly StyledProperty<int> InlineThresholdWidthProperty = AvaloniaProperty.Register<SidebarMenu, int>(nameof(InlineThresholdWidth), 1005);
 
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<SidebarMenu, Thickness>(nameof(SafeAreaPadding));
+
+    public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty = ContentControl.HorizontalContentAlignmentProperty.AddOwner<SidebarMenu>();
+
+    public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty = ContentControl.VerticalContentAlignmentProperty.AddOwner<SidebarMenu>();
+
+    public static readonly DirectProperty<SidebarMenu, IEnumerable<SidebarMenuItem>> MenuItemsSourceProperty =
+        AvaloniaProperty.RegisterDirect<SidebarMenu, IEnumerable<SidebarMenuItem>>(nameof(MenuItemsSource), s => s.MenuItems, (s, items) =>
+        {
+            s.MenuItems.Clear();
+            s.MenuItems.AddRange(items);
+        });
+
+    public static readonly RoutedEvent<RoutedEventArgs> SelectedMenuItemChangedEvent = RoutedEvent.Register<SidebarMenu, RoutedEventArgs>(nameof(SelectedMenuItemChanged), RoutingStrategies.Bubble);
+
+    public static readonly StyledProperty<Page?> PageProperty = AvaloniaProperty.Register<SidebarMenu, Page?>(nameof(Page));
 
     public IBrush? SidebarBackground
     {
@@ -97,11 +123,58 @@ public class SidebarMenu : TabControl, ISafeAreaAware
 
     #endregion
 
+    public HorizontalAlignment HorizontalContentAlignment
+    {
+        get { return GetValue(HorizontalContentAlignmentProperty); }
+        set { SetValue(HorizontalContentAlignmentProperty, value); }
+    }
+
+    public VerticalAlignment VerticalContentAlignment
+    {
+        get { return GetValue(VerticalContentAlignmentProperty); }
+        set { SetValue(VerticalContentAlignmentProperty, value); }
+    }
+
+    [Content]
+    public List<SidebarMenuItem> MenuItems { get; } = new List<SidebarMenuItem>();
+
+    public IEnumerable<SidebarMenuItem> MenuItemsSource
+    {
+        get { return GetValue(MenuItemsSourceProperty); }
+        set { SetValue(MenuItemsSourceProperty, value); }
+    }
+
+    public event EventHandler<RoutedEventArgs>? SelectedMenuItemChanged
+    {
+        add => AddHandler(SelectedMenuItemChangedEvent, value);
+        remove => RemoveHandler(SelectedMenuItemChangedEvent, value);
+    }
+
+    public SidebarMenuItem? SelectedMenuItem { get; private set; }
+
+    public Page? Page
+    {
+        get { return GetValue(PageProperty); }
+        set { SetValue(PageProperty, value); }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
 
-        splitView = e.NameScope.Find<SplitView>("PART_NavigationPane");
+        splitView = e.NameScope.Find<SplitView>("PART_SidebarMenuPane");
+
+        if (listBox != null)
+            listBox.SelectionChanged -= ListBox_OnSelectionChanged;
+        listBox = e.NameScope.Find<ListBox>("PART_MenuItemList");
+        if (listBox != null)
+        {
+            listBox.SelectionMode = SelectionMode.AlwaysSelected;
+            listBox.SelectedIndex = 0;
+            listBox.SelectionChanged += ListBox_OnSelectionChanged;
+        }
+
+        contentPresenter = e.NameScope.Find<ContentPresenter>("PART_NavigationContent");
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -114,15 +187,10 @@ public class SidebarMenu : TabControl, ISafeAreaAware
             EnsureSplitViewDisplayMode(newBounds);
         }
         else if ((change.Property == DisplayModeProperty || change.Property == InlineThresholdWidthProperty) && splitView != null)
-        {
             EnsureSplitViewDisplayMode(Bounds);
-        }
-        else if (change.Property == SelectedItemProperty)
-        {
-            if (splitView != null && (splitView.DisplayMode == SplitViewDisplayMode.Overlay || splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay))
-                splitView.SetCurrentValue(SplitView.IsPaneOpenProperty, false);
-        }
-        else if (change.Property == SafeAreaPaddingProperty || change.Property == PaddingProperty || change.Property == ItemsSourceProperty)
+        else if (change.Property == PageProperty && contentPresenter != null)
+            contentPresenter.Content = Page;
+        else if (change.Property == SafeAreaPaddingProperty || change.Property == PaddingProperty)
             UpdateContentSafeAreaPadding();
     }
 
@@ -162,21 +230,29 @@ public class SidebarMenu : TabControl, ISafeAreaAware
         }
     }
 
-    protected virtual void UpdateContentSafeAreaPadding()
+    private void UpdateContentSafeAreaPadding()
     {
-        if (ItemsSource != null && ItemsPanelRoot != null)
-        {
-            var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
+        var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
 
-            foreach (var child in ItemsPanelRoot.Children)
-            {
-                if (child is ISafeAreaAware safeAreaAwareChild)
-                    safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
-                else if (child is TemplatedControl templatedControl)
-                    templatedControl.Padding = templatedControl.Padding.ApplySafeAreaPadding(remainingSafeArea);
-                else
-                    Padding = Padding.ApplySafeAreaPadding(remainingSafeArea); // Fallback: Add padding to parent
-            }
+        if (contentPresenter != null && contentPresenter.Content is ISafeAreaAware safeAreaAwareChild)
+            safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
+        else if (splitView != null)
+            splitView.Padding = splitView.Padding.ApplySafeAreaPadding(remainingSafeArea);
+    }
+
+    private void ListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (splitView != null && (splitView.DisplayMode == SplitViewDisplayMode.Overlay || splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay))
+            splitView.SetCurrentValue(SplitView.IsPaneOpenProperty, false);
+
+        if (listBox != null && listBox.SelectedIndex >= 0)
+            SelectedMenuItem = MenuItems[listBox.SelectedIndex];
+        else
+        {
+            SelectedMenuItem = null;
+            Page = null; // Clear page
         }
+
+        RaiseEvent(new RoutedEventArgs(SelectedMenuItemChangedEvent));
     }
 }

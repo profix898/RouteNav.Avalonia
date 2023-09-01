@@ -24,6 +24,9 @@ public static class UriExtensions
     /// <remarks>From: StackOverflow - Get URL parameters from a string in .NET (https://stackoverflow.com/a/20134983).</remarks>
     public static Dictionary<string, string> ParseQueryString(this Uri uri)
     {
+        if (!uri.IsAbsoluteUri)
+            uri = new Uri(Navigation.BaseRouteUri, uri); // ParseQueryString support only absolute URIs
+
         if (uri.Query.Length == 0)
             return new Dictionary<string, string>();
 

@@ -1,12 +1,18 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackContainers;
 
 public class TabbedPageContainer : NavigationContainer
 {
-    public static readonly StyledProperty<string> TabControlNameProperty = AvaloniaProperty.Register<TabbedPageContainer, string>(nameof(TabControlName));
+    public static readonly StyledProperty<string> TabControlNameProperty = AvaloniaProperty.Register<TabbedPageContainer, string>(nameof(TabControlName), "TabControl");
+
+    public TabbedPageContainer()
+    {
+        RegisterScopedControl(this, TabControlName, Content = new TabControl());
+    }
 
     public string TabControlName
     {
@@ -22,12 +28,33 @@ public class TabbedPageContainer : NavigationContainer
             TabControl.SelectedItem = FindTabItem(TabControl, page);
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (TabControl != null)
+            TabControl.SelectionChanged -= TabControl_OnSelectionChanged;
+        TabControl = this.GetControl<TabControl>(TabControlName);
+        if (TabControl != null)
+            TabControl.SelectionChanged += TabControl_OnSelectionChanged;
+
+        OnHostControlAttached();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
         if (change.Property == TabControlNameProperty)
-            TabControl = this.Get<TabControl>(TabControlName);
+        {
+            if (TabControl != null)
+                TabControl.SelectionChanged -= TabControl_OnSelectionChanged;
+            TabControl = this.GetControl<TabControl>(TabControlName);
+            if (TabControl != null)
+                TabControl.SelectionChanged += TabControl_OnSelectionChanged;
+
+            OnHostControlAttached();
+        }
     }
 
     protected override void UpdateContentSafeAreaPadding()
@@ -36,7 +63,23 @@ public class TabbedPageContainer : NavigationContainer
             TabControl.Padding = TabControl.Padding.ApplySafeAreaPadding(Padding.GetRemainingSafeAreaPadding(SafeAreaPadding));
     }
 
-    internal static TabItem? FindTabItem(TabControl tabControl, Page page)
+    private void TabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (NavigationStack is TabbedPageStack<TabbedPageContainer> tabbedPageStack && TabControl?.SelectedItem is TabItem tabItem)
+            tabbedPageStack.SetCurrentPage(FindPage(tabItem));
+    }
+
+    #region Private
+
+    private static Page? FindPage(TabItem tabItem)
+    {
+        if (tabItem.Content is Page tabPage)
+            return tabPage;
+
+        return null;
+    }
+
+    private static TabItem? FindTabItem(TabControl tabControl, Page page)
     {
         foreach (var item in tabControl.Items)
         {
@@ -52,4 +95,6 @@ public class TabbedPageContainer : NavigationContainer
 
         return null;
     }
+
+    #endregion
 }

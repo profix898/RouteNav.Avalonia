@@ -45,6 +45,8 @@
             <!-- NavigationControl -->
             <SolidColorBrush x:Key="NavigationControlNavigationBarBackground" Color="#FF171717" />
             <SolidColorBrush x:Key="NavigationControlNavigationBarTextColor" Color="#99FFFFFF" />
+            <!-- SidebarMenuItem -->
+            <SolidColorBrush x:Key="SidebarMenuSelectionPipeFill" Color="CornflowerBlue" />
             <!-- SidebarMenu -->
             <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#FF1F1F1F" />
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FF000000" />

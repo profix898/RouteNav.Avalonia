@@ -1,50 +1,40 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Controls;
+using RouteNav.Avalonia.Controls;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Routing;
 
 public class RouteMenuItem : MenuItem
 {
-    private Uri routeUri;
+    public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
 
-    private NavigationTarget target;
-
-    public static readonly DirectProperty<RouteMenuItem, Uri> RouteUriProperty = AvaloniaProperty.RegisterDirect<RouteMenuItem, Uri>(nameof(RouteUri), rmi => rmi.routeUri, (rmi, value) => rmi.routeUri = value);
-
-    public static readonly DirectProperty<RouteMenuItem, NavigationTarget> TargetProperty = AvaloniaProperty.RegisterDirect<RouteMenuItem, NavigationTarget>(nameof(Target), rmi => rmi.target, (rmi, value) => rmi.target = value);
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
 
     public RouteMenuItem()
     {
-        Target = NavigationTarget.Self;
-
-        Click += (_, _) => NavigateToRoute();
+        Click += (_, _) => Navigation.PushAsync(RouteUri, Target);
     }
 
     protected override Type StyleKeyOverride => typeof(MenuItem);
 
     public Uri RouteUri
     {
-        get { return routeUri; }
-        set { SetAndRaise(RouteUriProperty, ref routeUri, value); }
+        get { return GetValue(RouteUriProperty); }
+        set { SetValue(RouteUriProperty, value); }
     }
 
     /// <summary>Set RouteUri via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
-        set { SetAndRaise(RouteUriProperty, ref routeUri, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value + "/") : new Uri(value, UriKind.Relative)); }
+        set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/') + "/") : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
     }
 
     public NavigationTarget Target
     {
-        get { return target; }
-        set { SetAndRaise(TargetProperty, ref target, value); }
-    }
-
-    public virtual void NavigateToRoute()
-    {
-        Navigation.PushAsync(RouteUri, Target);
+        get { return GetValue(TargetProperty); }
+        set { SetValue(TargetProperty, value); }
     }
 }

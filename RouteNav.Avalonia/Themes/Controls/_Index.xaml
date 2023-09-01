@@ -13,6 +13,7 @@
                 <MergeResourceInclude Source="/Themes/Controls/NotFoundPage.xaml" />
 
                 <MergeResourceInclude Source="/Themes/Controls/NavigationControl.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenuItem.xaml" />
                 <MergeResourceInclude Source="/Themes/Controls/SidebarMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

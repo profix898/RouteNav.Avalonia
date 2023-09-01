@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Pages;
+using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.StackContainers;
 
@@ -37,6 +38,11 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 
     private Dictionary<string, Func<Uri, Page>> Pages { get; } = new Dictionary<string, Func<Uri, Page>>();
 
+    internal void SetCurrentPage(Page? page)
+    {
+        CurrentPage = page;
+    }
+
     #region Overrides of NavigationStackBase<TabbedPage>
 
     protected override Page? ResolveRoute(Uri routeUri)
@@ -47,22 +53,26 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     protected override TC InitContainer()
     {
         var tabbedPageContainer = new TC { NavigationStack = this };
-        if (tabbedPageContainer.TabControl == null)
-            throw new InvalidOperationException($"No {nameof(TabControl)} found in NavigationContainer.");
-
-        foreach (var pageKvp in Pages)
+        tabbedPageContainer.HostControlAttached += () =>
         {
-            var page = pageKvp.Value(new Uri(pageKvp.Key, UriKind.Relative));
-            var tabItem = new TabItem { Header = page.Title, Content = page };
-            tabbedPageContainer.TabControl.Items.Add(tabItem);
+            if (tabbedPageContainer.TabControl == null)
+                throw new InvalidOperationException($"No {nameof(TabControl)} found in NavigationContainer.");
 
-            if (pageKvp.Key == String.Empty) // Initial page
+            foreach (var pageKvp in Pages)
             {
-                rootPage = page;
-                tabbedPageContainer.TabControl.SelectedItem = tabItem;
+                var page = pageKvp.Value(this.BuildRoute(pageKvp.Key));
+                var tabItem = new TabItem { Header = page.Title, Content = page };
+                tabbedPageContainer.TabControl.Items.Add(tabItem);
+
+                if (pageKvp.Key == String.Empty) // Initial page
+                {
+                    rootPage = page;
+                    tabbedPageContainer.TabControl.SelectedItem = tabItem;
+                }
             }
-        }
-        rootPage ??= (tabbedPageContainer.TabControl.SelectedItem as Page) ?? new NotFoundPage();
+            rootPage ??= tabbedPageContainer.TabControl.SelectedItem as Page ?? new NotFoundPage();
+            RootPage = new LazyValue<Page>(() => rootPage);
+        };
 
         return tabbedPageContainer;
     }

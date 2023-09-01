@@ -49,8 +49,11 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
             HorizontalAlignment = HorizontalAlignment.Stretch,
             NavigationStack = this
         };
-        if (navigationPageContainer.NavigationControl == null)
-            throw new InvalidOperationException($"No {nameof(NavigationControl)} found in NavigationContainer.");
+        navigationPageContainer.HostControlAttached += () =>
+        {
+            if (navigationPageContainer.NavigationControl == null)
+                throw new InvalidOperationException($"No {nameof(NavigationControl)} found in NavigationContainer.");
+        };
 
         return navigationPageContainer;
     }

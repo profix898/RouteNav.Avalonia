@@ -15,6 +15,7 @@
   <ItemGroup>
     <None Remove="Themes\Colors.xaml" />
     <None Remove="Themes\Controls\Dialog.xaml" />
+    <None Remove="Themes\Controls\SidebarMenuItem.xaml" />
     <None Remove="Themes\Controls\_Index.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -23,6 +24,9 @@
   <ItemGroup>
     <AvaloniaResource Update="Themes\Colors.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Themes\Controls\SidebarMenuItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
     <AvaloniaResource Update="Themes\Controls\_Index.xaml">

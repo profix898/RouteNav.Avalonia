@@ -17,7 +17,7 @@ namespace RouteNav.Avalonia.Controls;
 [TemplatePart("PART_NavigationBarBackButton", typeof(Button))]
 [TemplatePart("PART_NavigationBarTitle", typeof(ContentPresenter))]
 [TemplatePart("PART_NavigationContent", typeof(TransitioningContentControl))]
-public class NavigationControl : ContentControl, ISafeAreaAware
+public sealed class NavigationControl : ContentControl, ISafeAreaAware
 {
     private Border? navBarBorder;
     private Button? navBarBackButton;
@@ -156,9 +156,6 @@ public class NavigationControl : ContentControl, ISafeAreaAware
 
     private void UpdateContentSafeAreaPadding()
     {
-        if (navContentControl == null)
-            return;
-
         var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
 
         if (navBarBorder != null)
@@ -167,10 +164,13 @@ public class NavigationControl : ContentControl, ISafeAreaAware
             remainingSafeArea = navBarBorder.Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
         }
 
-        if (navContentControl.Content is ISafeAreaAware safeAreaAwareChild)
-            safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
-        else
-            navContentControl.Padding = navContentControl.Padding.ApplySafeAreaPadding(remainingSafeArea);
+        if (navContentControl != null)
+        {
+            if (navContentControl.Content is ISafeAreaAware safeAreaAwareChild)
+                safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
+            else
+                navContentControl.Padding = navContentControl.Padding.ApplySafeAreaPadding(remainingSafeArea);
+        }
     }
 
     private void BackButton_Clicked(object? sender, RoutedEventArgs e)

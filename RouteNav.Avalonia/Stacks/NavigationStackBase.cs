@@ -10,7 +10,11 @@ using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
-public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
+public interface ISidebarMenuStack
+{
+}
+
+public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack, ISidebarMenuStack
     where TC : NavigationContainer, new()
 {
     protected readonly List<Page> pageStack = new List<Page>();
@@ -73,12 +77,6 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     protected virtual Dialog BuildDialog(Page page)
     {
         return page.ToDialog(CurrentPage);
-    }
-
-    public virtual void AddPage<TPage>(string relativeRoute)
-        where TPage : Page
-    {
-        AddPage(relativeRoute, typeof(TPage));
     }
 
     public virtual void AddPage(string relativeRoute, Type pageType)

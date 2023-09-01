@@ -2,11 +2,11 @@ using Avalonia.Interactivity;
 using RouteNav.Avalonia;
 using RouteNav.Avalonia.Dialogs;
 
-namespace DemoApp.Pages
+namespace DemoApp.Pages.Main
 {
-    public partial class Page1 : Page
+    public partial class MainPage1 : Page
     {
-        public Page1()
+        public MainPage1()
         {
             InitializeComponent();
         }

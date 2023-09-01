@@ -97,11 +97,11 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     public INavigationStack GetMainStack()
     {
-        var mainStack = activeStacks.Values.FirstOrDefault();
-        if (mainStack == null)
-            navigationStacks.TryGetValue(Navigation.MainStackName, out mainStack);
+        if (navigationStacks.TryGetValue(Navigation.MainStackName, out var mainStack))
+            return mainStack;
 
-        return mainStack ?? throw new NavigationException($"Stack '{Navigation.MainStackName}' is not available.");
+        return activeStacks.Values.FirstOrDefault()
+               ?? throw new NavigationException($"Stack '{Navigation.MainStackName}' is not available.");
     }
 
     public INavigationStack? GetActiveStack(string stackName)

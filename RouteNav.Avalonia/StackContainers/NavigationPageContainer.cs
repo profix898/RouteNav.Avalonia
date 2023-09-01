@@ -8,7 +8,12 @@ namespace RouteNav.Avalonia.StackContainers;
 
 public class NavigationPageContainer : NavigationContainer
 {
-    public static readonly StyledProperty<string> NavigationControlNameProperty = AvaloniaProperty.Register<NavigationPageContainer, string>(nameof(NavigationControlName));
+    public static readonly StyledProperty<string> NavigationControlNameProperty = AvaloniaProperty.Register<NavigationPageContainer, string>(nameof(NavigationControlName), "NavigationControl");
+
+    public NavigationPageContainer()
+    {
+        RegisterScopedControl(this, NavigationControlName, Content = new NavigationControl());
+    }
 
     public string NavigationControlName
     {
@@ -27,6 +32,19 @@ public class NavigationPageContainer : NavigationContainer
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (NavigationControl != null)
+            NavigationControl.BackButtonClick -= BackButton_Clicked;
+        NavigationControl = this.GetControl<NavigationControl>(NavigationControlName);
+        if (NavigationControl != null)
+            NavigationControl.BackButtonClick += BackButton_Clicked;
+
+        OnHostControlAttached();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -35,9 +53,11 @@ public class NavigationPageContainer : NavigationContainer
         {
             if (NavigationControl != null)
                 NavigationControl.BackButtonClick -= BackButton_Clicked;
-            NavigationControl = this.Get<NavigationControl>(NavigationControlName);
+            NavigationControl = this.GetControl<NavigationControl>(NavigationControlName);
             if (NavigationControl != null)
                 NavigationControl.BackButtonClick += BackButton_Clicked;
+
+            OnHostControlAttached();
         }
     }
 

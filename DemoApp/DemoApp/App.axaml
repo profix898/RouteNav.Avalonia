@@ -1,12 +1,17 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:routeNav="clr-namespace:RouteNav.Avalonia.Themes;assembly=RouteNav.Avalonia"
+             xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
              x:Class="DemoApp.App"
              RequestedThemeVariant="Default">
 
     <Application.Styles>
         <FluentTheme />
         <routeNav:RouteNavStyles />
+
+        <Style Selector="routing|RouteButton">
+            <Setter Property="Margin" Value="5" />
+        </Style>
     </Application.Styles>
-  
+
 </Application>
