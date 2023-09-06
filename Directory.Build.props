@@ -33,6 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(SolutionDir)\logo.png" Pack="true" Visible="false" PackagePath="" />
-    <None Include="$(SolutionDir)\Readme.md" Pack="true" Visible="false" PackagePath="" />
+    <None Include="$(SolutionDir)\Readme.pkg.md" Pack="true" Visible="false" PackagePath="Readme.md" />
   </ItemGroup>
 </Project>
