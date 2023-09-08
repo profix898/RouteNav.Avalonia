@@ -35,7 +35,7 @@ public class Dialog : TemplatedControl
 
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = AvaloniaProperty.Register<TemplatedControl, IDataTemplate?>(nameof(ContentTemplate));
 
-    public static readonly StyledProperty<Size> SizeProperty = AvaloniaProperty.Register<Dialog, Size>(nameof(Size), new Size(400, 300));
+    public static readonly StyledProperty<DialogSize> DialogSizeProperty = AvaloniaProperty.Register<Dialog, DialogSize>(nameof(DialogSize), DialogSize.Medium);
 
     public Dialog()
     {
@@ -80,10 +80,10 @@ public class Dialog : TemplatedControl
         set { SetValue(ContentTemplateProperty, value); }
     }
 
-    public Size Size
+    public DialogSize DialogSize
     {
-        get { return GetValue(SizeProperty); }
-        set { SetValue(SizeProperty, value); }
+        get { return GetValue(DialogSizeProperty); }
+        set { SetValue(DialogSizeProperty, value); }
     }
 
     protected override Type StyleKeyOverride => typeof(Dialog);

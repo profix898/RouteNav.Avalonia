@@ -40,7 +40,7 @@
                                         <Border Background="{TemplateBinding TitleBarBackground}" />
                                         <TextBlock Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}"
                                                    FontSize="{StaticResource DialogTitleBarFontSize}" VerticalAlignment="Center" />
-                                        <Button x:Name="PART_DialogCloseButton" Margin="0,0,5,0" Background="Transparent" HorizontalAlignment="Right">X</Button>
+                                        <Button x:Name="PART_DialogCloseButton" Margin="0,0,5,0" FontWeight="Medium" Background="Transparent" HorizontalAlignment="Right">X</Button>
                                     </Panel>
                                     <ContentPresenter DockPanel.Dock="Top" x:Name="PART_DialogContent" Padding="15,10,15,10"
                                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center"

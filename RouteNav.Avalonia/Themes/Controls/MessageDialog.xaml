@@ -9,8 +9,8 @@
     </Design.PreviewWith>
 
     <x:Double x:Key="MessageDialogTitleBarHeight">35</x:Double>
-    <x:Double x:Key="MessageDialogTitleBarFontSize">20</x:Double>
-    <x:Double x:Key="MessageDialogButtonsBarHeight">35</x:Double>
+    <x:Double x:Key="MessageDialogTitleBarFontSize">18</x:Double>
+    <GridLength x:Key="MessageDialogButtonsBarHeight">65</GridLength>
     <x:Double x:Key="MessageDialogMinWidth">350</x:Double>
     <x:Double x:Key="MessageDialogMinHeight">200</x:Double>
     <x:Double x:Key="MessageDialogMaxWidth">700</x:Double>
@@ -19,6 +19,7 @@
     <ControlTheme x:Key="{x:Type dialogs:MessageDialog}" TargetType="dialogs:MessageDialog">
         <Setter Property="TitleBarBackground" Value="{DynamicResource MessageDialogTitleBarBackground}" />
         <Setter Property="TitleBarTextColor" Value="{DynamicResource MessageDialogTitleBarTextColor}" />
+        <Setter Property="ButtonsBarBackground" Value="{DynamicResource MessageDialogButtonBarBackground}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border x:Name="Container">
@@ -56,13 +57,22 @@
                                             </Styles>
                                         </ContentPresenter.Styles>
                                     </ContentPresenter>
-                                    <Border DockPanel.Dock="Bottom" x:Name="DialogButtonBar" Background="{TemplateBinding ButtonsBarBackground}" VerticalAlignment="Bottom">
-                                        <ContentPresenter x:Name="PART_DialogButtons"
-                                                          ContentTemplate="{TemplateBinding ButtonsTemplate}"
-                                                          Content="{TemplateBinding}" Height="{StaticResource MessageDialogButtonsBarHeight}" Margin="15,10,15,10"
-                                                          VerticalAlignment="Bottom" VerticalContentAlignment="Center"
-                                                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Right" />
-                                    </Border>
+                                    <Panel x:Name="DialogButtonBar" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+                                        <Border BorderBrush="{DynamicResource MessageDialogButtonBarBorderColor}" BorderThickness="0,1,0,0">
+                                            <Grid Background="{TemplateBinding ButtonsBarBackground}" ColumnDefinitions="*,Auto">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="{StaticResource MessageDialogButtonsBarHeight}" />
+                                                </Grid.RowDefinitions>
+                                                <Panel Grid.Column="1">
+                                                    <ContentPresenter x:Name="PART_DialogButtons"
+                                                                      ContentTemplate="{TemplateBinding ButtonsTemplate}"
+                                                                      Content="{TemplateBinding}"
+                                                                      VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                                                      HorizontalAlignment="Right" HorizontalContentAlignment="Center" />
+                                                </Panel>
+                                            </Grid>
+                                        </Border>
+                                    </Panel>
                                 </DockPanel>
                             </Border>
                         </Border>
@@ -73,22 +83,23 @@
       
         <!-- Dialog window -->
         <Styles>
-            <Style Selector="dialogs|MessageDialog:dialog-window Panel#LayoutRoot">
-                <Setter Property="Background" Value="{x:Null}" />
-            </Style>
-            <Style Selector="dialogs|MessageDialog:dialog-window Border#BackgroundElement">
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="BoxShadow" Value="none" />
-                <Setter Property="MaxHeight" Value="{x:Static system:Double.PositiveInfinity}" />
-                <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Stretch" />
-            </Style>
-            <Style Selector="dialogs|MessageDialog:dialog-window Panel#DialogTitleBar">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
-        </Styles>
+          <Style Selector="dialogs|MessageDialog:dialog-window Panel#LayoutRoot">
+              <Setter Property="Background" Value="{x:Null}" />
+          </Style>
+          <Style Selector="dialogs|MessageDialog:dialog-window Border#BackgroundElement">
+              <Setter Property="BorderThickness" Value="0" />
+              <Setter Property="Margin" Value="0" />
+              <Setter Property="BoxShadow" Value="none" />
+              <Setter Property="MaxHeight" Value="{x:Static system:Double.PositiveInfinity}" />
+              <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />
+              <Setter Property="HorizontalAlignment" Value="Stretch" />
+              <Setter Property="VerticalAlignment" Value="Stretch" />
+          </Style>
+          <Style Selector="dialogs|MessageDialog:dialog-window Panel#DialogTitleBar">
+              <Setter Property="IsVisible" Value="False" />
+          </Style>
+      </Styles>
+
       
       <!-- Hidden dialog -->
       <Style Selector="^:hidden /template/ Panel#LayoutRoot">

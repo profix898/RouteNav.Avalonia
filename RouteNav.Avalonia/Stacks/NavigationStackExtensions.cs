@@ -105,6 +105,12 @@ public static class NavigationStackExtensions
         stack.AddPage(relativeRoute, typeof(TPage));
     }
 
+    public static void AddPage(this INavigationStack stack, IDictionary<string, Type> pageMap)
+    {
+        foreach (var (relativeRoute, pageType) in pageMap)
+            stack.AddPage(relativeRoute, pageType);
+    }
+
     #endregion
 
     #region AddPage_RouteMenuItem

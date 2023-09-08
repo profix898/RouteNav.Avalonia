@@ -11,6 +11,9 @@
             <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#FFF2F2F2" />
             <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#99000000" />
             <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBorderColor" Color="#61656A" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#99000000" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="White" />
             <!-- InternalErrorPage -->
@@ -36,6 +39,9 @@
             <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#FF171717" />
             <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#99FFFFFF" />
             <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBorderColor" Color="#61656A" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#99000000" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="#454545" />
             <!-- InternalErrorPage -->

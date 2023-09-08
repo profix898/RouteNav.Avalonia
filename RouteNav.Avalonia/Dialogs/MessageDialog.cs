@@ -52,6 +52,7 @@ public class MessageDialog : Dialog
 
     public MessageDialog()
     {
+        DialogSize = DialogSize.Small;
         DefaultResult = MessageDialogResult.None;
     }
 
@@ -137,7 +138,7 @@ public class MessageDialog : Dialog
     {
         return new MessageDialog
         {
-            Title = "Exception",
+            Title = "Error",
             Content = new TextBlock
             {
                 Text = message,

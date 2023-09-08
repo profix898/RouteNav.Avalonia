@@ -20,6 +20,8 @@ public class AvaloniaWindowManager : IWindowManager
 
     public bool ForceOverlayDialogs { get; init; }
 
+    public event IWindowManager.WindowCustomizationHandler WindowCustomizationEvent;
+
     public virtual bool OpenWindow(Window window, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform
@@ -44,6 +46,13 @@ public class AvaloniaWindowManager : IWindowManager
         // Variant A: Desktop (multi-window) platform -> open dialog window
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceOverlayDialogs)
         {
+            var ownerWindow = parentWindow?.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
+            if (ownerWindow == null)
+                throw new NavigationException("No main window/view available. Application not fully initialized yet.");
+
+            if (dialog.DialogSize != DialogSize.Custom)
+                dialog.SetSize(parentWindow);
+
             var platformWindow = new AvaloniaWindow
             {
                 Title = dialog.Title,
@@ -52,12 +61,13 @@ public class AvaloniaWindowManager : IWindowManager
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 VerticalContentAlignment = VerticalAlignment.Stretch,
 
-                Width = dialog.Size.Width,
-                Height = dialog.Size.Height,
-                MinWidth = dialog.Size.Width,
-                MinHeight = dialog.Size.Height,
+                Width = dialog.Width,
+                Height = dialog.Height,
+                MinWidth = dialog.Width,
+                MinHeight = dialog.Height,
                 CanResize = false
             };
+            WindowCustomizationEvent?.Invoke(platformWindow, true);
 #if DEBUG
             platformWindow.AttachDevTools();
 #endif
@@ -65,10 +75,6 @@ public class AvaloniaWindowManager : IWindowManager
             dialogTask = dialog.Open();
 
             // TODO: Customize to show platform dialog (border style, etc.)
-            
-            var ownerWindow = parentWindow?.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
-            if (ownerWindow == null)
-                throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
             platformWindow.ShowDialog(ownerWindow);
             return true;
@@ -79,7 +85,7 @@ public class AvaloniaWindowManager : IWindowManager
         return false;
     }
 
-    public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime, Action<AvaloniaWindow>? windowCustomization = null)
+    public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
     {
         var platformWindow = new AvaloniaWindow // Clone into AvaloniaWindow
         {
@@ -111,11 +117,10 @@ public class AvaloniaWindowManager : IWindowManager
             ContextMenu = window.ContextMenu,
             ContextFlyout = window.ContextFlyout
         };
+        WindowCustomizationEvent?.Invoke(platformWindow, false);
 #if DEBUG
         platformWindow.AttachDevTools();
 #endif
-        windowCustomization?.Invoke(platformWindow);
-
         window.RegisterPlatform(desktopLifetime, platformWindow);
 
         return platformWindow;

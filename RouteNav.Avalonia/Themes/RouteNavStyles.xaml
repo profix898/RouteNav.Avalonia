@@ -1,14 +1,42 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="RouteNav.Avalonia.Themes.RouteNavStyles">
-
     <Styles.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Colors.xaml" />
+
+                <MergeResourceInclude Source="/Themes/Controls/Dialog.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/MessageDialog.xaml" />
+
+                <MergeResourceInclude Source="/Themes/Controls/Page.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/InternalErrorPage.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/NotFoundPage.xaml" />
+
+                <MergeResourceInclude Source="/Themes/Controls/NavigationControl.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenuItem.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
-
-    <StyleInclude Source="avares://RouteNav.Avalonia/Themes/Controls/_Index.xaml" />
+  
+    <!-- MessageDialogButtons -->
+    <Style Selector="Button.MessageDialogButton">
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Background" Value="{DynamicResource MessageDialogButtonBarButtonBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource MessageDialogButtonBarButtonTextColor}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MessageDialogButtonBarBorderColor}" />
+        <Setter Property="Padding" Value="10,5,10,5" />
+        <Setter Property="Margin" Value="8,10,8,10" />
+    </Style>
+    <Style Selector="Button.MessageDialogButton:nth-child(1)">
+        <Setter Property="Margin" Value="25,10,8,10" />
+    </Style>
+    <Style Selector="Button.MessageDialogButton:nth-last-child(1)">
+        <Setter Property="Margin" Value="8,10,25,10" />
+    </Style>
 </Styles>

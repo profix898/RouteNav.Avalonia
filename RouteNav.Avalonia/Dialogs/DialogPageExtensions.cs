@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media;
 using RouteNav.Avalonia.Stacks;
+using static RouteNav.Avalonia.Dialogs.DialogSizeUtility;
 
 namespace RouteNav.Avalonia.Dialogs;
 
@@ -20,6 +21,8 @@ public static class DialogPageExtensions
         if (page == null)
             throw new ArgumentNullException(nameof(page));
 
+        var size = GetSize(dialogSize, parentPage, minSize, maxSize);
+
         // Build Dialog from Page
         return new Dialog
         {
@@ -28,7 +31,9 @@ public static class DialogPageExtensions
             DataContext = page.DataContext,
             Resources = page.Resources,
             Background = page.Background ?? Brushes.White,
-            Size = parentPage.GetSize(dialogSize, minSize, maxSize)
+            DialogSize = DialogSize.Custom,
+            Width = size.Width,
+            Height = size.Height
         };
     }
 }

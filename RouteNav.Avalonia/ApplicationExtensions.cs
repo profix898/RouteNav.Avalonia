@@ -16,20 +16,20 @@ public static class ApplicationExtensions
     public static void SetMainWindow(this IApplicationLifetime? lifetime, Window mainWindow, bool initMainRoute = true)
     {
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
-            desktopLifetime.SetMainWindow(mainWindow, null, initMainRoute);
+            desktopLifetime.SetMainWindow(mainWindow, initMainRoute);
         else if (lifetime is ISingleViewApplicationLifetime singleViewLifetime)
             singleViewLifetime.SetMainWindow(mainWindow, initMainRoute);
         else if (!Design.IsDesignMode)
             throw new NotSupportedException($"IApplicationLifetime of type '{lifetime.GetType()}' not supported.");
     }
 
-    public static void SetMainWindow(this IClassicDesktopStyleApplicationLifetime desktopLifetime, Window mainWindow, Action<AvaloniaWindow>? windowCustomization = null, bool initMainRoute = true)
+    public static void SetMainWindow(this IClassicDesktopStyleApplicationLifetime desktopLifetime, Window mainWindow, bool initMainRoute = true)
     {
         if (desktopLifetime.MainWindow?.Tag is Window previousWindow)
             previousWindow.OnClosed();
 
         IWindowManager windowManager = Navigation.UIPlatform.WindowManager;
-        desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(mainWindow, desktopLifetime, windowCustomization);
+        desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(mainWindow, desktopLifetime);
 
         if (initMainRoute)
         {

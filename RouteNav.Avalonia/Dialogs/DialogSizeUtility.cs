@@ -1,49 +1,74 @@
 ﻿using System;
 using Avalonia;
+using Avalonia.Layout;
 using static System.Math;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-public enum DialogSize
-{
-    Small,
-    Medium,
-    Large
-}
-
 public static class DialogSizeUtility
 {
-    #region Default
+    public static readonly Size DefaultSize = new Size(400, 300);
 
-    public static Size GetSize(this Page parentPage, DialogSize dialogSize, Size? minSize = null, Size? maxSize = null)
+    public static void SetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
     {
-        if (parentPage == null)
-            throw new ArgumentNullException(nameof(parentPage));
+        var size = dialog.GetSize(parent, minSize, maxSize);
+
+        dialog.Width = size.Width;
+        dialog.Height = size.Height;
+    }
+
+    public static Size GetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
+    {
+        if (parent == null)
+            return DefaultSize;
+
+        var baseSize = GetBaseSize(parent);
+
+        return dialog.DialogSize switch
+        {
+            DialogSize.Small => CalcSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
+            DialogSize.Medium => CalcSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
+            DialogSize.Large => CalcSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Custom => new Size(dialog.Width, dialog.Height),
+            _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
+        };
+    }
+
+    public static Size GetSize(DialogSize dialogSize, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
+    {
+        if (parent == null)
+            return DefaultSize;
+
+        var baseSize = GetBaseSize(parent);
 
         return dialogSize switch
         {
-            DialogSize.Small => GetSize(parentPage, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
-            DialogSize.Medium => GetSize(parentPage, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
-            DialogSize.Large => GetSize(parentPage, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Small => CalcSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
+            DialogSize.Medium => CalcSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
+            DialogSize.Large => CalcSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Custom => new Size(parent.Width, parent.Height),
             _ => throw new ArgumentOutOfRangeException(nameof(dialogSize), dialogSize, null)
         };
     }
 
-    public static Size GetSize(this Page parentPage, Size scale, Size? minSize = null, Size? maxSize = null)
+    #region Private
+
+    private static Size GetBaseSize(Layoutable parent)
     {
-        if (parentPage == null)
-            throw new ArgumentNullException(nameof(parentPage));
+        var baseSize = new Size(parent.Width, parent.Height);
 
-        var baseSize = new Size(parentPage.Width, parentPage.Height);
+        // For RouteNav.Window use underlying platform window size
+        if (parent is Window window && window.PlatformControl != null)
+            baseSize = new Size(window.PlatformControl.Width, window.PlatformControl.Height);
 
-        return GetSize(baseSize, scale, minSize, maxSize);
+        // For width/height is NaN use DefaultSize
+        if (Double.IsNaN(baseSize.Width) || Double.IsNaN(baseSize.Height))
+            baseSize = DefaultSize;
+
+        return baseSize;
     }
 
-    #endregion
-
-    #region SizeCalculation
-
-    public static Size GetSize(Size baseSize, Size scale, Size? minSize = null, Size? maxSize = null)
+    private static Size CalcSize(Size baseSize, Size scale, Size? minSize = null, Size? maxSize = null)
     {
         var width = scale.Width * baseSize.Width;
         var height = scale.Height * baseSize.Height;

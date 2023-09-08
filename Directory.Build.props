@@ -8,6 +8,7 @@
   <PropertyGroup>
     <Product>RouteNav.Avalonia</Product>
     <Description>RouteNav.Avalonia Package</Description>
+    <Authors>Thilo Viereck</Authors>
     <Company></Company>
     <Copyright>Copyright (c) Thilo Viereck 2022-2023</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
