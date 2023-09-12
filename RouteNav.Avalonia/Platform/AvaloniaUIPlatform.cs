@@ -14,20 +14,20 @@ public class AvaloniaUIPlatform : IUIPlatform
     private readonly Dictionary<string, INavigationStack> navigationStacks = new Dictionary<string, INavigationStack>();
     private readonly Dictionary<Window, INavigationStack> activeStacks = new Dictionary<Window, INavigationStack>();
 
-    private readonly IServiceCollection serviceCollection;
-    private readonly IServiceProvider serviceProvider;
+    private readonly Lazy<IServiceProvider> serviceProvider;
+    private readonly IServiceCollection? serviceCollection;
 
-    public AvaloniaUIPlatform(IServiceCollection serviceCollection, IServiceProvider serviceProvider)
-        : this(new AvaloniaWindowManager(), serviceCollection, serviceProvider)
+    public AvaloniaUIPlatform(Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
+        : this(new AvaloniaWindowManager(), serviceProvider, serviceCollection)
     {
     }
 
-    public AvaloniaUIPlatform(IWindowManager windowManager, IServiceCollection serviceCollection, IServiceProvider serviceProvider)
+    public AvaloniaUIPlatform(IWindowManager windowManager, Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
     {
         WindowManager = windowManager;
 
-        this.serviceCollection = serviceCollection ?? throw new NotSupportedException("Navigation DI container (IServiceCollection) is not available.");
-        this.serviceProvider = serviceProvider ?? throw new NotSupportedException("Navigation DI container (IServiceProvider) is not available.");
+        this.serviceProvider = serviceProvider;
+        this.serviceCollection = serviceCollection;
 
         RegisterPage(typeof(NotFoundPage), typeof(InternalErrorPage));
     }
@@ -43,6 +43,9 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (pageTypes == null)
             throw new ArgumentNullException(nameof(pageTypes));
 
+        if (serviceCollection == null)
+            throw new NotSupportedException("IServiceCollection is not available (for page registration).");
+
         foreach (var pageType in pageTypes)
         {
             if (!pageType.IsSubclassOf(typeof(Page)))
@@ -57,8 +60,10 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (pageType == null)
             throw new ArgumentNullException(nameof(pageType));
 
-        //var page = (Page) serviceProvider.GetRequiredService(pageType);
-        var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider, pageType, parameters);
+        if (serviceProvider.Value == null)
+            throw new NotSupportedException($"IServiceProvider is not available (can't fetch page of type '{pageType}').");
+
+        var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider.Value, pageType, parameters);
 
         // Supply page with query parameters (if available)
         page.PageQuery = uri.ParseQueryString();

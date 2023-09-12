@@ -26,9 +26,9 @@ public static class DialogSizeUtility
 
         return dialog.DialogSize switch
         {
-            DialogSize.Small => CalcSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
-            DialogSize.Medium => CalcSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
-            DialogSize.Large => CalcSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Small => GetSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
+            DialogSize.Medium => GetSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
+            DialogSize.Large => GetSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
             DialogSize.Custom => new Size(dialog.Width, dialog.Height),
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
@@ -43,9 +43,9 @@ public static class DialogSizeUtility
 
         return dialogSize switch
         {
-            DialogSize.Small => CalcSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
-            DialogSize.Medium => CalcSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
-            DialogSize.Large => CalcSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Small => GetSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
+            DialogSize.Medium => GetSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
+            DialogSize.Large => GetSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
             DialogSize.Custom => new Size(parent.Width, parent.Height),
             _ => throw new ArgumentOutOfRangeException(nameof(dialogSize), dialogSize, null)
         };
@@ -68,7 +68,7 @@ public static class DialogSizeUtility
         return baseSize;
     }
 
-    private static Size CalcSize(Size baseSize, Size scale, Size? minSize = null, Size? maxSize = null)
+    private static Size GetSize(Size baseSize, Size scale, Size? minSize = null, Size? maxSize = null)
     {
         var width = scale.Width * baseSize.Width;
         var height = scale.Height * baseSize.Height;

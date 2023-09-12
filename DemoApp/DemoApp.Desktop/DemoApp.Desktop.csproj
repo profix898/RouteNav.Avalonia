@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DemoApp.Browser\DemoApp.Browser.csproj" />
     <ProjectReference Include="..\DemoApp\DemoApp.csproj" />
   </ItemGroup>
 </Project>

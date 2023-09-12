@@ -12,6 +12,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Stacks;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Dialogs;
@@ -238,6 +239,20 @@ public class Dialog : TemplatedControl
     {
         var stack = Navigation.UIPlatform.GetActiveStackFromWindow(parentWindow) ?? Navigation.GetMainStack();
         
+        return stack.PushDialogAsync(this);
+    }
+
+    public Task<object?> ShowDialog(Page? parentPage)
+    {
+        INavigationStack? stack = null;
+        if (parentPage != null && parentPage.PageQuery.TryGetValue("routeUri", out var routeUriString))
+        {
+            var stackName = new Uri(routeUriString).GetStackName();
+            if (!String.IsNullOrEmpty(stackName))
+                stack = Navigation.UIPlatform.GetStack(stackName);
+        }
+        stack ??= Navigation.GetMainStack();
+    
         return stack.PushDialogAsync(this);
     }
 

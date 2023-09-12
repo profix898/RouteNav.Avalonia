@@ -113,35 +113,6 @@ public static class NavigationStackExtensions
 
     #endregion
 
-    #region AddPage_RouteMenuItem
-
-    public static void AddPage<T1>(this INavigationStack stack, RouteMenuItem routeMenuItem)
-        where T1 : Page
-    {
-        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
-            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
-
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
-    }
-
-    public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Type pageType)
-    {
-        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
-            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
-
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageType);
-    }
-
-    public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Func<Uri, Page> pageFactory)
-    {
-        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
-            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
-
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageFactory);
-    }
-
-    #endregion
-
     #region AddPage_RouteButton
 
     public static void AddPage<T1>(this INavigationStack stack, RouteButton routeButton)
@@ -171,46 +142,75 @@ public static class NavigationStackExtensions
 
     #endregion
 
+    #region AddPage_RouteMenuItem
+
+    public static void AddPage<T1>(this INavigationStack stack, RouteMenuItem routeMenuItem)
+        where T1 : Page
+    {
+        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
+            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
+
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
+    }
+
+    public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Type pageType)
+    {
+        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
+            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
+
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageType);
+    }
+
+    public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Func<Uri, Page> pageFactory)
+    {
+        if (!routeMenuItem.RouteUri.IsAbsoluteUri)
+            routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
+
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri) ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageFactory);
+    }
+
+    #endregion
+
     #region AddPage_SidebarMenuItem
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text)
     {
-        stack.AddMenuItem(new SidebarMenuItem(relativeRoute, text));
+        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text });
     }
 
     public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, string relativeRoute, string text)
     {
-        stack.AddMenuItem(new SidebarMenuItem(relativeRoute, text, typeof(TPage)));
+        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageType = typeof(TPage) });
     }
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Type pageType)
     {
-        stack.AddMenuItem(new SidebarMenuItem(relativeRoute, text, pageType));
+        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageType = pageType });
     }
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Func<Uri, Page> pageFactory)
     {
-        stack.AddMenuItem(new SidebarMenuItem(relativeRoute, text, pageFactory));
+        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageFactory = pageFactory });
     }
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text)
     {
-        stack.AddMenuItem(new SidebarMenuItem(routeUri, text));
+        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text });
     }
 
     public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, Uri routeUri, string text)
     {
-        stack.AddMenuItem(new SidebarMenuItem(routeUri, text, typeof(TPage)));
+        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageType = typeof(TPage) });
     }
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Type pageType)
     {
-        stack.AddMenuItem(new SidebarMenuItem(routeUri, text, pageType));
+        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageType = pageType });
     }
 
     public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Func<Uri, Page> pageFactory)
     {
-        stack.AddMenuItem(new SidebarMenuItem(routeUri, text, pageFactory));
+        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageFactory = pageFactory });
     }
 
     #endregion

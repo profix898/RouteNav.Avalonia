@@ -13,15 +13,13 @@ internal class Program
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
         var serviceCollection = new ServiceCollection();
-        var serviceProvider = serviceCollection.BuildServiceProvider();
 
         return AppBuilder.Configure<App>()
                          .UsePlatformDetect()
-                         .UseRouteNavUIPlatform("http://test.ui", serviceCollection, serviceProvider)
+                         .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection)
                          .LogToTrace();
     }
 }

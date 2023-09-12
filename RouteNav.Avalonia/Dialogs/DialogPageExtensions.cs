@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Layout;
 using Avalonia.Media;
 using RouteNav.Avalonia.Stacks;
 using static RouteNav.Avalonia.Dialogs.DialogSizeUtility;
@@ -15,13 +16,13 @@ public static class DialogPageExtensions
         return stack.PushDialogAsync(page.ToDialog(stack.CurrentPage, dialogSize, minSize, maxSize));
     }
 
-    public static Dialog ToDialog(this Page page, Page parentPage, DialogSize dialogSize = DialogSize.Medium,
+    public static Dialog ToDialog(this Page page, Layoutable? parent = null, DialogSize dialogSize = DialogSize.Medium,
                                   Size? minSize = null, Size? maxSize = null)
     {
         if (page == null)
             throw new ArgumentNullException(nameof(page));
 
-        var size = GetSize(dialogSize, parentPage, minSize, maxSize);
+        var size = GetSize(dialogSize, parent, minSize, maxSize);
 
         // Build Dialog from Page
         return new Dialog

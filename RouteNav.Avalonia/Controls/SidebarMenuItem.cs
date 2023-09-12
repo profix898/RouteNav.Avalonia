@@ -28,49 +28,6 @@ public class SidebarMenuItem : ContentControl
         Text = null!;
     }
 
-    public SidebarMenuItem(Uri routeUri, string text)
-    {
-        RouteUri = routeUri;
-        Text = text;
-    }
-
-    public SidebarMenuItem(Uri routeUri, string text, Type pageType)
-    {
-        RouteUri = routeUri;
-        Text = text;
-        PageType = pageType;
-    }
-
-    public SidebarMenuItem(Uri routeUri, string text, Func<Uri, Page> pageFactory)
-    {
-        RouteUri = routeUri;
-        Text = text;
-        PageFactory = pageFactory;
-    }
-
-    public SidebarMenuItem(string routePath, string text)
-    {
-        RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
-        RoutePath = routePath;
-        Text = text;
-    }
-
-    public SidebarMenuItem(string routePath, string text, Type pageType)
-    {
-        RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
-        RoutePath = routePath;
-        Text = text;
-        PageType = pageType;
-    }
-
-    public SidebarMenuItem(string routePath, string text, Func<Uri, Page> pageFactory)
-    {
-        RouteUri = null!; // Suppress nullability warning (property 'RelativeRoute' overrides value)
-        RoutePath = routePath;
-        Text = text;
-        PageFactory = pageFactory;
-    }
-
     static SidebarMenuItem()
     {
         PressedMixin.Attach<SidebarMenuItem>();

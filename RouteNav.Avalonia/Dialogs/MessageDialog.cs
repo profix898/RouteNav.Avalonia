@@ -5,10 +5,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace RouteNav.Avalonia.Dialogs;
 
@@ -127,29 +125,13 @@ public class MessageDialog : Dialog
         return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
     }
 
-    #region Error
-
-    public static Task Error(string message, Window? parentWindow = null)
+    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Page? parentPage)
     {
-        return Dispatcher.UIThread.InvokeAsync(() => ErrorPage(message).ShowDialog(parentWindow));
-    }
+        var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
+        var dialogTask = messageDialog.ShowDialog(parentPage);
 
-    public static Dialog ErrorPage(string message)
-    {
-        return new MessageDialog
-        {
-            Title = "Error",
-            Content = new TextBlock
-            {
-                Text = message,
-                Foreground = Brushes.Red,
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
-            }
-        };
+        return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
     }
-
-    #endregion
 
     #endregion
 }

@@ -13,9 +13,9 @@ namespace DemoApp.Pages.Main
 
         private async void OpenDlgCommand(object? sender, RoutedEventArgs e)
         {
-            await new Dialog() { Title = "Dialog Title", Content = "Content here ..." }.ShowDialog();
+            await new Dialog() { Title = "Dialog Title", Content = "Content here ..." }.ShowDialog(this);
 
-            await MessageDialog.Error("Error message");
+            await Error.ShowDialog("Error message", this);
 
             var result = await MessageDialog.ShowDialog("MessageDialog Title", "Do you agree?", MessageDialog.MessageDialogButtons.YesNo);
         }

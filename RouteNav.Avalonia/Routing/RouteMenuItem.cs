@@ -6,7 +6,7 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Routing;
 
-public class RouteMenuItem : MenuItem
+public class RouteMenuItem : MenuItem, IRouteItem
 {
     public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
 
@@ -14,10 +14,12 @@ public class RouteMenuItem : MenuItem
 
     public RouteMenuItem()
     {
-        Click += (_, _) => Navigation.PushAsync(RouteUri, Target);
+        Click += (_, _) => NavigateToRoute();
     }
 
     protected override Type StyleKeyOverride => typeof(MenuItem);
+
+    #region Implementation of IRouteItem
 
     public Uri RouteUri
     {
@@ -37,4 +39,11 @@ public class RouteMenuItem : MenuItem
         get { return GetValue(TargetProperty); }
         set { SetValue(TargetProperty, value); }
     }
+
+    public void NavigateToRoute()
+    {
+        Navigation.PushAsync(RouteUri, Target);
+    }
+
+    #endregion
 }
