@@ -1,4 +1,6 @@
-# RouteNav.Avalonia
+RouteNav.Avalonia
+==========
+[![Nuget](https://img.shields.io/nuget/v/RouteNav.Avalonia?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/RouteNav.Avalonia)
 
 **RouteNav.Avalonia** provides URI routing navigation for **Avalonia UI**. It supports a code-first, modular/extensible navigation approach with page (and dialog) primitives.
 
@@ -12,7 +14,7 @@ The UI update happens implicitely based on the association of the named `Navigat
 **RouteNav.Avalonia** also supports navigation with modal dialogs (and message dialogs).
 
 ### Usage
-During initialization all `Page`s are registered with the DI container of the navigation system (or directly with a custom DI container):
+During initialization all `Page`s are registered with the DI container of the navigation system (or manually with a custom DI container):
 ```CSharp
 Navigation.UIPlatform.RegisterPage<Page1>();
 ```
@@ -32,7 +34,7 @@ The `Page`s and `Dialog`s can be constructed via *XAML* or other means (i.e. cod
 There is currently only very limited documentation (incl. API docs) available. Please refer to the *DemoApp* for preliminary instructions and usage examples.
 
 ### License
-MiniToolbar.Avalonia is licensed under the terms of the MIT license (<http://opensource.org/licenses/MIT>, see LICENSE.txt).
+RouteNav.Avalonia is licensed under the terms of the MIT license (<http://opensource.org/licenses/MIT>, see LICENSE.txt).
 
 ### Disclaimer
 RouteNav.Avalonia is in early stages of development and should be considered experimental.
