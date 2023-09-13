@@ -11,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Stacks;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -19,7 +20,7 @@ namespace RouteNav.Avalonia.Dialogs;
 
 [TemplatePart("PART_DialogCloseButton", typeof(Button))]
 [TemplatePart("PART_DialogContent", typeof(ContentPresenter))]
-[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow)]
+[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded)]
 public class Dialog : TemplatedControl
 {
     protected TaskCompletionSource<object?>? taskCompletionSource;
@@ -254,6 +255,20 @@ public class Dialog : TemplatedControl
         stack ??= Navigation.GetMainStack();
     
         return stack.PushDialogAsync(this);
+    }
+
+    public Task<object?> ShowDialogEmbedded(ContentControl parentControl, bool restoreParent = false)
+    {
+        var previousContent = parentControl.Content;
+
+        parentControl.Content = this;
+        PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);
+
+        var dialogTask = Open();
+        if (restoreParent)
+            dialogTask.ContinueWith(_ => { Dispatcher.UIThread.Invoke(() => parentControl.Content = previousContent); });
+
+        return dialogTask;
     }
 
     #endregion

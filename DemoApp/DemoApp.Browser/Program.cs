@@ -2,18 +2,25 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
-using Avalonia.ReactiveUI;
 using DemoApp;
+using Microsoft.Extensions.DependencyInjection;
+using RouteNav.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]
 
-internal partial class Program
+internal class Program
 {
-    private static async Task Main(string[] args) => await BuildAvaloniaApp()
-            .WithInterFont()
-            .UseReactiveUI()
+    private static async Task Main(string[] args)
+    {
+        await BuildAvaloniaApp()
             .StartBrowserAppAsync("out");
+    }
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>();
+    {
+        var serviceCollection = new ServiceCollection();
+
+        return AppBuilder.Configure<App>()
+                         .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection);
+    }
 }

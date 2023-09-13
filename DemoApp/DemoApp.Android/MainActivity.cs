@@ -2,7 +2,8 @@
 using Android.Content.PM;
 using Avalonia;
 using Avalonia.Android;
-using Avalonia.ReactiveUI;
+using Microsoft.Extensions.DependencyInjection;
+using RouteNav.Avalonia;
 
 namespace DemoApp.Android;
 
@@ -16,8 +17,10 @@ public class MainActivity : AvaloniaMainActivity<App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
+        var serviceCollection = new ServiceCollection();
+
         return base.CustomizeAppBuilder(builder)
-            .WithInterFont()
-            .UseReactiveUI();
+                   .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection)
+                   .LogToTrace();
     }
 }
