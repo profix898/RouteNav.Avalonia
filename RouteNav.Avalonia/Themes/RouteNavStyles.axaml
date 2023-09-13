@@ -1,25 +1,27 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="RouteNav.Avalonia.Themes.RouteNavStyles">
-    <Styles.Resources>
+﻿<themes:RouteNavStyles xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:themes="clr-namespace:RouteNav.Avalonia.Themes"
+                       x:Class="RouteNav.Avalonia.Themes.RouteNavStyles">
+
+    <themes:RouteNavStyles.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <MergeResourceInclude Source="avares://RouteNav.Avalonia/Themes/Colors.xaml" />
+                <MergeResourceInclude Source="/Themes/Colors.axaml" />
 
-                <MergeResourceInclude Source="/Themes/Controls/Dialog.xaml" />
-                <MergeResourceInclude Source="/Themes/Controls/MessageDialog.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/Dialog.axaml" />
+                <MergeResourceInclude Source="/Themes/Controls/MessageDialog.axaml" />
 
-                <MergeResourceInclude Source="/Themes/Controls/Page.xaml" />
-                <MergeResourceInclude Source="/Themes/Controls/InternalErrorPage.xaml" />
-                <MergeResourceInclude Source="/Themes/Controls/NotFoundPage.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/Page.axaml" />
+                <MergeResourceInclude Source="/Themes/Controls/InternalErrorPage.axaml" />
+                <MergeResourceInclude Source="/Themes/Controls/NotFoundPage.axaml" />
 
-                <MergeResourceInclude Source="/Themes/Controls/NavigationControl.xaml" />
-                <MergeResourceInclude Source="/Themes/Controls/SidebarMenuItem.xaml" />
-                <MergeResourceInclude Source="/Themes/Controls/SidebarMenu.xaml" />
+                <MergeResourceInclude Source="/Themes/Controls/NavigationControl.axaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenuItem.axaml" />
+                <MergeResourceInclude Source="/Themes/Controls/SidebarMenu.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Styles.Resources>
-  
+    </themes:RouteNavStyles.Resources>
+
     <!-- MessageDialogButtons -->
     <Style Selector="Button.MessageDialogButton">
         <Setter Property="Width" Value="100" />
@@ -39,4 +41,4 @@
     <Style Selector="Button.MessageDialogButton:nth-last-child(1)">
         <Setter Property="Margin" Value="8,10,25,10" />
     </Style>
-</Styles>
+</themes:RouteNavStyles>

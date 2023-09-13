@@ -1,12 +1,11 @@
 using RouteNav.Avalonia;
 
-namespace DemoApp.Pages.SidebarMenu
+namespace DemoApp.Pages.SidebarMenu;
+
+public partial class SidebarMenuRootPage : Page
 {
-    public partial class SidebarMenuRootPage : Page
+    public SidebarMenuRootPage()
     {
-        public SidebarMenuRootPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

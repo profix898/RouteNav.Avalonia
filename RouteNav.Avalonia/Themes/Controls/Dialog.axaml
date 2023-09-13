@@ -1,10 +1,10 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:dialogs="clr-namespace:RouteNav.Avalonia.Dialogs"
-                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:routeNav="clr-namespace:RouteNav.Avalonia">
     <Design.PreviewWith>
         <Border Padding="50">
-          <dialogs:Dialog Title="Title" Content="Content here ..." />
+          <routeNav:Dialog Title="Title" Content="Content here ..." />
         </Border>
     </Design.PreviewWith>
   
@@ -13,7 +13,7 @@
     <x:Double x:Key="DialogMinWidth">350</x:Double>
     <x:Double x:Key="DialogMinHeight">200</x:Double>
   
-    <ControlTheme x:Key="{x:Type dialogs:Dialog}" TargetType="dialogs:Dialog">
+    <ControlTheme x:Key="{x:Type routeNav:Dialog}" TargetType="routeNav:Dialog">
         <Setter Property="TitleBarBackground" Value="{DynamicResource DialogTitleBarBackground}" />
         <Setter Property="TitleBarTextColor" Value="{DynamicResource DialogTitleBarTextColor}" />
         <Setter Property="Background" Value="#F3F3F3"/>
@@ -63,10 +63,10 @@
 
         <!-- Dialog window -->
         <Styles>
-            <Style Selector="dialogs|Dialog:dialog-window Panel#LayoutRoot">
+            <Style Selector="routeNav|Dialog:dialog-window Panel#LayoutRoot">
                 <Setter Property="Background" Value="{x:Null}" />
             </Style>
-            <Style Selector="dialogs|Dialog:dialog-window Border#BackgroundElement">
+            <Style Selector="routeNav|Dialog:dialog-window Border#BackgroundElement">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="BoxShadow" Value="none" />
@@ -75,17 +75,17 @@
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />
             </Style>
-            <Style Selector="dialogs|Dialog:dialog-window Panel#DialogTitleBar">
+            <Style Selector="routeNav|Dialog:dialog-window Panel#DialogTitleBar">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
         </Styles>
 
         <!-- Dialog embedded -->
         <Styles>
-            <Style Selector="dialogs|Dialog:dialog-embedded Panel#LayoutRoot">
+            <Style Selector="routeNav|Dialog:dialog-embedded Panel#LayoutRoot">
                 <Setter Property="Background" Value="{x:Null}" />
             </Style>
-            <Style Selector="dialogs|Dialog:dialog-embedded Border#BackgroundElement">
+            <Style Selector="routeNav|Dialog:dialog-embedded Border#BackgroundElement">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="BoxShadow" Value="none" />

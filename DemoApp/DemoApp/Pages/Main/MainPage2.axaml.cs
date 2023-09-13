@@ -1,12 +1,11 @@
 using RouteNav.Avalonia;
 
-namespace DemoApp.Pages.Main
+namespace DemoApp.Pages.Main;
+
+public partial class MainPage2 : Page
 {
-    public partial class MainPage2 : Page
+    public MainPage2()
     {
-        public MainPage2()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

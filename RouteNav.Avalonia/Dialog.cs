@@ -12,11 +12,12 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Threading;
+using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Stacks;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-namespace RouteNav.Avalonia.Dialogs;
+namespace RouteNav.Avalonia;
 
 [TemplatePart("PART_DialogCloseButton", typeof(Button))]
 [TemplatePart("PART_DialogContent", typeof(ContentPresenter))]
