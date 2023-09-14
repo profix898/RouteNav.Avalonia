@@ -47,9 +47,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
 
     public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => new NavigationContainer { Content = RootPage });
 
-    public Page RootPage { get; } = new Page();
+    public LazyValue<Page> RootPage { get; } = new LazyValue<Page>(() => new Page());
 
-    public Page? CurrentPage => RootPage;
+    public Page? CurrentPage => RootPage.Value;
 
     public INavigationStack? RequestStack(string stackName)
     {
@@ -158,7 +158,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
             });
         }
 
-        return RootPage;
+        return RootPage.Value;
     }
 
     #endregion

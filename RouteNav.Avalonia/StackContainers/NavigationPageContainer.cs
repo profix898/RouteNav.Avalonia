@@ -8,11 +8,19 @@ namespace RouteNav.Avalonia.StackContainers;
 
 public class NavigationPageContainer : NavigationContainer
 {
+    public static readonly StyledProperty<bool> HideNavigationBarForRootPageProperty = AvaloniaProperty.Register<NavigationPageContainer, bool>(nameof(HideNavigationBarForRootPage));
+
     public static readonly StyledProperty<string> NavigationControlNameProperty = AvaloniaProperty.Register<NavigationPageContainer, string>(nameof(NavigationControlName), "NavigationControl");
 
     public NavigationPageContainer()
     {
         RegisterScopedControl(this, NavigationControlName, Content = new NavigationControl());
+    }
+
+    public bool HideNavigationBarForRootPage
+    {
+        get { return GetValue(HideNavigationBarForRootPageProperty); }
+        set { SetValue(HideNavigationBarForRootPageProperty, value); }
     }
 
     public string NavigationControlName
@@ -29,6 +37,9 @@ public class NavigationPageContainer : NavigationContainer
         {
             NavigationControl.Page = page;
             NavigationControl.BackButtonEnabled = NavigationStack != null && (NavigationStack.PageStack.Count > (NavigationStack.IsMainStack ? 1 : 0));
+
+            if (HideNavigationBarForRootPage)
+                NavigationControl.NavigationBarVisible = !page.Equals(NavigationStack.RootPage.Value);
         }
     }
 

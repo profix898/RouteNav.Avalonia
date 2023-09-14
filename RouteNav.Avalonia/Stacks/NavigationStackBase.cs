@@ -45,8 +45,6 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public LazyValue<TC> Container { get; }
 
-    public LazyValue<Page> RootPage { get; protected set; }
-
     protected abstract Page? ResolveRoute(Uri routeUri);
 
     #region Implementation of INavigationStack
@@ -67,6 +65,8 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => Container.Value);
 
+    public LazyValue<Page> RootPage { get; protected set; }
+
     protected abstract TC InitContainer();
 
     public virtual INavigationStack? RequestStack(string stackName)
@@ -84,8 +84,8 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (!pageType.IsSubclassOf(typeof(Page)))
             throw new ArgumentException($"Type '{pageType.FullName}' is not a page.", nameof(pageType));
 
-        AddPage(relativeRoute.TrimStart('/'), uri => Navigation.UIPlatform.GetPage(pageType, uri)
-                                                     ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
+        AddPage(relativeRoute, uri => Navigation.UIPlatform.GetPage(pageType, uri)
+                                      ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
     }
 
     public abstract void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);

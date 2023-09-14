@@ -2,31 +2,25 @@
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
-using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Primitives;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Controls;
 
 [PseudoClasses(":pressed", ":selected")]
-public class SidebarMenuItem : ContentControl
+public class SidebarMenuItem : TemplatedControl
 {
+    public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<SidebarMenuItem, string>(nameof(PageType));
+
     public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
 
     public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
 
-    public static readonly StyledProperty<Page?> PageProperty = AvaloniaProperty.Register<SidebarMenuItem, Page?>(nameof(Page));
-
     public static readonly StyledProperty<Type?> PageTypeProperty = AvaloniaProperty.Register<SidebarMenuItem, Type?>(nameof(PageType));
 
     public static readonly StyledProperty<Func<Uri, Page>?> PageFactoryProperty = AvaloniaProperty.Register<SidebarMenuItem, Func<Uri, Page>?>(nameof(PageFactory));
-
-    public SidebarMenuItem()
-    {
-        RouteUri = null!;
-        Text = null!;
-    }
 
     static SidebarMenuItem()
     {
@@ -37,7 +31,8 @@ public class SidebarMenuItem : ContentControl
     
     public string Text
     {
-        set { SetValue(ContentProperty, new TextBlock { Text = value }); }
+        get { return GetValue(TextProperty); }
+        set { SetValue(TextProperty, value); }
     }
 
     public Uri RouteUri
@@ -59,25 +54,13 @@ public class SidebarMenuItem : ContentControl
         set { SetValue(TargetProperty, value); }
     }
 
-    public Page? Page
-    {
-        get { return GetValue(PageProperty); }
-        set
-        {
-            if (PageType != null || PageFactory != null)
-                throw new ArgumentException($"Only one of {nameof(Page)}, {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
-
-            SetValue(PageProperty, value);
-        }
-    }
-
     public Type? PageType
     {
         get { return GetValue(PageTypeProperty); }
         set
         {
-            if (Page != null || PageFactory != null)
-                throw new ArgumentException($"Only one of {nameof(Page)}, {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
+            if (PageFactory != null)
+                throw new ArgumentException($"Only one of {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
 
             SetValue(PageTypeProperty, value);
         }
@@ -88,12 +71,26 @@ public class SidebarMenuItem : ContentControl
         get { return GetValue(PageFactoryProperty); }
         set
         {
-            if (Page != null || PageType != null)
-                throw new ArgumentException($"Only one of {nameof(Page)}, {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
+            if (PageType != null)
+                throw new ArgumentException($"Only one of {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
 
             SetValue(PageFactoryProperty, value);
         }
     }
 
-    protected override AutomationPeer OnCreateAutomationPeer() => new ListItemAutomationPeer(this);
+    internal SidebarMenuItem Clone()
+    {
+        var menuItem = new SidebarMenuItem
+        {
+            Text = Text,
+            RouteUri = RouteUri,
+            Target = Target
+        };
+        if (PageType != null)
+            menuItem.PageType = PageType;
+        else
+            menuItem.PageFactory = PageFactory;
+
+        return menuItem;
+    }
 }

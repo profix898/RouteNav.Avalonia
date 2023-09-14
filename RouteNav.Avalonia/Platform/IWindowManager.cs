@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using RouteNav.Avalonia.Dialogs;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Platform;

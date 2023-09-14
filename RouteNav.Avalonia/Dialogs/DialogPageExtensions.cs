@@ -28,9 +28,8 @@ public static class DialogPageExtensions
         return new Dialog
         {
             Title = page.Title ?? "Dialog",
-            Content = page.Content,
+            Content = page,
             DataContext = page.DataContext,
-            Resources = page.Resources,
             Background = page.Background ?? Brushes.White,
             DialogSize = DialogSize.Custom,
             Width = size.Width,

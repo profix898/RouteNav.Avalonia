@@ -60,7 +60,7 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
 
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        var pageKey = relativeRoute.TrimStart('/');
+        var pageKey = relativeRoute.Trim('/');
         Pages.Set(pageKey, pageFactory);
 
         // RootPage

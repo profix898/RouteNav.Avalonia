@@ -44,7 +44,7 @@ public static class Navigation
         var activeStack = UIPlatform.ActivateStack(stack?.Name ?? MainStackName)
                           ?? throw new NavigationException("No NavigationStack available.");
 
-        return await activeStack.PushAsync(activeStack.BaseUri);
+        return await activeStack.PushAsync(activeStack.BuildRoute(String.Empty));
     }
 
     #endregion

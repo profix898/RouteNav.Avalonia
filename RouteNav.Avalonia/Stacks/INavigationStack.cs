@@ -33,6 +33,8 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
 
     LazyValue<NavigationContainer> ContainerPage { get; }
 
+    LazyValue<Page> RootPage { get; }
+
     INavigationStack? RequestStack(string stackName);
 
     void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);

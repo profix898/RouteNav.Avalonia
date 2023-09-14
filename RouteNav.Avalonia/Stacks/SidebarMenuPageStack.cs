@@ -77,7 +77,7 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
                 throw new InvalidOperationException($"No {nameof(SidebarMenu)} found in NavigationContainer.");
 
             sidebarMenuContainer.SidebarMenu.DisplayMode = DisplayMode;
-            sidebarMenuContainer.SidebarMenu.MenuItemsSource = menuItems;
+            sidebarMenuContainer.SidebarMenu.MenuItemsSource = menuItems.Select(mi => mi.Clone());
         };
         RootPage = new LazyValue<Page>(() => new Page());
 

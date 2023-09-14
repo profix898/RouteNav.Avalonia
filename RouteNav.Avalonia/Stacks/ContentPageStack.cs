@@ -40,12 +40,12 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
 
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        var pageKey = relativeRoute.TrimStart('/');
+        var pageKey = relativeRoute.Trim('/');
         Pages.Set(pageKey, pageFactory);
 
         // RootPage
         if (String.IsNullOrEmpty(pageKey))
-            RootPage = new LazyValue<Page>(() => pageFactory(new Uri(String.Empty, UriKind.Relative)));
+            RootPage = new LazyValue<Page>(() => pageFactory(this.BuildRoute(String.Empty)));
     }
 
     public override Task PushAsync(Page page)

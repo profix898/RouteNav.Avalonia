@@ -15,7 +15,6 @@
     <!--  SidebarMenuItem  -->
     <ControlTheme x:Key="{x:Type controls:SidebarMenuItem}" TargetType="controls:SidebarMenuItem">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Padding" Value="8" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -28,16 +27,8 @@
                             Background="{DynamicResource SidebarMenuSelectionPipeFill}"
                             IsVisible="False"
                             CornerRadius="4" />
-                    <ContentPresenter x:Name="PART_ContentPresenter"
-                                      Padding="{TemplateBinding Padding}"
-                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      Background="{TemplateBinding Background}"
-                                      BorderBrush="{TemplateBinding BorderBrush}"
-                                      BorderThickness="{TemplateBinding BorderThickness}"
-                                      Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      CornerRadius="{TemplateBinding CornerRadius}" />
+                    <TextBlock Text="{TemplateBinding Text}"
+                               Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" />
                 </Panel>
             </ControlTemplate>
         </Setter>

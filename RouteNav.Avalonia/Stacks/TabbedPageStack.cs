@@ -80,7 +80,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        Pages.Set(relativeRoute.TrimStart('/'), pageFactory);
+        Pages.Set(relativeRoute.Trim('/'), pageFactory);
     }
 
     #endregion
