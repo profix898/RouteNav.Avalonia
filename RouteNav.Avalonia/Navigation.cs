@@ -211,7 +211,7 @@ public static class Navigation
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
             var page404 = new NotFoundPage();
-            await activeStack.PushDialogAsync(page404, (target == NavigationTarget.DialogOverlay));
+            await activeStack.PushDialogAsync(page404, forceOverlay: (target == NavigationTarget.DialogOverlay));
 
             return page404;
         }
