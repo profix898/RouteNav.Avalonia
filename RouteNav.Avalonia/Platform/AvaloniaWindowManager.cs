@@ -49,8 +49,7 @@ public class AvaloniaWindowManager : IWindowManager
             if (ownerWindow == null)
                 throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
-            if (dialog.DialogSize != DialogSize.Custom)
-                dialog.SetSize(parentWindow);
+            dialog.SetSize(parentWindow);
 
             var platformWindow = new AvaloniaWindow
             {

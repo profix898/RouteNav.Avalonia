@@ -28,16 +28,34 @@ public class Dialog : TemplatedControl
     protected Button? dialogCloseButton;
     protected ContentPresenter? dialogContent;
 
+    /// <summary>
+    /// Defines the <see cref="Title"/> property.
+    /// </summary>
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Dialog, string>(nameof(Title), "Dialog");
 
+    /// <summary>
+    /// Defines the <see cref="TitleBarBackground"/> property.
+    /// </summary>
     public static readonly StyledProperty<Brush> TitleBarBackgroundProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarBackground));
 
+    /// <summary>
+    /// Defines the <see cref="TitleBarTextColor"/> property.
+    /// </summary>
     public static readonly StyledProperty<Brush> TitleBarTextColorProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarTextColor));
 
+    /// <summary>
+    /// Defines the <see cref="Content"/> property.
+    /// </summary>
     public static readonly StyledProperty<object?> ContentProperty = AvaloniaProperty.Register<Dialog, object?>(nameof(Content));
 
+    /// <summary>
+    /// Defines the <see cref="ContentTemplate"/> property.
+    /// </summary>
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = AvaloniaProperty.Register<TemplatedControl, IDataTemplate?>(nameof(ContentTemplate));
 
+    /// <summary>
+    /// Defines the <see cref="DialogSize"/> property.
+    /// </summary>
     public static readonly StyledProperty<DialogSize> DialogSizeProperty = AvaloniaProperty.Register<Dialog, DialogSize>(nameof(DialogSize), DialogSize.Medium);
 
     public Dialog()
@@ -45,24 +63,36 @@ public class Dialog : TemplatedControl
         PseudoClasses.Add(SharedPseudoClasses.Hidden);
     }
 
+    /// <summary>
+    /// Gets or sets the title of the dialog
+    /// </summary>
     public string Title
     {
         get { return GetValue(TitleProperty); }
         set { SetValue(TitleProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets the background color of the dialog's title bar
+    /// </summary>
     public Brush TitleBarBackground
     {
         get { return GetValue(TitleBarBackgroundProperty); }
         set { SetValue(TitleBarBackgroundProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets the text color of the dialog's title
+    /// </summary>
     public Brush TitleBarTextColor
     {
         get { return GetValue(TitleBarTextColorProperty); }
         set { SetValue(TitleBarTextColorProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets the content of the dialog
+    /// </summary>
     [Content]
     [DependsOn(nameof(ContentTemplate))]
     public object? Content
@@ -77,12 +107,18 @@ public class Dialog : TemplatedControl
         }
     }
 
+    /// <summary>
+    /// Gets or sets a content template for the dialog
+    /// </summary>
     public IDataTemplate? ContentTemplate
     {
         get { return GetValue(ContentTemplateProperty); }
         set { SetValue(ContentTemplateProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets a size specifier for the dialog
+    /// </summary>
     public DialogSize DialogSize
     {
         get { return GetValue(DialogSizeProperty); }
@@ -237,14 +273,14 @@ public class Dialog : TemplatedControl
 
     #region ShowDialog
 
-    public Task<object?> ShowDialog(Window? parentWindow = null)
+    public Task<object?> ShowDialog(Window? parentWindow = null, bool forceOverlay = false)
     {
         var stack = Navigation.UIPlatform.GetActiveStackFromWindow(parentWindow) ?? Navigation.GetMainStack();
         
-        return stack.PushDialogAsync(this);
+        return stack.PushDialogAsync(this, forceOverlay);
     }
 
-    public Task<object?> ShowDialog(Page? parentPage)
+    public Task<object?> ShowDialog(Page? parentPage, bool forceOverlay = false)
     {
         INavigationStack? stack = null;
         if (parentPage != null && parentPage.PageQuery.TryGetValue("routeUri", out var routeUriString))
@@ -255,7 +291,7 @@ public class Dialog : TemplatedControl
         }
         stack ??= Navigation.GetMainStack();
     
-        return stack.PushDialogAsync(this);
+        return stack.PushDialogAsync(this, forceOverlay);
     }
 
     public Task<object?> ShowDialogEmbedded(ContentControl parentControl, bool restoreParent = false)

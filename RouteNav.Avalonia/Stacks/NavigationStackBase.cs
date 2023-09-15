@@ -201,14 +201,14 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public virtual Dialog? CurrentDialog { get; protected set; }
 
-    public virtual Task<object?> PushDialogAsync(Dialog dialog)
+    public virtual Task<object?> PushDialogAsync(Dialog dialog, bool forceOverlay = false)
     {
         var previousDialog = dialogStack.LastOrDefault();
 
         dialogStack.Add(dialog);
         CurrentDialog = dialog;
 
-        var dialogTask = ContainerPage.Value.UpdateDialog(dialog);
+        var dialogTask = ContainerPage.Value.UpdateDialog(dialog, forceOverlay);
         dialog.Closed += (_, _) => { dialogStack.Remove(dialog); };
         OnDialogNavigated(previousDialog, dialog);
 
@@ -269,10 +269,10 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         var page = ResolveRoute(routeUri) ?? new NotFoundPage();
         
-        if (target != NavigationTarget.Dialog)
+        if (target != NavigationTarget.Dialog && target != NavigationTarget.DialogOverlay)
             await PushAsync(page);
         else
-            await PushDialogAsync(BuildDialog(page));
+            await PushDialogAsync(BuildDialog(page), (target == NavigationTarget.DialogOverlay));
 
         OnRouteNavigated(null, routeUri);
 

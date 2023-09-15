@@ -117,18 +117,26 @@ public class MessageDialog : Dialog
 
     #region ShowStatic
 
-    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Window? parentWindow = null)
+    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Window? parentWindow = null, bool forceOverlay = false)
     {
         var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
-        var dialogTask = messageDialog.ShowDialog(parentWindow);
+        var dialogTask = messageDialog.ShowDialog(parentWindow, forceOverlay);
 
         return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
     }
 
-    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Page? parentPage)
+    public static async Task<MessageDialogResult> ShowDialog(string title, string text, MessageDialogButtons buttons, Page? parentPage, bool forceOverlay = false)
     {
         var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
-        var dialogTask = messageDialog.ShowDialog(parentPage);
+        var dialogTask = messageDialog.ShowDialog(parentPage, forceOverlay);
+
+        return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
+    }
+
+    public static async Task<MessageDialogResult> ShowDialogEmbedded(string title, string text, MessageDialogButtons buttons, ContentControl parentControl, bool forceOverlay = false)
+    {
+        var messageDialog = new MessageDialog { Title = title, Content = text, Buttons = buttons };
+        var dialogTask = messageDialog.ShowDialogEmbedded(parentControl, forceOverlay);
 
         return (MessageDialogResult) (await dialogTask ?? messageDialog.DefaultResult);
     }

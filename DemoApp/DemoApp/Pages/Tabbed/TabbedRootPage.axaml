@@ -7,12 +7,12 @@
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                Title="Root Page"
                x:Class="DemoApp.Pages.Tabbed.TabbedRootPage">
-    <StackPanel>
+    <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the Tabbed stack!</TextBlock>
         <TextBlock Margin="0,0,0,10">-> We are on Root Page.</TextBlock>
-      
+
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel>
+            <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Main stack</TextBlock>
                 <routing:RouteButton RoutePath="/main" Target="Parent">Back to Main Root</routing:RouteButton>
             </StackPanel>

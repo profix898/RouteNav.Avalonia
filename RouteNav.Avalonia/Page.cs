@@ -5,6 +5,7 @@ using RouteNav.Avalonia.Platform;
 using System;
 using System.Collections.Generic;
 using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Dialogs;
 
 namespace RouteNav.Avalonia;
 
@@ -19,6 +20,11 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     /// Defines the <see cref="SafeAreaPadding"/> property.
     /// </summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
+
+    /// <summary>
+    /// Defines the <see cref="DialogSizeHint"/> property.
+    /// </summary>
+    public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Dialog, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
 
     public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 
@@ -38,6 +44,15 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     {
         get { return GetValue(SafeAreaPaddingProperty); }
         set { SetValue(SafeAreaPaddingProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the size hint in case the page is displayed as dialog
+    /// </summary>
+    public DialogSize? DialogSizeHint
+    {
+        get { return GetValue(DialogSizeHintProperty); }
+        set { SetValue(DialogSizeHintProperty, value); }
     }
 
     protected override Type StyleKeyOverride => typeof(Page);

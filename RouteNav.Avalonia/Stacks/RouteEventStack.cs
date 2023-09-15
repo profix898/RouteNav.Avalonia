@@ -113,7 +113,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     /// <summary>Event 'DialogNavigated' not supported for event stack.</summary>
     public event Action<NavigationEventArgs<Dialog>>? DialogNavigated;
 
-    public Task<object?> PushDialogAsync(Dialog dialog)
+    public Task<object?> PushDialogAsync(Dialog dialog, bool forceOverlay = false)
     {
         return Task.FromException<object?>(new NotSupportedException($"{nameof(RouteEventStack)} does not implement IDialogNavigation."));
     }
@@ -152,7 +152,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
             // Show result page in popup view
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Navigation.GetMainStack().PushDialogAsync(page);
+                await Navigation.GetMainStack().PushDialogAsync(page, forceOverlay: (target == NavigationTarget.DialogOverlay));
 
                 return page;
             });

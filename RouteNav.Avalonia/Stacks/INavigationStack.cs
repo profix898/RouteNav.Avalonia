@@ -12,6 +12,7 @@ public enum NavigationTarget
     Self,
     Parent,
     Dialog,
+    DialogOverlay,
     Window
 }
 

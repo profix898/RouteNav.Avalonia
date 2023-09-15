@@ -12,7 +12,7 @@ public interface IDialogNavigation
 
     Dialog? CurrentDialog { get; }
 
-    Task<object?> PushDialogAsync(Dialog dialog);
+    Task<object?> PushDialogAsync(Dialog dialog, bool forceOverlay = false);
 
     Task<Dialog> PopDialogAsync();
 

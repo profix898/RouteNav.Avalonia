@@ -1,0 +1,17 @@
+<avalonia:Page xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+      mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
+      Width="500" Height="250"
+      x:Class="DemoApp.TestPage">
+  
+    <StackPanel Spacing="10" Margin="15,10">
+        <TextBlock Margin="0,0,0,10" FontWeight="Bold">Any content can go here ...</TextBlock>
+        <ProgressBar Value="0.5" />
+        <CheckBox IsChecked="true" />
+        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
+        <TimePicker />
+    </StackPanel>
+</avalonia:Page>

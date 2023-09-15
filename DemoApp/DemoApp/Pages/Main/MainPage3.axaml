@@ -6,7 +6,7 @@
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                Title="Page 3"
                x:Class="DemoApp.Pages.Main.MainPage3">
-    <StackPanel>
+    <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
         <TextBlock Margin="0,0,0,10">-> We are on Page 3.</TextBlock>
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">

@@ -8,4 +8,10 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
+
+    internal MainWindow(object? content)
+        : base(content)
+    {
+        InitializeComponent();
+    }
 }

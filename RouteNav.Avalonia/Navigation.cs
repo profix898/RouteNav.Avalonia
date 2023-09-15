@@ -69,6 +69,7 @@ public static class Navigation
 
             // Open in modal dialog (prefer in associated window)
             NavigationTarget.Dialog => PushDialogAsync(routeUri),
+            NavigationTarget.DialogOverlay => PushDialogAsync(routeUri, target),
 
             // Open in new window (or replacing current stack if unsupported)
             NavigationTarget.Window => PushWindowAsync(routeUri),
@@ -190,7 +191,7 @@ public static class Navigation
         return await activeStack.PushAsync(routeUri, NavigationTarget.Parent);
     }
 
-    private static async Task<Page> PushDialogAsync(Uri routeUri)
+    private static async Task<Page> PushDialogAsync(Uri routeUri, NavigationTarget target = NavigationTarget.Dialog)
     {
         // Open in modal dialog (prefer in associated window)
         var stackName = routeUri.GetStackName() ?? String.Empty;
@@ -210,12 +211,12 @@ public static class Navigation
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
             var page404 = new NotFoundPage();
-            await activeStack.PushDialogAsync(page404);
+            await activeStack.PushDialogAsync(page404, (target == NavigationTarget.DialogOverlay));
 
             return page404;
         }
 
-        return await activeStack.PushAsync(routeUri, NavigationTarget.Dialog);
+        return await activeStack.PushAsync(routeUri, target);
     }
 
     private static Task PopDialogAsync(INavigationStack? stack = null)

@@ -63,7 +63,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         Content = page?.Content;
     }
 
-    public virtual Task<object?> UpdateDialog(Dialog? dialog)
+    public virtual Task<object?> UpdateDialog(Dialog? dialog, bool forceOverlay = false)
     {
         // All dialogs closed (dispose overlay host)
         if (dialog == null)
@@ -77,8 +77,11 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         if (dialog.IsOpen)
         {
             if (!Navigation.UIPlatform.WindowManager.SupportsMultiWindow
-                || Navigation.UIPlatform.WindowManager.ForceOverlayDialogs)
+                || Navigation.UIPlatform.WindowManager.ForceOverlayDialogs || forceOverlay)
             {
+                // Remove dialog size (so that background fills host container)
+                dialog.Width = dialog.Height = Double.NaN;
+                // Update content of dialog host
                 DialogOverlayHost.Content = dialog;
                 DialogOverlayHost.OverlayLayer.UpdateLayout();
             }
@@ -108,7 +111,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         }
 
         if (Navigation.UIPlatform.WindowManager.SupportsMultiWindow
-            && !Navigation.UIPlatform.WindowManager.ForceOverlayDialogs)
+            && !Navigation.UIPlatform.WindowManager.ForceOverlayDialogs && !forceOverlay)
         {
             // Open new dialog in window
             var parentWindow = Navigation.UIPlatform.GetActiveWindowFromStack(navigationStack);
@@ -116,6 +119,9 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
                 return dialogTask;
         }
 
+        // Remove dialog size (so that background fills host container)
+        dialog.Width = dialog.Height = Double.NaN;
+        // Update content of dialog host
         DialogOverlayHost.Content = dialog;
         dialog.IsVisible = true;
         DialogOverlayHost.OverlayLayer.UpdateLayout();

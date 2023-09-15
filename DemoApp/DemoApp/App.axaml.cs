@@ -57,9 +57,9 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        base.OnFrameworkInitializationCompleted();
+
         // Set main window (window abstraction for desktop + mobile)
         ApplicationLifetime.SetMainWindow(new MainWindow());
-
-        base.OnFrameworkInitializationCompleted();
     }
 }
