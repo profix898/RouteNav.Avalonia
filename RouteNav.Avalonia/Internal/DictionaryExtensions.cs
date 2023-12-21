@@ -2,7 +2,7 @@
 
 namespace RouteNav.Avalonia.Internal;
 
-internal static class HelperExtensions
+internal static class DictionaryExtensions
 {
     public static bool EqualsContent<TKey, TValue>(this IDictionary<TKey, TValue> dictA, IDictionary<TKey, TValue> dictB,
                                                    IEqualityComparer<TValue>? valueComparer = null)

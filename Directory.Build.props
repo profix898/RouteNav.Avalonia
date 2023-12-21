@@ -2,7 +2,6 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>false</ImplicitUsings>
-    <AvaloniaVersion>11.0.4</AvaloniaVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup>

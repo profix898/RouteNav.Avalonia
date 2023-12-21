@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Internal;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Platform;
@@ -55,6 +56,7 @@ public class AvaloniaWindowManager : IWindowManager
             {
                 Title = dialog.Title,
 
+                // ContentControl
                 Content = dialog,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 VerticalContentAlignment = VerticalAlignment.Stretch,
@@ -78,43 +80,20 @@ public class AvaloniaWindowManager : IWindowManager
             return true;
         }
 
-        // Variant B: Mobile/Browser (single window/view) platform + Fallback -> open dialog in overlay
+        // Variant B: Mobile/Browser (single window/view) platform + fallback -> open dialog in overlay
         dialogTask = Task.FromCanceled<object?>(CancellationToken.None);
         return false;
     }
 
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
     {
-        var platformWindow = new AvaloniaWindow // Clone into AvaloniaWindow
+        var platformWindow = new AvaloniaWindow
         {
             Title = window.Title,
-            Icon = window.Icon,
-
-            // ContentControl
-            Content = window.Content,
-            ContentTemplate = window.ContentTemplate,
-            HorizontalContentAlignment = window.HorizontalContentAlignment,
-            VerticalContentAlignment = window.VerticalContentAlignment,
-
-            // TemplatedControl
-            Background = window.Background,
-            BorderBrush = window.BorderBrush,
-            BorderThickness = window.BorderThickness,
-            CornerRadius = window.CornerRadius,
-            FontFamily = window.FontFamily,
-            FontSize = window.FontSize,
-            FontStyle = window.FontStyle,
-            FontWeight = window.FontWeight,
-            FontStretch = window.FontStretch,
-            Foreground = window.Foreground,
-            Padding = window.Padding,
-
-            // Control
-            FocusAdorner = window.FocusAdorner,
-            Tag = window,
-            ContextMenu = window.ContextMenu,
-            ContextFlyout = window.ContextFlyout
+            Icon = window.Icon
         };
+        window.ClonePropertiesTo(platformWindow);
+
         WindowCustomizationEvent?.Invoke(platformWindow, false);
 #if DEBUG
         platformWindow.AttachDevTools();
@@ -126,33 +105,8 @@ public class AvaloniaWindowManager : IWindowManager
 
     public virtual ContentControl CreatePlatformView(Window window, ISingleViewApplicationLifetime singleViewLifetime)
     {
-        var platformControl = new ContentControl // Clone into new ContentControl
-        {
-            // ContentControl
-            Content = window.Content,
-            ContentTemplate = window.ContentTemplate,
-            HorizontalContentAlignment = window.HorizontalContentAlignment,
-            VerticalContentAlignment = window.VerticalContentAlignment,
-
-            // TemplatedControl
-            Background = window.Background,
-            BorderBrush = window.BorderBrush,
-            BorderThickness = window.BorderThickness,
-            CornerRadius = window.CornerRadius,
-            FontFamily = window.FontFamily,
-            FontSize = window.FontSize,
-            FontStyle = window.FontStyle,
-            FontWeight = window.FontWeight,
-            FontStretch = window.FontStretch,
-            Foreground = window.Foreground,
-            Padding = window.Padding,
-
-            // Control
-            FocusAdorner = window.FocusAdorner,
-            Tag = window,
-            ContextMenu = window.ContextMenu,
-            ContextFlyout = window.ContextFlyout
-        };
+        var platformControl = new ContentControl();
+        window.ClonePropertiesTo(platformControl);
 
         window.RegisterPlatform(singleViewLifetime, platformControl);
 

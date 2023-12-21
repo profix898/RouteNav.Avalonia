@@ -15,7 +15,7 @@ public static class AppBuilderExtensions
     }
 
     /// <summary>Uses an IServiceCollection (for page registration) and an IServiceProvider factory (to fetch components afterwards).</summary>
-    /// <remarks>IServiceCollection is only every used for 'RegisterPage' calls during initialization.
+    /// <remarks>IServiceCollection is only ever used for 'RegisterPage' calls during initialization.
     ///          You can also register any pages (and dependencies) directly with the DI container.</remarks>
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri,
                                                    Func<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection = null)
@@ -24,7 +24,7 @@ public static class AppBuilderExtensions
     }
 
     /// <summary>Uses an IServiceCollection (for page registration) and an IServiceProvider factory (to fetch components afterwards).</summary>
-    /// <remarks>IServiceCollection is only every used for 'RegisterPage' calls during initialization.
+    /// <remarks>IServiceCollection is only ever used for 'RegisterPage' calls during initialization.
     ///          You can also register any pages (and dependencies) directly with the DI container.</remarks>
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri,
                                                    Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection = null)

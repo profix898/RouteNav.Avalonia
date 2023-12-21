@@ -2,6 +2,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
+using RouteNav.Avalonia.Internal;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
@@ -123,7 +125,7 @@ public class Window : ContentControl
     {
         templateWindow ??= Application.Current!.GetMainWindow();
 
-        return new Window
+        var platformWindow = new Window
         {
             Title = title ?? templateWindow.Title,
             Icon = icon ?? templateWindow.Icon,
@@ -131,21 +133,11 @@ public class Window : ContentControl
             // ContentControl
             Content = content,
             HorizontalContentAlignment = templateWindow.HorizontalContentAlignment,
-            VerticalContentAlignment = templateWindow.VerticalContentAlignment,
-
-            // TemplatedControl
-            Background = templateWindow.Background,
-            BorderBrush = templateWindow.BorderBrush,
-            BorderThickness = templateWindow.BorderThickness,
-            CornerRadius = templateWindow.CornerRadius,
-            FontFamily = templateWindow.FontFamily,
-            FontSize = templateWindow.FontSize,
-            FontStyle = templateWindow.FontStyle,
-            FontWeight = templateWindow.FontWeight,
-            FontStretch = templateWindow.FontStretch,
-            Foreground = templateWindow.Foreground,
-            Padding = templateWindow.Padding
+            VerticalContentAlignment = templateWindow.VerticalContentAlignment
         };
+        ((TemplatedControl) templateWindow).ClonePropertiesTo(platformWindow);
+
+        return platformWindow;
     }
 
     #endregion

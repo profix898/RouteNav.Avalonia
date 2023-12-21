@@ -21,8 +21,8 @@ public static class DialogSizeUtility
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
 
-        dialog.Width = size.Width;
-        dialog.Height = size.Height;
+        dialog.Width = Round(size.Width);
+        dialog.Height = Round(size.Height);
     }
 
     public static Size GetSize(DialogSize dialogSize, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
@@ -50,7 +50,7 @@ public static class DialogSizeUtility
 
         // For RouteNav.Window use underlying platform window size
         if (parent is Window window && window.PlatformControl != null)
-            baseSize = new Size(window.PlatformControl.Width, window.PlatformControl.Height);
+            baseSize = new Size(window.PlatformControl.Bounds.Width, window.PlatformControl.Bounds.Height);
 
         // For width/height is NaN use DefaultSize
         if (Double.IsNaN(baseSize.Width) || Double.IsNaN(baseSize.Height))
