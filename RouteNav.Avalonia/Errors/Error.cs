@@ -4,7 +4,7 @@ using Avalonia.Threading;
 using RouteNav.Avalonia.Dialogs;
 using static RouteNav.Avalonia.Dialogs.MessageDialog;
 
-namespace RouteNav.Avalonia.Error;
+namespace RouteNav.Avalonia.Errors;
 
 public static class Error
 {
@@ -17,6 +17,16 @@ public static class Error
             Title = "Error",
             Classes = { "Error" },
             Content = ErrorFactory.BuildErrorView(exception.Message, ExceptionFormatter.ToString(exception))
+        };
+    }
+
+    public static Page Page(string message, Exception exception)
+    {
+        return new Page
+        {
+            Title = "Error",
+            Classes = { "Error" },
+            Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception))
         };
     }
 
@@ -41,6 +51,17 @@ public static class Error
         };
     }
 
+    public static Dialog Dialog(string message, Exception exception)
+    {
+        return new MessageDialog
+        {
+            Title = "Error",
+            Classes = { "Error" },
+            Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception)),
+            Buttons = MessageDialogButtons.Ok
+        };
+    }
+
     public static Dialog Dialog(string message, string? exceptionDetails = null)
     {
         return new MessageDialog
@@ -59,9 +80,19 @@ public static class Error
         return Dispatcher.UIThread.InvokeAsync(() => Dialog(exception).ShowDialog(parentWindow, forceOverlay));
     }
 
+    public static Task ShowDialog(string message, Exception exception, Window? parentWindow = null, bool forceOverlay = false)
+    {
+        return Dispatcher.UIThread.InvokeAsync(() => Dialog(message, exception).ShowDialog(parentWindow, forceOverlay));
+    }
+
     public static Task ShowDialog(string message, string? exceptionDetails, Window? parentWindow = null, bool forceOverlay = false)
     {
         return Dispatcher.UIThread.InvokeAsync(() => Dialog(message, exceptionDetails).ShowDialog(parentWindow, forceOverlay));
+    }
+
+    public static Task ShowDialog(string message, Exception exception, Page? parentPage, bool forceOverlay = false)
+    {
+        return Dispatcher.UIThread.InvokeAsync(() => Dialog(message, exception).ShowDialog(parentPage, forceOverlay));
     }
 
     public static Task ShowDialog(Exception exception, Page? parentPage, bool forceOverlay = false)

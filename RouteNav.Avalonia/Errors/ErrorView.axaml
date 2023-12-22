@@ -2,18 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:error="clr-namespace:RouteNav.Avalonia.Error"
+             xmlns:errors="clr-namespace:RouteNav.Avalonia.Errors"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
-             x:Class="RouteNav.Avalonia.Error.ErrorView"
-             x:DataType="error:ErrorView">
+             x:Class="RouteNav.Avalonia.Errors.ErrorView"
+             x:DataType="errors:ErrorView">
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-        <Label>
+        <Label Margin="0,0,0,12">
             <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontSize="16" TextWrapping="Wrap" />
         </Label>
         <ScrollViewer IsVisible="{Binding ExceptionDetails, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
             <Label>
-                <TextBlock FontSize="14" Text="{Binding ExceptionDetails}" TextWrapping="Wrap" />
+                <TextBlock FontSize="12" Text="{Binding ExceptionDetails}" TextWrapping="Wrap" />
             </Label>
         </ScrollViewer>
     </StackPanel>

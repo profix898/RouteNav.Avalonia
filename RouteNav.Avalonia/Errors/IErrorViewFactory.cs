@@ -1,4 +1,4 @@
-namespace RouteNav.Avalonia.Error;
+namespace RouteNav.Avalonia.Errors;
 
 public interface IErrorViewFactory
 {

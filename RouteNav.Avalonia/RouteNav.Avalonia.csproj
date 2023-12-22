@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Error\ErrorView.axaml.cs">
+    <Compile Update="Errors\ErrorView.axaml.cs">
       <DependentUpon>ErrorView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>

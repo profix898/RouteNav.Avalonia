@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
+using RouteNav.Avalonia.Errors;
 using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.Stacks;
@@ -61,15 +62,22 @@ public class AvaloniaUIPlatform : IUIPlatform
             throw new ArgumentNullException(nameof(pageType));
 
         if (serviceProvider.Value == null)
-            throw new NotSupportedException($"IServiceProvider is not available (can't fetch page of type '{pageType}').");
+            throw new NotSupportedException($"IServiceProvider is not available (can't retrieve page of type '{pageType.FullName}').");
 
-        var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider.Value, pageType, parameters);
+        try
+        {
+            var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider.Value, pageType, parameters);
 
-        // Supply page with query parameters (if available)
-        page.PageQuery = uri.ParseQueryString();
-        page.PageQuery.Add("routeUri", uri.ToString());
+            // Supply page with query parameters (if available)
+            page.PageQuery = uri.ParseQueryString();
+            page.PageQuery.Add("routeUri", uri.ToString());
 
-        return page;
+            return page;
+        }
+        catch (Exception ex)
+        {
+            return Error.Page($"Failed to retrieve page of type '{pageType.FullName}'.", ex);
+        }
     }
 
     #endregion

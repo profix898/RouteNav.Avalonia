@@ -3,7 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using RouteNav.Avalonia;
 using RouteNav.Avalonia.Dialogs;
-using RouteNav.Avalonia.Error;
+using RouteNav.Avalonia.Errors;
 
 namespace DemoApp.Pages.Main;
 
@@ -19,7 +19,7 @@ public partial class MainPage1 : Page
         await new Dialog { Title = "Dialog Title", Content = new TestPage() }.ShowDialog(this);
         var result = MessageDialog.Create("MessageDialog Title", "Avalonia UI is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialog(this);
 
-        await Error.ShowDialog("Error message", new NotImplementedException("Something went terribly wrong!").ToString(), this);
+        await Error.ShowDialog("Error message", new NotImplementedException("Something went terribly wrong!"), this);
     }
 
     private async void OpenDlgEmbeddedCommand(object? sender, RoutedEventArgs e)

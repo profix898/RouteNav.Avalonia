@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace RouteNav.Avalonia.Error;
+namespace RouteNav.Avalonia.Errors;
 
 public partial class ErrorView : UserControl
 {

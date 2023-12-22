@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace RouteNav.Avalonia.Error;
+namespace RouteNav.Avalonia.Errors;
 
 public static class ExceptionFormatter
 {
