@@ -41,4 +41,19 @@
     <Style Selector="Button.MessageDialogButton:nth-last-child(1)">
         <Setter Property="Margin" Value="8,10,25,10" />
     </Style>
+  
+    <!-- Hyperlink -->
+    <Style Selector="TextBlock.Hyperlink">
+        <Setter Property="Foreground" Value="{DynamicResource HyperlinkColor}" />
+    </Style>
+    <Style Selector="TextBlock.Hyperlink:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource HyperlinkHighlightColor}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="TextBlock.Hyperlink:visited">
+        <Setter Property="Foreground" Value="{DynamicResource HyperlinkVisitedColor}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
+  
 </themes:RouteNavStyles>

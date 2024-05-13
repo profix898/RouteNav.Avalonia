@@ -1,4 +1,5 @@
 ﻿using System;
+using Avalonia.Platform.Storage;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Platform;
@@ -6,6 +7,8 @@ namespace RouteNav.Avalonia.Platform;
 public interface IUIPlatform
 {
     public IWindowManager WindowManager { get; }
+    
+    public ILauncher Launcher { get; set; }
 
     #region Pages
 

@@ -28,6 +28,10 @@
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FFFFFF" />
             <SolidColorBrush x:Key="SidebarMenuHamburgerTextColor" Color="#000000" />
             <SolidColorBrush x:Key="SidebarMenuHamburgerBackground" Color="#F2F2F2" />
+            <!-- Hyperlink -->
+            <SolidColorBrush x:Key="HyperlinkColor" Color="DarkBlue" />
+            <SolidColorBrush x:Key="HyperlinkHighlightColor" Color="Blue" />
+            <SolidColorBrush x:Key="HyperlinkVisitedColor" Color="Purple" />
         </ResourceDictionary>
 
         <!-- Dark -->
@@ -58,6 +62,10 @@
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#000000" />
             <SolidColorBrush x:Key="SidebarMenuHamburgerTextColor" Color="#FFFFFF" />
             <SolidColorBrush x:Key="SidebarMenuHamburgerBackground" Color="#171717" />
+            <!-- Hyperlink -->
+            <SolidColorBrush x:Key="HyperlinkColor" Color="CornflowerBlue" />
+            <SolidColorBrush x:Key="HyperlinkHighlightColor" Color="Blue" />
+            <SolidColorBrush x:Key="HyperlinkVisitedColor" Color="Purple" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

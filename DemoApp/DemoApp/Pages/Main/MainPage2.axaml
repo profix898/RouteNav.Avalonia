@@ -5,7 +5,7 @@
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                xmlns:routeCtrl="clr-namespace:RouteNav.Avalonia.Controls;assembly=RouteNav.Avalonia"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
                Title="Page 2"
                x:Class="DemoApp.Pages.Main.MainPage2">
     <StackPanel Spacing="5">
@@ -20,10 +20,17 @@
             </StackPanel>
         </Border>
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">HyperlinkButton (V11.1)</TextBlock>
-                <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkButton>
-                <routeCtrl:HyperlinkButton RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkButton>
+            <StackPanel Orientation="Horizontal" Spacing="100">
+                <StackPanel Spacing="5">
+                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">HyperlinkButton (V11.1)</TextBlock>
+                    <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkButton>
+                    <routeCtrl:HyperlinkButton RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkButton>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">Hyperlink</TextBlock>
+                    <routeCtrl:Hyperlink NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:Hyperlink>
+                    <routeCtrl:Hyperlink RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:Hyperlink>
+                </StackPanel>
             </StackPanel>
         </Border>
     </StackPanel>

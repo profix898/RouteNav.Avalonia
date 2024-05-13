@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
+using Avalonia.Platform.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using RouteNav.Avalonia.Errors;
 using RouteNav.Avalonia.Pages;
@@ -26,6 +27,7 @@ public class AvaloniaUIPlatform : IUIPlatform
     public AvaloniaUIPlatform(IWindowManager windowManager, Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
     {
         WindowManager = windowManager;
+        Launcher = new HyperlinkLauncher();
 
         this.serviceProvider = serviceProvider;
         this.serviceCollection = serviceCollection;
@@ -36,6 +38,8 @@ public class AvaloniaUIPlatform : IUIPlatform
     #region IUIPlatform Members
 
     public IWindowManager WindowManager { get; }
+    
+    public ILauncher Launcher { get; set; }
 
     #region Pages
 

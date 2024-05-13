@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using RouteNav.Avalonia.Routing;
@@ -10,10 +11,10 @@ using RouteNav.Avalonia.Stacks;
 namespace RouteNav.Avalonia.Controls;
 
 /// <summary>
-/// A button control that functions as a navigateable hyperlink.
+/// A TextBlock control that functions as a navigateable hyperlink.
 /// </summary>
 [PseudoClasses(pcVisited)]
-public class HyperlinkButton : Button, IRouteItem
+public class Hyperlink : TextBlock, IRouteItem
 {
     // See: https://www.w3schools.com/cssref/sel_visited.php
     private const string pcVisited = ":visited";
@@ -21,32 +22,33 @@ public class HyperlinkButton : Button, IRouteItem
     /// <summary>
     /// Defines the <see cref="RouteUri"/> property.
     /// </summary>
-    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<HyperlinkButton, Uri?>(nameof(RouteUri), defaultValue: null);
+    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<Hyperlink, Uri?>(nameof(RouteUri), defaultValue: null);
         
     /// <summary>
     /// Defines the <see cref="TargetProperty"/> property.
     /// </summary>
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<HyperlinkButton, NavigationTarget>(nameof(Target), NavigationTarget.Self);
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<Hyperlink, NavigationTarget>(nameof(Target), NavigationTarget.Self);
         
     /// <summary>
     /// Defines the <see cref="IsVisited"/> property.
     /// </summary>
-    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<HyperlinkButton, bool>(nameof(IsVisited), defaultValue: false);
+    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<Hyperlink, bool>(nameof(IsVisited), defaultValue: false);
         
     /// <summary>
     /// Defines the <see cref="TrackIsVisited"/> property.
     /// </summary>
-    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<HyperlinkButton, bool>(nameof(TrackIsVisited), defaultValue: false);
+    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<Hyperlink, bool>(nameof(TrackIsVisited), defaultValue: false);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HyperlinkButton"/> class.
+    /// Initializes a new instance of the <see cref="Hyperlink"/> class.
     /// </summary>
-    public HyperlinkButton()
+    public Hyperlink()
     {
+        Classes.Add("Hyperlink");
     }
-        
+
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkButton"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="Hyperlink"/> is clicked.
     /// </summary>
     /// <remarks>
     /// The URI may be any website or file location that can be launched using the <see cref="ILauncher"/> service.
@@ -76,17 +78,17 @@ public class HyperlinkButton : Button, IRouteItem
         get { return GetValue(TrackIsVisitedProperty); }
         set { SetValue(TrackIsVisitedProperty, value); }
     }
-        
+
     #region Overrides of StyledElement
 
-    protected override Type StyleKeyOverride => typeof(global::Avalonia.Controls.HyperlinkButton);
+    protected override Type StyleKeyOverride => typeof(TextBlock);
 
     #endregion
-        
+    
     #region Implementation of IRouteItem
 
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkButton"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="Hyperlink"/> is clicked.
     /// </summary>
     /// <remarks>
     /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton"/> and <see cref="IRouteItem"/> (in this library), both <see cref="RouteUri"/> and <see cref="NavigateUri"/> are provided. Use any one of them.
@@ -134,10 +136,9 @@ public class HyperlinkButton : Button, IRouteItem
             PseudoClasses.Set(pcVisited, change.GetNewValue<bool>());
     }
 
-    /// <inheritdoc/>
-    protected override void OnClick()
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
-        base.OnClick();
+        base.OnPointerPressed(e);
 
         NavigateToRoute();
     }

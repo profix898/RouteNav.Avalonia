@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 
-namespace RouteNav.Avalonia;
+namespace RouteNav.Avalonia.Platform;
 
 /// <summary>
 /// Provides functionality to launch hyperlinks within the application. It can handle both internal (routes) and external URIs.
