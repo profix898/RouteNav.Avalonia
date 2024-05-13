@@ -14,7 +14,7 @@ public class AppDelegate : AvaloniaAppDelegate<App>
         var serviceCollection = new ServiceCollection();
 
         return base.CustomizeAppBuilder(builder)
-                   .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection)
+                   .UseRouteNavUIPlatform("https://test.local", serviceCollection.BuildServiceProvider, serviceCollection)
                    .LogToTrace();
     }
 }

@@ -21,6 +21,6 @@ internal class Program
         var serviceCollection = new ServiceCollection();
 
         return AppBuilder.Configure<App>()
-                         .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection);
+                         .UseRouteNavUIPlatform("https://test.local", serviceCollection.BuildServiceProvider, serviceCollection);
     }
 }

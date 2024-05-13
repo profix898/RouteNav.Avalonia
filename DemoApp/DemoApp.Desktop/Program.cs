@@ -19,7 +19,7 @@ internal class Program
 
         return AppBuilder.Configure<App>()
                          .UsePlatformDetect()
-                         .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection)
+                         .UseRouteNavUIPlatform("https://test.local", serviceCollection.BuildServiceProvider, serviceCollection)
                          .LogToTrace();
     }
 }

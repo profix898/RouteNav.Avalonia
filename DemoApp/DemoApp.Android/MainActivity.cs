@@ -20,7 +20,7 @@ public class MainActivity : AvaloniaMainActivity<App>
         var serviceCollection = new ServiceCollection();
 
         return base.CustomizeAppBuilder(builder)
-                   .UseRouteNavUIPlatform("http://test.ui", serviceCollection.BuildServiceProvider, serviceCollection)
+                   .UseRouteNavUIPlatform("https://test.local", serviceCollection.BuildServiceProvider, serviceCollection)
                    .LogToTrace();
     }
 }

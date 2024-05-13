@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
-    <WasmMainJSPath>AppBundle\main.js</WasmMainJSPath>
     <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-browser</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Browser" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Browser" Version="11.1.0-beta2" />
   </ItemGroup>
 
   <ItemGroup>

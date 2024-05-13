@@ -9,7 +9,7 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
-public static class ApplicationExtensions
+public static class AppUtility
 {
     #region SetMainWindow
 
@@ -108,7 +108,7 @@ public static class ApplicationExtensions
         if (appLifetime is ISingleViewApplicationLifetime singleViewLifetime && singleViewLifetime.MainView != null)
         {
             return TopLevel.GetTopLevel(singleViewLifetime.MainView)
-                   ?? throw new ApplicationException("Application does not specify a MainWindow.");
+                   ?? throw new ApplicationException("Application does not specify a MainView.");
         }
 
         throw new NotSupportedException($"IApplicationLifetime of type '{appLifetime.GetType()}' not supported.");

@@ -34,7 +34,7 @@
                                     </Style>
                                 </Styles>
                             </DockPanel.Styles>
-                            <Button x:Name="PART_NavigationBarBackButton" Background="Transparent" Padding="5,2,0,0" DockPanel.Dock="Left" IsVisible="{TemplateBinding BackButtonEnabled}">
+                            <Button x:Name="PART_NavigationBarBackButton" Background="Transparent" BorderBrush="Transparent" Padding="5,2,0,0" DockPanel.Dock="Left" IsVisible="{TemplateBinding BackButtonEnabled}">
                                 <PathIcon Data="{StaticResource NavigationControlBackIcon}" Width="{StaticResource NavigationBarBackButtonWidth}" Height="{StaticResource NavigationBarBackButtonHeight}"
                                           Foreground="{TemplateBinding NavigationBarTextColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Button>

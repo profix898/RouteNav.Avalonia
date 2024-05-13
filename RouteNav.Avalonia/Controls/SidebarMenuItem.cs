@@ -41,7 +41,7 @@ public class SidebarMenuItem : TemplatedControl
         set { SetValue(RouteUriProperty, value); }
     }
 
-    /// <summary>Set RouteUri via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
+    /// <summary>Set <see cref="RouteUri"/> via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
