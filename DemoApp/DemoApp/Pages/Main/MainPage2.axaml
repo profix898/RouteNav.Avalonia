@@ -28,8 +28,8 @@
                 </StackPanel>
                 <StackPanel Spacing="5">
                     <TextBlock Margin="0,0,0,10" FontWeight="Bold">Hyperlink</TextBlock>
-                    <routeCtrl:Hyperlink NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:Hyperlink>
-                    <routeCtrl:Hyperlink RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:Hyperlink>
+                    <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkLabel>
+                    <routeCtrl:HyperlinkLabel RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkLabel>
                 </StackPanel>
             </StackPanel>
         </Border>

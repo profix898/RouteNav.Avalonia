@@ -14,7 +14,7 @@ namespace RouteNav.Avalonia.Controls;
 /// A TextBlock control that functions as a navigateable hyperlink.
 /// </summary>
 [PseudoClasses(pcVisited)]
-public class Hyperlink : TextBlock, IRouteItem
+public class HyperlinkLabel : TextBlock, IRouteItem
 {
     // See: https://www.w3schools.com/cssref/sel_visited.php
     private const string pcVisited = ":visited";
@@ -22,33 +22,33 @@ public class Hyperlink : TextBlock, IRouteItem
     /// <summary>
     /// Defines the <see cref="RouteUri"/> property.
     /// </summary>
-    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<Hyperlink, Uri?>(nameof(RouteUri), defaultValue: null);
+    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<HyperlinkLabel, Uri?>(nameof(RouteUri), defaultValue: null);
         
     /// <summary>
     /// Defines the <see cref="TargetProperty"/> property.
     /// </summary>
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<Hyperlink, NavigationTarget>(nameof(Target), NavigationTarget.Self);
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<HyperlinkLabel, NavigationTarget>(nameof(Target), NavigationTarget.Self);
         
     /// <summary>
     /// Defines the <see cref="IsVisited"/> property.
     /// </summary>
-    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<Hyperlink, bool>(nameof(IsVisited), defaultValue: false);
+    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(IsVisited), defaultValue: false);
         
     /// <summary>
     /// Defines the <see cref="TrackIsVisited"/> property.
     /// </summary>
-    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<Hyperlink, bool>(nameof(TrackIsVisited), defaultValue: false);
+    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(TrackIsVisited), defaultValue: false);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Hyperlink"/> class.
+    /// Initializes a new instance of the <see cref="HyperlinkLabel"/> class.
     /// </summary>
-    public Hyperlink()
+    public HyperlinkLabel()
     {
         Classes.Add("Hyperlink");
     }
 
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="Hyperlink"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel"/> is clicked.
     /// </summary>
     /// <remarks>
     /// The URI may be any website or file location that can be launched using the <see cref="ILauncher"/> service.
@@ -88,7 +88,7 @@ public class Hyperlink : TextBlock, IRouteItem
     #region Implementation of IRouteItem
 
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="Hyperlink"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel"/> is clicked.
     /// </summary>
     /// <remarks>
     /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton"/> and <see cref="IRouteItem"/> (in this library), both <see cref="RouteUri"/> and <see cref="NavigateUri"/> are provided. Use any one of them.
