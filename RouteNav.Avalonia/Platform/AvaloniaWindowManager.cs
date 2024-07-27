@@ -105,7 +105,7 @@ public class AvaloniaWindowManager : IWindowManager
 
     public virtual ContentControl CreatePlatformView(Window window, ISingleViewApplicationLifetime singleViewLifetime)
     {
-        var platformControl = new ContentControl();
+        var platformControl = new UserControl();
         window.ClonePropertiesTo(platformControl);
 
         window.RegisterPlatform(singleViewLifetime, platformControl);

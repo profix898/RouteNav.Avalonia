@@ -4,7 +4,7 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Root Page"
+               Title="Root Page" Padding="8,5"
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuRootPage">
     <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the SidebarMenu stack!</TextBlock>

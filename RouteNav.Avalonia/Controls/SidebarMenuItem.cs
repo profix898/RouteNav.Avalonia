@@ -12,15 +12,11 @@ namespace RouteNav.Avalonia.Controls;
 [PseudoClasses(":pressed", ":selected")]
 public class SidebarMenuItem : TemplatedControl
 {
-    public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<SidebarMenuItem, string>(nameof(PageType));
+    public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<SidebarMenuItem, string>(nameof(Text));
 
     public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
 
     public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
-
-    public static readonly StyledProperty<Type?> PageTypeProperty = AvaloniaProperty.Register<SidebarMenuItem, Type?>(nameof(PageType));
-
-    public static readonly StyledProperty<Func<Uri, Page>?> PageFactoryProperty = AvaloniaProperty.Register<SidebarMenuItem, Func<Uri, Page>?>(nameof(PageFactory));
 
     static SidebarMenuItem()
     {
@@ -54,43 +50,8 @@ public class SidebarMenuItem : TemplatedControl
         set { SetValue(TargetProperty, value); }
     }
 
-    public Type? PageType
-    {
-        get { return GetValue(PageTypeProperty); }
-        set
-        {
-            if (PageFactory != null)
-                throw new ArgumentException($"Only one of {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
-
-            SetValue(PageTypeProperty, value);
-        }
-    }
-
-    public Func<Uri, Page>? PageFactory
-    {
-        get { return GetValue(PageFactoryProperty); }
-        set
-        {
-            if (PageType != null)
-                throw new ArgumentException($"Only one of {nameof(PageType)} or {nameof(PageFactory)} can be provided.");
-
-            SetValue(PageFactoryProperty, value);
-        }
-    }
-
     internal SidebarMenuItem Clone()
     {
-        var menuItem = new SidebarMenuItem
-        {
-            Text = Text,
-            RouteUri = RouteUri,
-            Target = Target
-        };
-        if (PageType != null)
-            menuItem.PageType = PageType;
-        else
-            menuItem.PageFactory = PageFactory;
-
-        return menuItem;
+        return new SidebarMenuItem { Text = Text, RouteUri = RouteUri, Target = Target };
     }
 }

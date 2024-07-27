@@ -10,6 +10,8 @@ namespace RouteNav.Avalonia.Stacks;
 
 public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavigationStack
 {
+    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
+
     public ContentPageStack(string name, string title)
         : base(name, title)
     {
@@ -19,13 +21,11 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
             throw new ArgumentNullException(nameof(title));
     }
 
-    private Dictionary<string, Func<Uri, Page>> Pages { get; } = new Dictionary<string, Func<Uri, Page>>();
-
     #region Overrides of NavigationStackBase<NavigationPage>
 
     protected override Page? ResolveRoute(Uri routeUri)
     {
-        return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
+        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
     }
 
     protected override NavigationContainer InitContainer()
@@ -41,7 +41,7 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         var pageKey = relativeRoute.Trim('/');
-        Pages.Set(pageKey, pageFactory);
+        pages.Set(pageKey, pageFactory);
 
         // RootPage
         if (String.IsNullOrEmpty(pageKey))

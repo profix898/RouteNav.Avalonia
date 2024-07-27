@@ -2,7 +2,7 @@ RouteNav.Avalonia
 ==========
 [![Nuget](https://img.shields.io/nuget/v/RouteNav.Avalonia?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/RouteNav.Avalonia)
 
-**RouteNav.Avalonia** provides URI routing navigation for **Avalonia UI**. It supports a code-first, modular/extensible navigation approach with page (and dialog) primitives.
+**RouteNav.Avalonia** provides URI routing navigation for **[Avalonia](https://avaloniaui.net/)**. It supports a code-first, modular/extensible navigation approach with page (and dialog) primitives.
 
 ### Concept
 In most applications the navigation system is *operated* from within, i.e. clicking a button or menu item triggers the UI to rearrange. It is usually the task of the button/menu handler to perform the desired UI changes. This approach is also used in most MVVM frameworks.
@@ -13,7 +13,7 @@ The UI update happens implicitly based on the association of the (named) `Naviga
 **RouteNav.Avalonia** also supports navigation with modal dialogs (and message dialogs).
 
 ### Usage
-During initialization all `Page`s are registered with the DI container of the navigation system (or manually with a custom DI container):
+During initialization of the application all `Page`s are registered with the DI container of the navigation system (or manually with a custom DI container):
 ```CSharp
 Navigation.UIPlatform.RegisterPage<Page1>();
 ```

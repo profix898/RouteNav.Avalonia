@@ -16,8 +16,9 @@ public partial class MainPage1 : Page
 
     private async void OpenDlgCommand(object? sender, RoutedEventArgs e)
     {
-        await new Dialog { Title = "Dialog Title", Content = new TestPage() }.ShowDialog(this);
-        var result = MessageDialog.Create("MessageDialog Title", "Avalonia UI is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialog(this);
+        await new TestPage { DialogSizeHint = DialogSize.Small }.ToDialog(this).ShowDialog(this);
+        await new TestPage { DialogSizeHint = DialogSize.Medium }.ToDialog(this).ShowDialog(this);
+        var result = await MessageDialog.Create("MessageDialog Title", "Avalonia is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialog(this);
 
         await Error.ShowDialog("Error message", new NotImplementedException("Something went terribly wrong!"), this);
     }
@@ -26,8 +27,9 @@ public partial class MainPage1 : Page
     {
         var previousContent = Content;
 
-        await new Dialog { Title = "Dialog Title", Content = new TestPage() }.ShowDialogEmbedded(this);
-        var result = await MessageDialog.Create("MessageDialog Title", "Avalonia UI is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialogEmbedded(this);
+        await new TestPage { DialogSizeHint = DialogSize.Small }.ToDialog(this).ShowDialogEmbedded(this);
+        await new TestPage { DialogSizeHint = DialogSize.Medium }.ToDialog(this).ShowDialogEmbedded(this);
+        var result = await MessageDialog.Create("MessageDialog Title", "Avalonia is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialogEmbedded(this);
 
         Dispatcher.UIThread.Invoke(() => Content = previousContent);
     }

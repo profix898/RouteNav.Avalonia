@@ -10,7 +10,7 @@
 
     <x:Double x:Key="MessageDialogTitleBarHeight">35</x:Double>
     <x:Double x:Key="MessageDialogTitleBarFontSize">18</x:Double>
-    <GridLength x:Key="MessageDialogButtonsBarHeight">65</GridLength>
+    <GridLength x:Key="MessageDialogButtonsBarHeight">60</GridLength>
     <x:Double x:Key="MessageDialogMinWidth">350</x:Double>
     <x:Double x:Key="MessageDialogMinHeight">200</x:Double>
     <x:Double x:Key="MessageDialogMaxWidth">700</x:Double>
@@ -46,12 +46,13 @@
                                         <TextBlock Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}"
                                                    FontSize="{StaticResource MessageDialogTitleBarFontSize}" VerticalAlignment="Center" />
                                     </Panel>
-                                    <ContentPresenter DockPanel.Dock="Top" x:Name="PART_DialogContent" Padding="15,10,15,10"
+                                    <ContentPresenter DockPanel.Dock="Top" x:Name="PART_DialogContent" Padding="0"
                                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
                                         <ContentPresenter.Styles>
                                             <Styles>
                                                 <Style Selector="TextBlock">
+                                                    <Setter Property="Padding" Value="15,10" />
                                                     <Setter Property="TextWrapping" Value="Wrap" />
                                                 </Style>
                                             </Styles>

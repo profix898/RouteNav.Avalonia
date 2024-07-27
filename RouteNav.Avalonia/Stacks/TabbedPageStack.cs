@@ -25,6 +25,8 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     where TC : TabbedPageContainer, new()
 
 {
+    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
+
     private Page? rootPage;
 
     public TabbedPageStack(string name, string title)
@@ -36,8 +38,6 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             throw new ArgumentNullException(nameof(title));
     }
 
-    private Dictionary<string, Func<Uri, Page>> Pages { get; } = new Dictionary<string, Func<Uri, Page>>();
-
     internal void SetCurrentPage(Page? page)
     {
         CurrentPage = page;
@@ -47,7 +47,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 
     protected override Page? ResolveRoute(Uri routeUri)
     {
-        return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
+        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
     }
 
     protected override TC InitContainer()
@@ -59,7 +59,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
                 throw new InvalidOperationException($"No {nameof(TabControl)} found in NavigationContainer.");
 
             var items = new List<TabItem>();
-            foreach (var pageKvp in Pages)
+            foreach (var pageKvp in pages)
             {
                 var page = pageKvp.Value(this.BuildRoute(pageKvp.Key));
                 var tabItem = new TabItem { Header = page.Title, Content = page };
@@ -80,7 +80,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        Pages.Set(relativeRoute.Trim('/'), pageFactory);
+        pages.Set(relativeRoute.Trim('/'), pageFactory);
     }
 
     #endregion

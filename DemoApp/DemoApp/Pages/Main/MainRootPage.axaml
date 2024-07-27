@@ -5,7 +5,7 @@
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Root Page"
+               Title="Root Page" Padding="8,5"
                x:Class="DemoApp.Pages.Main.MainRootPage">
     <StackPanel Spacing="5">
         <TextBlock Margin="0,0,0,10" FontWeight="Bold">Welcome on the Main stack!</TextBlock>

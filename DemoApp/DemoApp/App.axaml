@@ -3,7 +3,7 @@
              xmlns:routeNav="clr-namespace:RouteNav.Avalonia.Themes;assembly=RouteNav.Avalonia"
              xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
              x:Class="DemoApp.App"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Light">
 
     <Application.Styles>
         <FluentTheme />

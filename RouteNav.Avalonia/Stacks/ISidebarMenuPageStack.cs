@@ -3,7 +3,7 @@ using RouteNav.Avalonia.Controls;
 
 namespace RouteNav.Avalonia.Stacks;
 
-public interface ISidebarMenuPageStack
+public interface ISidebarMenuPageStack : INavigationStack
 {
     IReadOnlyList<SidebarMenuItem> MenuItems { get; }
 

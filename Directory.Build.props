@@ -11,10 +11,10 @@
     <Company></Company>
     <Copyright>Copyright (c) Thilo Viereck 2022-2024</Copyright>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2024/05/01"))).TotalDays.ToString("0"))</BuildNumber>
-    <Version>1.1.$(BuildNumber)-beta2</Version>
-    <FileVersion>1.1.0</FileVersion>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2024/04/30"))).TotalDays.ToString("0"))</BuildNumber>
+    <Version>1.0.$(BuildNumber)</Version>
+    <FileVersion>$(Version)</FileVersion>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

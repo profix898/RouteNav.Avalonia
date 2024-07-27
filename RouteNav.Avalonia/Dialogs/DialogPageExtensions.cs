@@ -34,20 +34,23 @@ public static class DialogPageExtensions
             else if (parent != null && !IsNaN(parent.Width) && !IsNaN(parent.Height)) // Custom size from parent
                 size = new Size(parent.Width, parent.Height);
         }
-
-        page.Width = size.Width;
-        page.Height = size.Height;
-
+        
         // Build Dialog from Page
-        return new Dialog
+        var dialog = new Dialog
         {
             Title = page.Title ?? "Dialog",
             Content = page,
             DataContext = page.DataContext,
             Background = page.Background ?? Brushes.White,
-            DialogSize = dialogSize.Value,
-            Width = size.Width,
-            Height = size.Height
+            DialogSize = dialogSize.Value
         };
+
+        // Adapt page size via dialog size
+        page.Bind(Layoutable.WidthProperty, dialog.GetBindingObservable(Layoutable.WidthProperty, width => IsNaN(width) ? size.Width : width));
+        page.Bind(Layoutable.HeightProperty, dialog.GetBindingObservable(Layoutable.HeightProperty, height => IsNaN(height) ? size.Height : height));
+        dialog.Width = size.Width;
+        dialog.Height = size.Height;
+
+        return dialog;
     }
 }

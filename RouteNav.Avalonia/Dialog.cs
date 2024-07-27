@@ -26,6 +26,7 @@ public class Dialog : TemplatedControl
 {
     protected TaskCompletionSource<object?>? taskCompletionSource;
     protected Button? dialogCloseButton;
+    protected Panel? dialogTitleBarPanel;
     protected ContentPresenter? dialogContent;
 
     /// <summary>
@@ -136,6 +137,11 @@ public class Dialog : TemplatedControl
         dialogCloseButton = e.NameScope.Find<Button>("PART_DialogCloseButton");
         if (dialogCloseButton != null) // MessageDialog does not have a close button
             dialogCloseButton.Click += CloseDialog;
+        
+        dialogTitleBarPanel = e.NameScope.Find<Panel>("DialogTitleBar");
+        // Set height to trigger binding (do it twice to force change in value, otherwise binding does not update)
+        SetCurrentValue(HeightProperty, Height - 1);
+        SetCurrentValue(HeightProperty, Height + 1);
 
         if (dialogContent != null)
             dialogContent.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
@@ -297,6 +303,14 @@ public class Dialog : TemplatedControl
     public Task<object?> ShowDialogEmbedded(ContentControl parentControl, bool restoreParent = false)
     {
         var previousContent = parentControl.Content;
+        
+        // Adapt dialog size via parent page size
+        Bind(WidthProperty, parentControl.GetBindingObservable(DesiredSizeProperty, size => size.Width));
+        Bind(HeightProperty, parentControl.GetBindingObservable(DesiredSizeProperty, size => size.Height));
+
+        // Correct page/dialog size (to account for page margins and title bar height)
+        if (Content is Page page)
+            page.Bind(HeightProperty, this.GetBindingObservable(HeightProperty, height => height - dialogTitleBarPanel?.Height ?? height));
 
         parentControl.Content = this;
         PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);

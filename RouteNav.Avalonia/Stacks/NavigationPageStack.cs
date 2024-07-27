@@ -23,6 +23,8 @@ public class NavigationPageStack : NavigationPageStack<NavigationPageContainer>
 public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
     where TC : NavigationPageContainer, new()
 {
+    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
+
     public NavigationPageStack(string name, string title)
         : base(name, title)
     {
@@ -32,13 +34,11 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
             throw new ArgumentNullException(nameof(title));
     }
 
-    private Dictionary<string, Func<Uri, Page>> Pages { get; } = new Dictionary<string, Func<Uri, Page>>();
-
     #region Overrides of NavigationStackBase<NavigationPage>
 
     protected override Page? ResolveRoute(Uri routeUri)
     {
-        return Pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
+        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
     }
 
     protected override TC InitContainer()
@@ -61,7 +61,7 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         var pageKey = relativeRoute.Trim('/');
-        Pages.Set(pageKey, pageFactory);
+        pages.Set(pageKey, pageFactory);
 
         // RootPage
         if (String.IsNullOrEmpty(pageKey))

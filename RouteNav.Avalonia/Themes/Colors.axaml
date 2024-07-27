@@ -14,6 +14,9 @@
             <SolidColorBrush x:Key="MessageDialogButtonBarBorderColor" Color="#61656A" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#FFFFFF" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#000000" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBorderColorPointerOver" Color="#61656A" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackgroundPointerOver" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColorPointerOver" Color="#000000" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="White" />
             <!-- InternalErrorPage -->
@@ -40,12 +43,15 @@
             <SolidColorBrush x:Key="DialogTitleBarBackground" Color="#171717" />
             <SolidColorBrush x:Key="DialogTitleBarTextColor" Color="#FFFFFF" />
             <!-- MessageDialog -->
-            <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#171717" />
+            <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#1F1F1F" />
             <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#FFFFFF" />
             <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
             <SolidColorBrush x:Key="MessageDialogButtonBarBorderColor" Color="#61656A" />
-            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#FFFFFF" />
-            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#000000" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#171717" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBackgroundPointerOver" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackgroundPointerOver" Color="#171717" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColorPointerOver" Color="#FFFFFF" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="#454545" />
             <!-- InternalErrorPage -->

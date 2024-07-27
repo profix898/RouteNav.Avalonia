@@ -81,6 +81,15 @@ public static class NavigationStackExtensions
         return segments[0].Trim('/');
     }
 
+    public static bool IsRouteOnStack(this Uri routeUri, INavigationStack stack)
+    {
+        var stackName = GetStackName(routeUri);
+        if (stackName == null)
+            return true; // Relative route -> assume same stack
+
+        return stackName.Equals(stack.Name, StringComparison.InvariantCulture);
+    }
+
     #endregion
 
     #region GetStack
@@ -173,44 +182,70 @@ public static class NavigationStackExtensions
 
     #region AddPage_SidebarMenuItem
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text });
+        var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
     }
 
-    public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, string relativeRoute, string text)
+    public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, string relativeRoute, string text, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageType = typeof(TPage) });
+        var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(relativeRoute, typeof(TPage));
     }
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Type pageType)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Type pageType, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageType = pageType });
+        var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(relativeRoute, pageType);
     }
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Func<Uri, Page> pageFactory)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Func<Uri, Page> pageFactory, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RoutePath = relativeRoute, Text = text, PageFactory = pageFactory });
+        var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(relativeRoute, pageFactory);
     }
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text });
+        var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
     }
 
-    public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, Uri routeUri, string text)
+    public static void AddMenuItem<TPage>(this ISidebarMenuPageStack stack, Uri routeUri, string text, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageType = typeof(TPage) });
+        var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), typeof(TPage));
     }
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Type pageType)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Type pageType, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageType = pageType });
+        var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), pageType);
     }
 
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Func<Uri, Page> pageFactory)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, Uri routeUri, string text, Func<Uri, Page> pageFactory, NavigationTarget target = NavigationTarget.Self)
     {
-        stack.AddMenuItem(new SidebarMenuItem { RouteUri = routeUri, Text = text, PageFactory = pageFactory });
+        var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
+        stack.AddMenuItem(menuItem);
+
+        if (IsRouteOnStack(menuItem.RouteUri, stack))
+            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), pageFactory);
     }
 
     #endregion

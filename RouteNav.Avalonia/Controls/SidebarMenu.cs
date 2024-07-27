@@ -33,11 +33,11 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         /// </summary>
         Inline,
         /// <summary>
-        /// Menu is displayed on flyout above content
+        /// Menu is displayed on overlay above content
         /// </summary>
         Overlay,
         /// <summary>
-        /// Menu is displayed on flyout above content,
+        /// Menu is displayed on overlay above content,
         /// a small part is still visible when collapsed
         /// </summary>
         CompactOverlay

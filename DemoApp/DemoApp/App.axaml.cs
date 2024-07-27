@@ -31,7 +31,7 @@ public class App : Application
         mainStack.AddPage<MainRootPage>(String.Empty);
         //mainStack.AddPage(String.Empty, () => new MainRootPage());
 
-        // Add more pages to the navigation stack (argument is relative path to page on stack)
+        // Add more pages to the navigation stack (argument is the relative path to page on stack)
         mainStack.AddPage<MainPage1>("page1");
         mainStack.AddPage<MainPage2>("page2");
         mainStack.AddPage<MainPage3>("page3");

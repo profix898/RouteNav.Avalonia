@@ -35,6 +35,11 @@
         <Setter Property="Padding" Value="10,5,10,5" />
         <Setter Property="Margin" Value="8,10,8,10" />
     </Style>
+    <Style Selector="Button.MessageDialogButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource MessageDialogButtonBarButtonBackgroundPointerOver}" />
+        <Setter Property="Foreground" Value="{DynamicResource MessageDialogButtonBarButtonTextColorPointerOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MessageDialogButtonBarBorderColorPointerOver}" />
+    </Style>
     <Style Selector="Button.MessageDialogButton:nth-child(1)">
         <Setter Property="Margin" Value="25,10,8,10" />
     </Style>
