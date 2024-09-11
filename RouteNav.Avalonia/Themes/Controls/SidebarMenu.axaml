@@ -10,10 +10,10 @@
         </Border>
     </Design.PreviewWith>
 
-    <x:Double x:Key="SidebarMenuCompactWidth">40</x:Double>
+    <x:Double x:Key="SidebarMenuCompactWidth">32</x:Double>
     <x:Double x:Key="SidebarMenuExpandWidth">220</x:Double>
-    <x:Double x:Key="SidebarMenuHeaderPaddingHeight">36</x:Double>
-    <x:Double x:Key="SidebarMenuHamburgerButtonHeight">32</x:Double>
+    <x:Double x:Key="SidebarMenuHeaderPaddingHeight">30</x:Double>
+    <x:Double x:Key="SidebarMenuHamburgerButtonHeight">26</x:Double>
     <StreamGeometry x:Key="SidebarMenuHamburgerIcon">M3 17h18a1 1 0 0 1 .117 1.993L21 19H3a1 1 0 0 1-.117-1.993L3 17h18H3Zm0-6 18-.002a1 1 0 0 1 .117 1.993l-.117.007L3 13a1 1 0 0 1-.117-1.993L3 11l18-.002L3 11Zm0-6h18a1 1 0 0 1 .117 1.993L21 7H3a1 1 0 0 1-.117-1.993L3 5h18H3Z</StreamGeometry>
     <BoxShadows x:Key="SidebarMenuHamburgerShadow">1 1 1 1 #2000, 0 0 1 1 #2fff</BoxShadows>
     <BoxShadows x:Key="SidebarMenuContentShadow">0 0 1 1 #2000</BoxShadows>

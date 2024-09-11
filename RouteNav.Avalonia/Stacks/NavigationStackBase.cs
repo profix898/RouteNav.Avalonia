@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
-using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.StackContainers;
 

@@ -1,15 +1,14 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-[TemplatePart("PART_DialogButtons", typeof(ContentPresenter))]
 public class MessageDialog : Dialog
 {
     #region MessageDialogButtons enum
@@ -51,6 +50,9 @@ public class MessageDialog : Dialog
     {
         DialogSize = DialogSize.Small;
         DefaultResult = MessageDialogResult.None;
+        
+        HorizontalContentAlignment = HorizontalAlignment.Center;
+        VerticalContentAlignment = VerticalAlignment.Center;
     }
 
     public MessageDialogButtons Buttons
@@ -77,6 +79,11 @@ public class MessageDialog : Dialog
         set { SetValue(DefaultResultProperty, value); }
     }
 
+    public string TextContent
+    {
+        set { SetValue(ContentProperty, new TextBlock { Text = value }); }
+    }
+
     protected override Type StyleKeyOverride => typeof(MessageDialog);
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -85,7 +92,7 @@ public class MessageDialog : Dialog
 
         if (dialogButtons != null)
             dialogButtons.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
-        dialogButtons = e.NameScope.Get<ContentPresenter>("PART_DialogButtons");
+        dialogButtons = e.NameScope.Get<ContentPresenter>("MessageDialogButtons");
         dialogButtons.PropertyChanged += ContentPresenter_ChildPropertyChanged;
 
         dialogButtons.ContentTemplate = ButtonsTemplate;
@@ -118,7 +125,7 @@ public class MessageDialog : Dialog
 
     public static MessageDialog Create(string title, string text, MessageDialogButtons buttons)
     {
-        return new MessageDialog { Title = title, Content = text, Buttons = buttons };
+        return new MessageDialog { Title = title, TextContent = text, Buttons = buttons };
     }
 
     public static MessageDialog Create(string title, object content, MessageDialogButtons buttons)

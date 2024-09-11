@@ -55,6 +55,7 @@ public class AvaloniaWindowManager : IWindowManager
             var platformWindow = new AvaloniaWindow
             {
                 Title = dialog.Title,
+                Icon = parentWindow?.Icon,
 
                 // ContentControl
                 Content = dialog,
@@ -65,16 +66,18 @@ public class AvaloniaWindowManager : IWindowManager
                 Height = dialog.Height,
                 MinWidth = dialog.Width,
                 MinHeight = dialog.Height,
-                CanResize = false
+                CanResize = false,
             };
+
+            // Customize to show platform dialog (border style, etc.)
+            platformWindow.SetDialogStyle();
+            
             WindowCustomizationEvent?.Invoke(platformWindow, true);
 #if DEBUG
             platformWindow.AttachDevTools();
 #endif
             dialog.RegisterPlatform(platformWindow);
             dialogTask = dialog.Open();
-
-            // TODO: Customize to show platform dialog (border style, etc.)
 
             platformWindow.ShowDialog(ownerWindow);
             return true;

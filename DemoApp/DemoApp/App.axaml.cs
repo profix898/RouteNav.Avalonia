@@ -46,7 +46,7 @@ public class App : Application
         // SidebarMenu manages a 'SidebarMenuItem' collection, use .AddMenuItem() to add items
         sidebarMenuStack.AddMenuItem<SidebarMenuRootPage>(String.Empty, "RootPage");
         sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Page1");
-        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tab Page1"); // Links to (stack) external page
+        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tab Page1"); // Links to page on another stack
 
         /* Tabbed stack */
         var tabbedStack = new TabbedPageStack("tabbed", "DemoApp - Tabbed");

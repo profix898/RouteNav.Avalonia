@@ -4,13 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
       mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
-      Width="500" Height="250"
+      Width="500" Height="250" Title="Demo Dialog Title"
       x:Class="DemoApp.TestPage">
   
     <StackPanel Spacing="10" Margin="15,10">
         <TextBlock Margin="0,0,0,10" FontWeight="Bold">Any content can go here ...</TextBlock>
-        <ProgressBar Value="0.5" />
-        <CheckBox IsChecked="true" />
+        <ProgressBar Height="5" Value="50" />
+        <CheckBox IsChecked="true">CheckBox</CheckBox>
         <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
         <TimePicker />
     </StackPanel>

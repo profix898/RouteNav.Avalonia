@@ -1,106 +1,88 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Reactive;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-public class DialogOverlayHost : ContentControl, IDisposable
+public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigation, IDisposable
 {
+    private readonly HashSet<Dialog> dialogCollection = new HashSet<Dialog>();
+    private readonly TopLevel topLevel;
+    private readonly OverlayLayer overlayLayer;
+    
     private IInputElement? lastFocusElement;
-    private IDisposable? boundsWatcher;
+    private IDisposable? disposable;
 
     public DialogOverlayHost(TopLevel topLevel, OverlayLayer overlayLayer)
     {
-        OverlayLayer = overlayLayer;
-        OverlayLayer.Children.Add(this);
-
         lastFocusElement = topLevel.FocusManager?.GetFocusedElement();
-
-        Background = null;
+        
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment = VerticalAlignment.Center;
+
+        this.topLevel = topLevel;
+        this.overlayLayer = overlayLayer;
+        this.overlayLayer.Children.Add(this);
     }
 
-    protected override Type StyleKeyOverride => typeof(OverlayPopupHost);
-
-    internal OverlayLayer OverlayLayer { get; }
+    protected override Type StyleKeyOverride => typeof(DialogOverlayHost);
+    
+    public void SetContent(Dialog dialog)
+    {
+        disposable = dialog.SetSizeBinding(topLevel);
+        
+        Content = dialog;
+        overlayLayer.UpdateLayout();
+        
+        // Track dialog lifetime
+        dialogCollection.Add(dialog);
+        dialog.Closed += (_, _) =>
+        {
+            dialogCollection.Remove(dialog);
+            
+            // If last dialog gets closed, dispose overlay
+            if (dialogCollection.Count == 0)
+                Dispatcher.UIThread.Invoke(Dispose);
+        };
+    }
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        base.MeasureOverride(availableSize);
+        var size = base.MeasureOverride(availableSize);
 
         return VisualRoot switch
         {
             TopLevel topLevel => topLevel.ClientSize,
             Control control => control.Bounds.Size,
-            _ => default(Size)
+            _ => size
         };
     }
+    
+    #region Implementation of ICustomKeyboardNavigation
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction)
     {
-        base.OnAttachedToVisualTree(e);
-        
-        if (e.Root is Control control)
-        {
-            var observer = new AnonymousObserver<Rect>(_ => InvalidateMeasure());
-            boundsWatcher = control.GetObservable(BoundsProperty).Subscribe(observer);
-        }
+        return element.Equals(this) 
+            ? (true, this.GetVisualDescendants().OfType<IInputElement>().FirstOrDefault(visual => visual.Focusable))
+            : (false, null);
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-
-        boundsWatcher?.Dispose();
-        boundsWatcher = null;
-    }
-
-    protected override void OnPointerEntered(PointerEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerExited(PointerEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerMoved(PointerEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
-    {
-        e.Handled = true;
-    }
+    #endregion
 
     #region Implementation of IDisposable
 
     public void Dispose()
     {
         Content = null;
-        OverlayLayer.Children.Remove(this);
+        disposable?.Dispose();
+        overlayLayer.Children.Remove(this);
 
         if (lastFocusElement != null)
         {

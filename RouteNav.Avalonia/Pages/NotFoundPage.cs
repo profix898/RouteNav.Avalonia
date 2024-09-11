@@ -7,6 +7,7 @@ public class NotFoundPage : Page
 {
     public NotFoundPage()
     {
+        Title = "Page Not Found";
         DialogSizeHint = DialogSize.Small;
     }
 

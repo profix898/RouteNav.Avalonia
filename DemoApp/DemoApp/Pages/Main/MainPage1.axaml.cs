@@ -13,6 +13,11 @@ public partial class MainPage1 : Page
     {
         InitializeComponent();
     }
+    
+    private async void OpenMsgDlgCommand(object? sender, RoutedEventArgs e)
+    {
+        var result = await MessageDialog.Create("MessageDialog Title", "Avalonia is fun! Don't you think?", MessageDialog.MessageDialogButtons.YesNo).ShowDialog(this);
+    }
 
     private async void OpenDlgCommand(object? sender, RoutedEventArgs e)
     {

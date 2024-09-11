@@ -19,7 +19,6 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     private TopLevel? topLevel;
     private IInsetsManager? insetsManager;
     private INavigationStack? navigationStack;
-    private DialogOverlayHost? dialogOverlayHost;
 
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
 
@@ -42,17 +41,15 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     {
         get
         {
-            if (dialogOverlayHost == null)
-            {
-                if (topLevel == null || navigationStack == null)
-                    throw new InvalidOperationException();
-                var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel);
-                if (overlayLayer == null)
-                    throw new InvalidOperationException();
+            if (topLevel == null || navigationStack == null)
+                throw new InvalidOperationException();
 
-                dialogOverlayHost = overlayLayer.Children.OfType<DialogOverlayHost>().FirstOrDefault()
+            var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel);
+            if (overlayLayer == null)
+                throw new InvalidOperationException();
+
+            var dialogOverlayHost = overlayLayer.Children.OfType<DialogOverlayHost>().FirstOrDefault()
                                     ?? new DialogOverlayHost(topLevel, overlayLayer);
-            }
 
             return dialogOverlayHost;
         }
@@ -68,7 +65,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         // All dialogs closed (dispose overlay host)
         if (dialog == null)
         {
-            dialogOverlayHost?.Dispose();
+            //dialogOverlayHost?.Dispose();
 
             return Task.FromResult<object?>(null);
         }
@@ -82,8 +79,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
                 // Remove dialog size (so that background fills host container)
                 dialog.Width = dialog.Height = Double.NaN;
                 // Update content of dialog host
-                DialogOverlayHost.Content = dialog;
-                DialogOverlayHost.OverlayLayer.UpdateLayout();
+                DialogOverlayHost.SetContent(dialog);
             }
 
             return dialog.ResultTask;
@@ -122,9 +118,8 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         // Remove dialog size (so that background fills host container)
         dialog.Width = dialog.Height = Double.NaN;
         // Update content of dialog host
-        DialogOverlayHost.Content = dialog;
+        DialogOverlayHost.SetContent(dialog);
         dialog.IsVisible = true;
-        DialogOverlayHost.OverlayLayer.UpdateLayout();
 
         return dialog.Open();
     }
@@ -153,8 +148,10 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             insetsManager.SafeAreaChanged -= SafeAreaChanged;
 
         topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null)
+            throw new InvalidOperationException("No TopLevel found.");
         insetsManager = topLevel?.InsetsManager;
-
+        
         if (topLevel != null)
             topLevel.BackRequested += SystemBackRequested;
         if (insetsManager != null)

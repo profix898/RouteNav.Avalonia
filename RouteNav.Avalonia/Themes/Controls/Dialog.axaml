@@ -14,65 +14,62 @@
     <x:Double x:Key="DialogTitleBarButtonHeight">28</x:Double>
     <x:Double x:Key="DialogMinWidth">350</x:Double>
     <x:Double x:Key="DialogMinHeight">200</x:Double>
-  
+
     <ControlTheme x:Key="{x:Type routeNav:Dialog}" TargetType="routeNav:Dialog">
         <Setter Property="TitleBarBackground" Value="{DynamicResource DialogTitleBarBackground}" />
         <Setter Property="TitleBarTextColor" Value="{DynamicResource DialogTitleBarTextColor}" />
-        <Setter Property="Background" Value="#F3F3F3"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DialogBorderColor}" />
+        <Setter Property="Background" Value="#F3F3F3" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border x:Name="Container">
-                    <Panel x:Name="LayoutRoot" Background="#4D000000">
-                        <Border x:Name="BackgroundElement"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="1"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                MinWidth="{DynamicResource DialogMinWidth}"
-                                MinHeight="{DynamicResource DialogMinHeight}"
-                                Width="{TemplateBinding Width}"
-                                Height="{TemplateBinding Height}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="20,10,20,10"
-                                BoxShadow="0 8 32 0 #66000000">
-                            <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                                <DockPanel x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar" Height="{StaticResource DialogTitleBarHeight}">
-                                        <Border Background="{TemplateBinding TitleBarBackground}" />
-                                        <TextBlock Margin="15,0,0,0" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleBarTextColor}"
-                                                   FontSize="{StaticResource DialogTitleBarFontSize}" VerticalAlignment="Center" />
-                                        <Button x:Name="PART_DialogCloseButton" Margin="0,0,5,0"
-                                                Width="{StaticResource DialogTitleBarButtonWidth}" Height="{StaticResource DialogTitleBarButtonHeight}"
-                                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                                Background="Transparent" HorizontalAlignment="Right">X</Button>
-                                    </Panel>
-                                    <ContentPresenter DockPanel.Dock="Top" x:Name="PART_DialogContent" Padding="0"
-                                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center"
-                                                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
-                                        <ContentPresenter.Styles>
-                                            <Styles>
-                                                <Style Selector="TextBlock">
-                                                    <Setter Property="Padding" Value="15,10" />
-                                                    <Setter Property="TextWrapping" Value="Wrap" />
-                                                </Style>
-                                            </Styles>
-                                        </ContentPresenter.Styles>
-                                    </ContentPresenter>
-                                </DockPanel>
-                            </Border>
-                        </Border>
-                    </Panel>
+                <Border x:Name="DialogBackground"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="0"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        MinWidth="{DynamicResource DialogMinWidth}"
+                        MinHeight="{DynamicResource DialogMinHeight}"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="20,10,20,10"
+                        BoxShadow="0 8 32 0 #66000000">
+                    <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
+                        <DockPanel x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar"
+                                   Height="{StaticResource DialogTitleBarHeight}">
+                                <Border Background="{TemplateBinding TitleBarBackground}" />
+                                <TextBlock Margin="15,0,0,0" Padding="0" Text="{TemplateBinding Title}"
+                                           Foreground="{TemplateBinding TitleBarTextColor}"
+                                           FontSize="{StaticResource DialogTitleBarFontSize}"
+                                           VerticalAlignment="Center" />
+                                <Button x:Name="DialogCloseButton" Margin="0,0,5,0"
+                                        Width="{StaticResource DialogTitleBarButtonWidth}"
+                                        Height="{StaticResource DialogTitleBarButtonHeight}"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                        Background="Transparent" HorizontalAlignment="Right">
+                                    X
+                                </Button>
+                            </Panel>
+                            <ContentPresenter DockPanel.Dock="Top" x:Name="PART_ContentPresenter" Padding="0"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              VerticalAlignment="Stretch"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            </ContentPresenter>
+                        </DockPanel>
+                    </Border>
                 </Border>
             </ControlTemplate>
         </Setter>
-
+      
         <!-- Dialog window -->
         <Styles>
-            <Style Selector="routeNav|Dialog:dialog-window Panel#LayoutRoot">
-                <Setter Property="Background" Value="{x:Null}" />
-            </Style>
-            <Style Selector="routeNav|Dialog:dialog-window Border#BackgroundElement">
+            <Style Selector="routeNav|Dialog:dialog-window Border#DialogBackground">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="BoxShadow" Value="none" />
@@ -88,13 +85,9 @@
 
         <!-- Dialog embedded -->
         <Styles>
-            <Style Selector="routeNav|Dialog:dialog-embedded Panel#LayoutRoot">
-                <Setter Property="Background" Value="{x:Null}" />
-            </Style>
-            <Style Selector="routeNav|Dialog:dialog-embedded Border#BackgroundElement">
-                <Setter Property="BorderThickness" Value="0" />
+            <Style Selector="routeNav|Dialog:dialog-embedded Border#DialogBackground">
+                <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Margin" Value="0" />
-                <Setter Property="BoxShadow" Value="none" />
                 <Setter Property="MaxHeight" Value="{x:Static system:Double.PositiveInfinity}" />
                 <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -103,27 +96,17 @@
         </Styles>
 
         <!-- Hidden dialog -->
-        <Style Selector="^:hidden /template/ Panel#LayoutRoot">
+        <Style Selector="^:hidden /template/ Border#DialogBackground">
             <Style.Animations>
                 <Animation Duration="00:00:00.167" FillMode="Forward">
                     <KeyFrame Cue="0%">
                         <Setter Property="Opacity" Value="1.0" />
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="Opacity" Value="0.0" />
-                        <Setter Property="IsVisible" Value="False" />
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
-        </Style>
-        <Style Selector="^:hidden /template/ Border#Container">
-            <Style.Animations>
-                <Animation Duration="00:00:00.167" FillMode="Forward">
-                    <KeyFrame Cue="0%">
                         <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
                         <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
                     </KeyFrame>
                     <KeyFrame Cue="100%" KeySpline="0,0 0,1">
+                        <Setter Property="Opacity" Value="0.0" />
+                        <Setter Property="IsVisible" Value="False" />
                         <Setter Property="ScaleTransform.ScaleX" Value="1.05" />
                         <Setter Property="ScaleTransform.ScaleY" Value="1.05" />
                     </KeyFrame>
@@ -132,29 +115,18 @@
         </Style>
 
         <!-- Open dialog -->
-        <Style Selector="^:open /template/ Panel#LayoutRoot">
-            <Setter Property="IsVisible" Value="True" />
+        <Style Selector="^:open /template/ Border#DialogBackground">
             <Style.Animations>
                 <Animation Duration="00:00:00.250" FillMode="Forward">
                     <KeyFrame Cue="0%">
                         <Setter Property="IsVisible" Value="True" />
                         <Setter Property="Opacity" Value="0.0" />
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="IsVisible" Value="True" />
-                        <Setter Property="Opacity" Value="1.0" />
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
-        </Style>
-        <Style Selector="^:open /template/ Border#Container">
-            <Style.Animations>
-                <Animation Duration="00:00:00.250" FillMode="Forward">
-                    <KeyFrame Cue="0%">
                         <Setter Property="ScaleTransform.ScaleX" Value="1.05" />
                         <Setter Property="ScaleTransform.ScaleY" Value="1.05" />
                     </KeyFrame>
                     <KeyFrame Cue="100%" KeySpline="0,0 0,1">
+                        <Setter Property="IsVisible" Value="True" />
+                        <Setter Property="Opacity" Value="1.0" />
                         <Setter Property="ScaleTransform.ScaleX" Value="1.00" />
                         <Setter Property="ScaleTransform.ScaleY" Value="1.00" />
                     </KeyFrame>

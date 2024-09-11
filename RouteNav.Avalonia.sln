@@ -22,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DemoApp", "DemoApp", "{DFF4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RouteNav.Avalonia", "RouteNav.Avalonia\RouteNav.Avalonia.csproj", "{A392B0E8-7247-49F4-BEEC-918F69897711}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Win", "DemoApp\DemoApp.Win\DemoApp.Win.csproj", "{CDFA65E7-9294-4EAE-A742-371213574E2C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,10 +54,6 @@ Global
 		{A392B0E8-7247-49F4-BEEC-918F69897711}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A392B0E8-7247-49F4-BEEC-918F69897711}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A392B0E8-7247-49F4-BEEC-918F69897711}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CDFA65E7-9294-4EAE-A742-371213574E2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CDFA65E7-9294-4EAE-A742-371213574E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CDFA65E7-9294-4EAE-A742-371213574E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CDFA65E7-9294-4EAE-A742-371213574E2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,7 +64,6 @@ Global
 		{1C1A049E-235C-4CD0-B6FA-D53AC418F4DA} = {DFF4E209-5A5B-43F1-81AC-AED161DF7C95}
 		{EBD9022F-BC83-4846-9A11-6F7F3772DC64} = {DFF4E209-5A5B-43F1-81AC-AED161DF7C95}
 		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E} = {DFF4E209-5A5B-43F1-81AC-AED161DF7C95}
-		{CDFA65E7-9294-4EAE-A742-371213574E2C} = {DFF4E209-5A5B-43F1-81AC-AED161DF7C95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83CB65B8-011F-4ED7-BCD3-A6CFA935EF7E}

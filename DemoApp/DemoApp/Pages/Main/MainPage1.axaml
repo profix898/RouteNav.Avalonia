@@ -24,6 +24,10 @@
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Dialog Integration</TextBlock>
                 <StackPanel Orientation="Horizontal">
+                    <Button Click="OpenMsgDlgCommand">Open Message Dialog</Button>
+                    <TextBlock Text=" (message dialog)" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <Button Click="OpenDlgCommand">Open Dialog</Button>
                     <TextBlock Text=" (content dialog + message dialog)" VerticalAlignment="Center" />
                 </StackPanel>

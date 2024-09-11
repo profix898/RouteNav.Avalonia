@@ -17,7 +17,7 @@ namespace RouteNav.Avalonia.Controls;
 [TemplatePart("PART_NavigationBarBackButton", typeof(Button))]
 [TemplatePart("PART_NavigationBarTitle", typeof(ContentPresenter))]
 [TemplatePart("PART_NavigationContent", typeof(TransitioningContentControl))]
-public sealed class NavigationControl : ContentControl, ISafeAreaAware
+public sealed class NavigationControl : TemplatedControl, ISafeAreaAware
 {
     private Border? navBarBorder;
     private Button? navBarBackButton;
@@ -107,30 +107,22 @@ public sealed class NavigationControl : ContentControl, ISafeAreaAware
             navBarBackButton.Click += BackButton_Clicked;
 
         if (navBarTitle != null)
-            navBarTitle.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
+            navBarTitle.PropertyChanged -= NavContentPresenter_PropertyChanged;
         navBarTitle = e.NameScope.Get<ContentPresenter>("PART_NavigationBarTitle");
-        navBarTitle.PropertyChanged += ContentPresenter_ChildPropertyChanged;
+        navBarTitle.PropertyChanged += NavContentPresenter_PropertyChanged;
 
         if (navContentControl != null)
-        {
-            navContentControl.TemplateApplied -= NavContentControl_OnTemplateApplied;
-            if (navContentControl?.Presenter != null)
-                navContentControl.Presenter.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
-        }
+            navContentControl.PropertyChanged -= NavContentPresenter_PropertyChanged;
         navContentControl = e.NameScope.Get<TransitioningContentControl>("PART_NavigationContent");
         navContentControl.PageTransition = PageTransition;
-        navContentControl.TemplateApplied += NavContentControl_OnTemplateApplied;
+        navContentControl.PropertyChanged += NavContentPresenter_PropertyChanged;
+
+        UpdateContent();
     }
 
-    private void NavContentControl_OnTemplateApplied(object? sender, TemplateAppliedEventArgs e)
+    private void NavContentPresenter_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
-        if (navContentControl?.Presenter != null)
-            navContentControl.Presenter.PropertyChanged += ContentPresenter_ChildPropertyChanged;
-    }
-
-    private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == ContentPresenter.ChildProperty)
+        if (e.Property == ContentPresenter.ChildProperty || e.Property == ContentControl.ContentProperty)
         {
             if (e.OldValue is ILogical oldChild)
                 LogicalChildren.Remove(oldChild);
@@ -144,14 +136,17 @@ public sealed class NavigationControl : ContentControl, ISafeAreaAware
         base.OnPropertyChanged(change);
 
         if ((change.Property == PageTransitionProperty || change.Property == PageProperty) && navContentControl != null)
-        {
-            navBarTitle?.SetValue(ContentPresenter.ContentProperty, Page?.Title ?? String.Empty);
-            navContentControl?.SetValue(ContentProperty, Page);
-
-            UpdateContentSafeAreaPadding();
-        }
+            UpdateContent();
         else if (change.Property == PageTransitionProperty && navContentControl != null)
             navContentControl.PageTransition = PageTransition;
+    }
+
+    private void UpdateContent()
+    {
+        navBarTitle?.SetValue(ContentPresenter.ContentProperty, Page?.Title ?? String.Empty);
+        navContentControl?.SetValue(ContentControl.ContentProperty, Page);
+
+        UpdateContentSafeAreaPadding();
     }
 
     private void UpdateContentSafeAreaPadding()

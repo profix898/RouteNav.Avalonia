@@ -4,13 +4,9 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Metadata;
 using Avalonia.Threading;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Internal;
@@ -19,15 +15,12 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
-[TemplatePart("PART_DialogCloseButton", typeof(Button))]
-[TemplatePart("PART_DialogContent", typeof(ContentPresenter))]
 [PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded)]
-public class Dialog : TemplatedControl
+public class Dialog : ContentControl
 {
     protected TaskCompletionSource<object?>? taskCompletionSource;
     protected Button? dialogCloseButton;
     protected Panel? dialogTitleBarPanel;
-    protected ContentPresenter? dialogContent;
 
     /// <summary>
     /// Defines the <see cref="Title"/> property.
@@ -43,17 +36,7 @@ public class Dialog : TemplatedControl
     /// Defines the <see cref="TitleBarTextColor"/> property.
     /// </summary>
     public static readonly StyledProperty<Brush> TitleBarTextColorProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarTextColor));
-
-    /// <summary>
-    /// Defines the <see cref="Content"/> property.
-    /// </summary>
-    public static readonly StyledProperty<object?> ContentProperty = AvaloniaProperty.Register<Dialog, object?>(nameof(Content));
-
-    /// <summary>
-    /// Defines the <see cref="ContentTemplate"/> property.
-    /// </summary>
-    public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty = AvaloniaProperty.Register<TemplatedControl, IDataTemplate?>(nameof(ContentTemplate));
-
+    
     /// <summary>
     /// Defines the <see cref="DialogSize"/> property.
     /// </summary>
@@ -92,32 +75,6 @@ public class Dialog : TemplatedControl
     }
 
     /// <summary>
-    /// Gets or sets the content of the dialog
-    /// </summary>
-    [Content]
-    [DependsOn(nameof(ContentTemplate))]
-    public object? Content
-    {
-        get { return GetValue(ContentProperty); }
-        set
-        {
-            if (value is string strValue)
-                value = new TextBlock { Text = strValue };
-
-            SetValue(ContentProperty, value);
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets a content template for the dialog
-    /// </summary>
-    public IDataTemplate? ContentTemplate
-    {
-        get { return GetValue(ContentTemplateProperty); }
-        set { SetValue(ContentTemplateProperty, value); }
-    }
-
-    /// <summary>
     /// Gets or sets a size specifier for the dialog
     /// </summary>
     public DialogSize DialogSize
@@ -134,40 +91,18 @@ public class Dialog : TemplatedControl
 
         if (dialogCloseButton != null)
             dialogCloseButton.Click -= CloseDialog;
-        dialogCloseButton = e.NameScope.Find<Button>("PART_DialogCloseButton");
+        dialogCloseButton = e.NameScope.Find<Button>("DialogCloseButton");
         if (dialogCloseButton != null) // MessageDialog does not have a close button
             dialogCloseButton.Click += CloseDialog;
         
         dialogTitleBarPanel = e.NameScope.Find<Panel>("DialogTitleBar");
-        // Set height to trigger binding (do it twice to force change in value, otherwise binding does not update)
-        SetCurrentValue(HeightProperty, Height - 1);
-        SetCurrentValue(HeightProperty, Height + 1);
-
-        if (dialogContent != null)
-            dialogContent.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
-        dialogContent = e.NameScope.Get<ContentPresenter>("PART_DialogContent");
-        dialogContent.PropertyChanged += ContentPresenter_ChildPropertyChanged;
-
-        dialogContent.Content = Content;
-    }
-
-    private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == ContentPresenter.ChildProperty)
+        
+        // Correct page/dialog size (to account for page margins and title bar height)
+        if (Content is Page page)
         {
-            if (e.OldValue is ILogical oldChild)
-                LogicalChildren.Remove(oldChild);
-            if (e.NewValue is ILogical newLogical)
-                LogicalChildren.Add(newLogical);
+            page.Bind(HeightProperty, this.GetBindingObservable(HeightProperty, height => height - dialogTitleBarPanel?.Height ?? height));
+            page.Bind(WidthProperty, this.GetBindingObservable(WidthProperty));
         }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == ContentProperty && dialogContent != null)
-            dialogContent.Content = Content;
     }
 
     #region Events
@@ -221,7 +156,7 @@ public class Dialog : TemplatedControl
             PseudoClasses.Set(SharedPseudoClasses.Open, false);
 
             // Animation delay
-            Task.Delay(200).ContinueWith(_ => Closed?.Invoke(this, EventArgs.Empty));
+            Task.Delay(180).ContinueWith(_ => Closed?.Invoke(this, EventArgs.Empty));
         }
         else
         {
@@ -304,13 +239,7 @@ public class Dialog : TemplatedControl
     {
         var previousContent = parentControl.Content;
         
-        // Adapt dialog size via parent page size
-        Bind(WidthProperty, parentControl.GetBindingObservable(DesiredSizeProperty, size => size.Width));
-        Bind(HeightProperty, parentControl.GetBindingObservable(DesiredSizeProperty, size => size.Height));
-
-        // Correct page/dialog size (to account for page margins and title bar height)
-        if (Content is Page page)
-            page.Bind(HeightProperty, this.GetBindingObservable(HeightProperty, height => height - dialogTitleBarPanel?.Height ?? height));
+        this.SetSizeBinding(parentControl);
 
         parentControl.Content = this;
         PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);

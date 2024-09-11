@@ -7,7 +7,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <MergeResourceInclude Source="/Themes/Colors.axaml" />
-
+              
+                <MergeResourceInclude Source="/Themes/Controls/DialogOverlayHost.axaml" />
                 <MergeResourceInclude Source="/Themes/Controls/Dialog.axaml" />
                 <MergeResourceInclude Source="/Themes/Controls/MessageDialog.axaml" />
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace RouteNav.Avalonia.Platform;
+namespace RouteNav.Avalonia;
 
 public sealed class LazyValue<T>
     where T : class

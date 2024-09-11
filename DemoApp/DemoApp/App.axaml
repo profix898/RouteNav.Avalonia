@@ -6,6 +6,7 @@
              RequestedThemeVariant="Light">
 
     <Application.Styles>
+        <!--<SimpleTheme />-->
         <FluentTheme />
         <routeNav:RouteNavStyles />
 

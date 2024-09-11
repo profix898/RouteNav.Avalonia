@@ -7,6 +7,7 @@ public class InternalErrorPage : Page
 {
     public InternalErrorPage()
     {
+        Title = "Internal Error";
         DialogSizeHint = DialogSize.Small;
     }
 

@@ -24,16 +24,6 @@ public static class DialogPageExtensions
             throw new ArgumentNullException(nameof(page));
 
         dialogSize ??= page.DialogSizeHint ?? DialogSize.Medium;
-        var size = GetSize(dialogSize.Value, parent, minSize, maxSize);
-
-        // Special case: custom size
-        if (dialogSize == DialogSize.Custom)
-        {
-            if (!IsNaN(page.Width) && !IsNaN(page.Height)) // Custom size from page
-                size = new Size(page.Width, page.Height);
-            else if (parent != null && !IsNaN(parent.Width) && !IsNaN(parent.Height)) // Custom size from parent
-                size = new Size(parent.Width, parent.Height);
-        }
         
         // Build Dialog from Page
         var dialog = new Dialog
@@ -45,9 +35,16 @@ public static class DialogPageExtensions
             DialogSize = dialogSize.Value
         };
 
-        // Adapt page size via dialog size
-        page.Bind(Layoutable.WidthProperty, dialog.GetBindingObservable(Layoutable.WidthProperty, width => IsNaN(width) ? size.Width : width));
-        page.Bind(Layoutable.HeightProperty, dialog.GetBindingObservable(Layoutable.HeightProperty, height => IsNaN(height) ? size.Height : height));
+        // Calculate dialog size (from parent)
+        var size = GetSize(dialog, parent, minSize, maxSize);
+        if (dialogSize == DialogSize.Custom) // Special case: custom size
+        {
+            if (!IsNaN(page.Width) && !IsNaN(page.Height)) // Custom size from page
+                size = new Size(page.Width, page.Height);
+            else if (parent != null && !IsNaN(parent.Width) && !IsNaN(parent.Height)) // Custom size from parent
+                size = new Size(parent.Width, parent.Height);
+        }
+
         dialog.Width = size.Width;
         dialog.Height = size.Height;
 

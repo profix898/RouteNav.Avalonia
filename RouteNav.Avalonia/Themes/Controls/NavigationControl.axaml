@@ -50,11 +50,7 @@
                                                  BorderBrush="{TemplateBinding BorderBrush}"
                                                  BorderThickness="{TemplateBinding BorderThickness}"
                                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                                 Content="{Binding Page, RelativeSource={RelativeSource TemplatedParent}}"
-                                                 ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                 Padding="{TemplateBinding Padding}"
-                                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                                 Padding="{TemplateBinding Padding}" />
                 </DockPanel>
             </ControlTemplate>
         </Setter>
