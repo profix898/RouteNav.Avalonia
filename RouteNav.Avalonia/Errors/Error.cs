@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using RouteNav.Avalonia.Dialogs;
-using static RouteNav.Avalonia.Dialogs.MessageDialog;
 
 namespace RouteNav.Avalonia.Errors;
 

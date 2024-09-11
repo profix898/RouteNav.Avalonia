@@ -11,31 +11,6 @@ namespace RouteNav.Avalonia.Dialogs;
 
 public class MessageDialog : Dialog
 {
-    #region MessageDialogButtons enum
-
-    public enum MessageDialogButtons
-    {
-        Ok,
-        OkCancel,
-        YesNo,
-        YesNoCancel
-    }
-
-    #endregion
-
-    #region MessageDialogResult enum
-
-    public enum MessageDialogResult
-    {
-        None,
-        Ok,
-        Cancel,
-        Yes,
-        No
-    }
-
-    #endregion
-
     private ContentPresenter? dialogButtons;
 
     public static readonly StyledProperty<MessageDialogButtons> ButtonsProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtons>(nameof(Buttons));

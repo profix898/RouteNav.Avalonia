@@ -9,18 +9,20 @@
                x:Class="DemoApp.Pages.Main.MainRootPage">
     <StackPanel Spacing="5">
         <TextBlock Margin="0,0,0,10" FontWeight="Bold">Welcome on the Main stack!</TextBlock>
+        <TextBlock TextWrapping="Wrap">Take a look at 'App.axaml.xs' to discover the navigation structure of this sample app.</TextBlock>
+      
         <routing:RouteButton RoutePath="/main/page1">To Page1</routing:RouteButton>
         <routing:RouteButton RoutePath="/main/page2">To Page2</routing:RouteButton>
         <routing:RouteButton RoutePath="/main/page3">To Page3</routing:RouteButton>
 
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+        <Border Background="#EEEEEE" Margin="0,10" Padding="10">
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">SidebarMenu stack</TextBlock>
                 <routing:RouteButton RoutePath="/sidebar/" Target="Window">To Sidebar Root</routing:RouteButton>
                 <routing:RouteButton RoutePath="/sidebar/page1" Target="Window">To Sidebar Page1</routing:RouteButton>
             </StackPanel>
         </Border>
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+        <Border Background="#EEEEEE" Margin="0,10" Padding="10">
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Tabbed stack</TextBlock>
                 <routing:RouteButton RoutePath="/tabbed/" Target="Window">To Tabbed Root</routing:RouteButton>

@@ -27,9 +27,9 @@ public class App : Application
         var mainStack = new NavigationPageStack(Navigation.MainStackName, "DemoApp - Main");
         Navigation.UIPlatform.AddStack(mainStack);
 
-        // Add main/root page (= initial page) to the stack (either by type or as factory method)
+        // Add main/root page (= initial page) to the stack (either by type or via factory method)
         mainStack.AddPage<MainRootPage>(String.Empty);
-        //mainStack.AddPage(String.Empty, () => new MainRootPage());
+        //mainStack.AddPage(String.Empty, uri => new MainRootPage(uri));
 
         // Add more pages to the navigation stack (argument is the relative path to page on stack)
         mainStack.AddPage<MainPage1>("page1");
@@ -46,13 +46,17 @@ public class App : Application
         // SidebarMenu manages a 'SidebarMenuItem' collection, use .AddMenuItem() to add items
         sidebarMenuStack.AddMenuItem<SidebarMenuRootPage>(String.Empty, "RootPage");
         sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Page1");
-        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tab Page1"); // Links to page on another stack
+        sidebarMenuStack.AddMenuItem<SidebarMenuPage2>("page2", "Page2");
+        sidebarMenuStack.AddMenuItem<SidebarMenuPage3>("page3", "Page3");
+        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tab Page1"); // Links to external pages (on other stacks) is supported
 
         /* Tabbed stack */
         var tabbedStack = new TabbedPageStack("tabbed", "DemoApp - Tabbed");
         Navigation.UIPlatform.AddStack(tabbedStack);
         tabbedStack.AddPage<TabbedRootPage>(String.Empty);
         tabbedStack.AddPage<TabbedPage1>("page1");
+        tabbedStack.AddPage<TabbedPage2>("page2");
+        tabbedStack.AddPage<TabbedPage3>("page3");
     }
 
     public override void OnFrameworkInitializationCompleted()

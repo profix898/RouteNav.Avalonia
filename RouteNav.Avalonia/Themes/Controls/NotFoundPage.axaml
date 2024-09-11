@@ -8,11 +8,11 @@
     </Design.PreviewWith>
   
     <ControlTheme x:Key="{x:Type pages:NotFoundPage}" TargetType="pages:NotFoundPage">
-        <Setter Property="Title" Value="Not Found" />
+        <Setter Property="Title" Value="Page Not Found" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{DynamicResource PageBackground}">
-                    <TextBlock Text="404 - Not Found!" Foreground="{DynamicResource NotFoundErrorTextColor}" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock Text="404 - Page Not Found!" Foreground="{DynamicResource NotFoundErrorTextColor}" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Panel>
             </ControlTemplate>
         </Setter>

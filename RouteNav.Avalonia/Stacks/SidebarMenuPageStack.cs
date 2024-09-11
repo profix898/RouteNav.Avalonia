@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Controls;
 using RouteNav.Avalonia.Internal;
-using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.StackContainers;
 using static RouteNav.Avalonia.Controls.SidebarMenu;
 

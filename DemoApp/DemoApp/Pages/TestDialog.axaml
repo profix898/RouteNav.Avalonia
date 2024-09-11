@@ -1,0 +1,17 @@
+<avalonia:Dialog xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+                 Title="Demo Dialog Title"
+                 x:Class="DemoApp.TestDialog">
+
+    <StackPanel Spacing="10" Margin="15,10">
+        <TextBlock TextWrapping="Wrap">
+            <Run Text="Note: This is a " /><Run FontWeight="Bold" Text="'Dialog'" /><Run Text="." />
+        </TextBlock>
+        <TextBlock Margin="0,0,0,10" FontWeight="Bold">Any content can go here ...</TextBlock>
+        <ProgressBar Height="5" Value="50" />
+        <CheckBox IsChecked="true">CheckBox</CheckBox>
+        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
+        <TimePicker />
+    </StackPanel>
+</avalonia:Dialog>

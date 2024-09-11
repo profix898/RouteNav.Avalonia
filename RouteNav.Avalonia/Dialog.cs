@@ -45,6 +45,14 @@ public class Dialog : ContentControl
     public Dialog()
     {
         PseudoClasses.Add(SharedPseudoClasses.Hidden);
+
+        if (Design.IsDesignMode)
+        {
+            // Design-time view as embedded dialog
+            PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
+            PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);
+            
+        }
     }
 
     /// <summary>

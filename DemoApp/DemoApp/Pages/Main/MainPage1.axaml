@@ -4,22 +4,15 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
                Title="Page 1" Padding="8,5"
                x:Class="DemoApp.Pages.Main.MainPage1">
 
     <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 1.</TextBlock>
-        <routing:RouteButton RoutePath="/main/page2">To Page2</routing:RouteButton>
+        <TextBlock Margin="0,0,0,10">-> We are on MainPage1.</TextBlock>
+        <routing:RouteButton RoutePath="/main/page2">To MainPage2</routing:RouteButton>
 
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Error Pages</TextBlock>
-                <routing:RouteButton RoutePath="/main/error404">NotFoundPage</routing:RouteButton>
-                <routing:RouteButton RoutePath="/main/error500">InternalErrorPage</routing:RouteButton>
-            </StackPanel>
-        </Border>
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Dialog Integration</TextBlock>
@@ -43,6 +36,14 @@
                     <Button Click="OpenDlgPageOverlayCommand">Open Page as Overlay Dialog</Button>
                     <TextBlock Text=" (Test page as dialog in different sizes) displayed in overlay" VerticalAlignment="Center" />
                 </StackPanel>
+            </StackPanel>
+        </Border>
+      
+        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+            <StackPanel Spacing="5">
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Error Pages</TextBlock>
+                <routing:RouteButton RoutePath="/main/error404">NotFoundPage</routing:RouteButton>
+                <routing:RouteButton RoutePath="/main/error500">InternalErrorPage</routing:RouteButton>
             </StackPanel>
         </Border>
     </StackPanel>

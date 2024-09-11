@@ -11,7 +11,7 @@ using RouteNav.Avalonia.Stacks;
 namespace RouteNav.Avalonia.Controls;
 
 /// <summary>
-/// A TextBlock control that functions as a navigateable hyperlink.
+/// A TextBlock control that functions as a navigable hyperlink.
 /// </summary>
 [PseudoClasses(pcVisited)]
 public class HyperlinkLabel : TextBlock, IRouteItem

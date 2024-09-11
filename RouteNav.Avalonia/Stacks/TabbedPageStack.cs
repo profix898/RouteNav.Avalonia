@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Pages;
-using RouteNav.Avalonia.Platform;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.StackContainers;
 

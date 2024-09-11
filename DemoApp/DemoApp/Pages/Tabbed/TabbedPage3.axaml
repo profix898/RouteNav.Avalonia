@@ -1,0 +1,13 @@
+<routeNav:Page xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+               Title="Page 1" Padding="8,5"
+               x:Class="DemoApp.Pages.Tabbed.TabbedPage3">
+    <StackPanel Spacing="5">
+        <TextBlock FontWeight="Bold">Welcome on the Tabbed stack!</TextBlock>
+        <TextBlock Margin="0,0,0,10">-> We are on Page 3.</TextBlock>
+    </StackPanel>
+</routeNav:Page>

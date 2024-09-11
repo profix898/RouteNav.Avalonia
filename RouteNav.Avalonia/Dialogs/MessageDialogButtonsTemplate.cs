@@ -21,22 +21,22 @@ public sealed class MessageDialogButtonsTemplate : IDataTemplate
 
         var stackPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
 
-        if (messageDialog.Buttons is MessageDialog.MessageDialogButtons.Ok or MessageDialog.MessageDialogButtons.OkCancel)
-            AddButton(messageDialog, stackPanel, "Ok", MessageDialog.MessageDialogResult.Ok);
-        if (messageDialog.Buttons is MessageDialog.MessageDialogButtons.YesNo or MessageDialog.MessageDialogButtons.YesNoCancel)
+        if (messageDialog.Buttons is MessageDialogButtons.Ok or MessageDialogButtons.OkCancel)
+            AddButton(messageDialog, stackPanel, "Ok", MessageDialogResult.Ok);
+        if (messageDialog.Buttons is MessageDialogButtons.YesNo or MessageDialogButtons.YesNoCancel)
         {
-            AddButton(messageDialog, stackPanel, "Yes", MessageDialog.MessageDialogResult.Yes);
-            AddButton(messageDialog, stackPanel, "No", MessageDialog.MessageDialogResult.No);
+            AddButton(messageDialog, stackPanel, "Yes", MessageDialogResult.Yes);
+            AddButton(messageDialog, stackPanel, "No", MessageDialogResult.No);
         }
-        if (messageDialog.Buttons is MessageDialog.MessageDialogButtons.OkCancel or MessageDialog.MessageDialogButtons.YesNoCancel)
-            AddButton(messageDialog, stackPanel, "Cancel", MessageDialog.MessageDialogResult.Cancel);
+        if (messageDialog.Buttons is MessageDialogButtons.OkCancel or MessageDialogButtons.YesNoCancel)
+            AddButton(messageDialog, stackPanel, "Cancel", MessageDialogResult.Cancel);
 
         return stackPanel;
     }
 
     #endregion
 
-    private static void AddButton(MessageDialog messageDialog, Panel stackPanel, string caption, MessageDialog.MessageDialogResult result)
+    private static void AddButton(MessageDialog messageDialog, Panel stackPanel, string caption, MessageDialogResult result)
     {
         var button = new Button { Content = caption };
         button.Classes.Add("MessageDialogButton");
