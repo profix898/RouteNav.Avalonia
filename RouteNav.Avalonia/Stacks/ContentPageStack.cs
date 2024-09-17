@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Layout;
-using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
 public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavigationStack
 {
-    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
-
     public ContentPageStack(string name, string title)
         : base(name, title)
     {
@@ -22,13 +18,11 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
 
     #region Overrides of NavigationStackBase<NavigationPage>
 
-    protected override Page? ResolveRoute(Uri routeUri)
-    {
-        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
-    }
-
     protected override NavigationContainer InitContainer()
     {
+        RootPage = new LazyValue<Page>(() => ResolveRoute(this.BuildRoute(String.Empty))
+                                             ?? throw new NavigationException("RootPage can not be retrieved."));
+        
         return new NavigationContainer
         {
             VerticalAlignment = VerticalAlignment.Stretch,
@@ -37,20 +31,10 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
         };
     }
 
-    public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
-    {
-        var pageKey = relativeRoute.Trim('/');
-        pages.Set(pageKey, pageFactory);
-
-        // RootPage
-        if (String.IsNullOrEmpty(pageKey))
-            RootPage = new LazyValue<Page>(() => pageFactory(this.BuildRoute(String.Empty)));
-    }
-
-    public override Task PushAsync(Page page)
+    public override Task<Page> PushAsync(Page page)
     {
         if (page.Equals(CurrentPage))
-            return Task.CompletedTask;
+            return Task.FromResult(CurrentPage);
 
         var previousPage = CurrentPage;
 
@@ -61,7 +45,7 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
         ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
-        return Task.CompletedTask;
+        return Task.FromResult(CurrentPage);
     }
 
     #endregion

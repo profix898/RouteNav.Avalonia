@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
-public interface ISidebarMenuStack
-{
-}
-
-public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack, ISidebarMenuStack
+public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
     where TC : NavigationContainer, new()
 {
+    protected readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
+    
     protected readonly List<Page> pageStack = new List<Page>();
     protected readonly List<Dialog> dialogStack = new List<Dialog>();
     
@@ -42,9 +41,16 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         });
     }
 
-    public LazyValue<TC> Container { get; }
+    protected LazyValue<TC> Container { get; }
 
-    protected abstract Page? ResolveRoute(Uri routeUri);
+    protected virtual Page? ResolveRoute(Uri routeUri)
+    {
+        var page = PageResolver?.ResolveRoute(routeUri);
+        if (page != null)
+            return page;
+
+        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
+    }
 
     #region Implementation of INavigationStack
 
@@ -66,18 +72,15 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public LazyValue<Page> RootPage { get; protected set; }
 
+    public IPageResolver? PageResolver { get; set; }
+
     protected abstract TC InitContainer();
-
-    public virtual INavigationStack? RequestStack(string stackName)
-    {
-        return null;
-    }
-
+    
     protected virtual Dialog BuildDialog(Page page)
     {
         return page.ToDialog(CurrentPage);
     }
-
+    
     public virtual void AddPage(string relativeRoute, Type pageType)
     {
         if (!pageType.IsSubclassOf(typeof(Page)))
@@ -87,7 +90,16 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
                                       ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
     }
 
-    public abstract void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);
+    public virtual void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
+    {
+        var pageKey = relativeRoute.Trim('/');
+        pages.Set(pageKey, pageFactory);
+    }
+
+    public virtual INavigationStack? RequestStack(string stackName)
+    {
+        return null;
+    }
 
     public virtual void Reset()
     {
@@ -132,10 +144,10 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         pageStack.Remove(page);
     }
 
-    public virtual Task PushAsync(Page page)
+    public virtual Task<Page> PushAsync(Page page)
     {
         if (page.Equals(CurrentPage))
-            return Task.CompletedTask;
+            return Task.FromResult(CurrentPage);
 
         var previousPage = CurrentPage;
 
@@ -145,7 +157,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
-        return Task.CompletedTask;
+        return Task.FromResult(CurrentPage);
     }
 
     public virtual Task<Page> PopAsync()

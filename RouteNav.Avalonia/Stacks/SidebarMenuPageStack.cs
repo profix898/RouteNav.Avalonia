@@ -25,7 +25,6 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
     where TC : SidebarMenuPageContainer, new()
 {
     private readonly List<SidebarMenuItem> menuItems = new List<SidebarMenuItem>();
-    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
 
     public SidebarMenuPageStack(string name, string title)
         : base(name, title)
@@ -50,11 +49,6 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
     }
 
     #region Overrides of NavigationStackBase<SidebarMenuPage>
-
-    protected override Page? ResolveRoute(Uri routeUri)
-    {
-        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
-    }
 
     protected override TC InitContainer()
     {
@@ -90,10 +84,10 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
             RootPage = new LazyValue<Page>(() => pageFactory(this.BuildRoute(String.Empty)));
     }
 
-    public override Task PushAsync(Page page)
+    public override Task<Page> PushAsync(Page page)
     {
         if (page.Equals(CurrentPage))
-            return Task.CompletedTask;
+            return Task.FromResult(CurrentPage);
 
         var previousPage = CurrentPage;
 
@@ -104,7 +98,7 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
         ContainerPage.Value.UpdatePage(CurrentPage);
         OnPageNavigated(previousPage, CurrentPage);
 
-        return Task.CompletedTask;
+        return Task.FromResult(CurrentPage);
     }
 
     #endregion

@@ -24,8 +24,6 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     where TC : TabbedPageContainer, new()
 
 {
-    private readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
-
     private Page? rootPage;
 
     public TabbedPageStack(string name, string title)
@@ -43,11 +41,6 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     }
 
     #region Overrides of NavigationStackBase<TabbedPage>
-
-    protected override Page? ResolveRoute(Uri routeUri)
-    {
-        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
-    }
 
     protected override TC InitContainer()
     {

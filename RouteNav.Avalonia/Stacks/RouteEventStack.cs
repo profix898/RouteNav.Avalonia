@@ -48,6 +48,12 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
 
     public LazyValue<Page> RootPage { get; } = new LazyValue<Page>(() => new Page());
 
+    public IPageResolver PageResolver
+    {
+        get { throw new NotImplementedException($"{typeof(RouteEventStack)} does not support an {typeof(IPageResolver)}."); }
+        set { throw new NotImplementedException($"{typeof(RouteEventStack)} does not support an {typeof(IPageResolver)}."); }
+    }
+
     public Page? CurrentPage => RootPage.Value;
 
     public INavigationStack? RequestStack(string stackName)
@@ -55,12 +61,12 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
         return null;
     }
 
-    public void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
+    public void AddPage(string relativeRoute, Type pageType)
     {
         throw new NotSupportedException($"{nameof(RouteEventStack)} does not support pages.");
     }
-
-    public void AddPage(string relativeRoute, Type pageType)
+    
+    public void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         throw new NotSupportedException($"{nameof(RouteEventStack)} does not support pages.");
     }
@@ -86,9 +92,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     {
     }
 
-    public Task PushAsync(Page page)
+    public Task<Page> PushAsync(Page page)
     {
-        return Task.FromException(new NotSupportedException($"{nameof(RouteEventStack)} does not implement IPageNavigation."));
+        return Task.FromException<Page>(new NotSupportedException($"{nameof(RouteEventStack)} does not implement IPageNavigation."));
     }
 
     public Task<Page> PopAsync()

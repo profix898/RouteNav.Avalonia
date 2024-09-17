@@ -115,9 +115,7 @@ public class Dialog : ContentControl
 
     #region Events
 
-    /// <summary>
-    ///     Fired when the window is opened.
-    /// </summary>
+    /// <summary>Fired when the window is opened.</summary>
     public event EventHandler? Opened;
 
     protected internal virtual Task<object?> Open()
@@ -142,9 +140,7 @@ public class Dialog : ContentControl
         return taskCompletionSource.Task;
     }
 
-    /// <summary>
-    ///     Fired when the window is closed.
-    /// </summary>
+    /// <summary>Fired when the window is closed.</summary>
     public event EventHandler? Closed;
 
     public virtual void Close(object? result = null)

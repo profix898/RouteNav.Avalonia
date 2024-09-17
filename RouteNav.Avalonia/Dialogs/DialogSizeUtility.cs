@@ -8,7 +8,23 @@ namespace RouteNav.Avalonia.Dialogs;
 
 public static class DialogSizeUtility
 {
-    public static readonly Size DefaultSize = new Size(400, 300);
+    #region DialigSizeDefaults
+
+    public static Size SmallScale { get; set; } = new Size(0.3, 0.3);
+    public static Size SmallMinSize { get; set; } = new Size(200, 200);
+    public static Size SmallMaxSize { get; set; } = new Size(400, 400);
+    
+    public static Size MediumScale { get; set; } = new Size(0.6, 0.6);
+    public static Size MediumMinSize { get; set; } = new Size(350, 350);
+    public static Size MediumMaxSize { get; set; } = new Size(700, 700);
+    
+    public static Size LargeScale { get; set; } = new Size(0.9, 0.9);
+    public static Size LargeMinSize { get; set; } = new Size(500, 500);
+    public static Size LargeMaxSize { get; set; } = new Size(1000, 1000);
+    
+    public static Size FallbackSize { get; set; } = new Size(400, 300);
+
+    #endregion
 
     public static IDisposable SetSizeBinding(this Dialog dialog, Layoutable parent, Size? minSize = null, Size? maxSize = null)
     {
@@ -27,15 +43,15 @@ public static class DialogSizeUtility
     public static Size GetSize(Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
     {
         if (parent == null)
-            return DefaultSize;
+            return FallbackSize;
 
         var baseSize = GetBaseSize(parent);
 
         return dialog.DialogSize switch
         {
-            DialogSize.Small => GetSize(baseSize, new Size(0.3, 0.3), minSize ?? new Size(200, 200), maxSize ?? new Size(400, 400)),
-            DialogSize.Medium => GetSize(baseSize, new Size(0.6, 0.6), minSize ?? new Size(350, 350), maxSize ?? new Size(700, 700)),
-            DialogSize.Large => GetSize(baseSize, new Size(0.9, 0.9), minSize ?? new Size(500, 500), maxSize ?? new Size(1000, 1000)),
+            DialogSize.Small => GetSize(baseSize, SmallScale, minSize ?? SmallMinSize, maxSize ?? SmallMaxSize),
+            DialogSize.Medium => GetSize(baseSize, MediumScale, minSize ?? MediumMinSize, maxSize ?? MediumMaxSize),
+            DialogSize.Large => GetSize(baseSize, LargeScale, minSize ?? LargeMinSize, maxSize ?? LargeMaxSize),
             DialogSize.Custom => (!Double.IsNaN(dialog.Width) && !Double.IsNaN(dialog.Height)) ? new Size(dialog.Width, dialog.Height) : GetSize(baseSize, new Size(0.5, 0.5)),
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
@@ -53,9 +69,9 @@ public static class DialogSizeUtility
         if (parent is Window window && window.PlatformControl != null)
             baseSize = new Size(window.PlatformControl.Bounds.Width, window.PlatformControl.Bounds.Height);
 
-        // For width/height is NaN use DefaultSize
+        // For width/height is NaN use FallbackSize
         if (Double.IsNaN(baseSize.Width) || Double.IsNaN(baseSize.Height))
-            baseSize = DefaultSize;
+            baseSize = FallbackSize;
 
         return baseSize;
     }

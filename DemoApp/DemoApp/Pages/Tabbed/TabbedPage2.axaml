@@ -4,7 +4,7 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 1" Padding="8,5"
+               Title="Page 2" Padding="8,5"
                x:Class="DemoApp.Pages.Tabbed.TabbedPage2">
     <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the Tabbed stack!</TextBlock>

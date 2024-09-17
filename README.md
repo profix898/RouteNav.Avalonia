@@ -87,6 +87,10 @@ In such a case, the container page can be constructed using a factory method. Th
 </NavigationPageContainer>
 ```
 
+#### Dynamic page resolver
+
+Generally, pages are registered in the `INavigationStack` with their route via `AddPage()` so that they can be retrieved later by route Uri. Where there is a large number of pages or if the pages are not known in advance, a custom `IPageResolver` can be provided via the `INavigationStack.PageResolver` property. The `IPageResolver` interface contains a single member `Page? ResolveRoute(Uri routeUri)`, which is used to find and instantiate the appropriate page for a given route Uri.
+
 #### Page to Dialog
 
 **RouteNav.Avalonia** utilizes automatic conversion of `Page` to `Dialog` in cases where a `Page` is invoked for display as a dialog (or overlay dialog). You can also explicitely perform the conversion by calling the `ToDialog(Layoutable? parent)` extension method for `Page`.

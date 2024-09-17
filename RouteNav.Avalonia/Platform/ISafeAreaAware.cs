@@ -2,7 +2,11 @@
 
 namespace RouteNav.Avalonia.Platform;
 
+/// <summary>Interface representing an entity that supports safe area padding.</summary>
 public interface ISafeAreaAware
 {
-    public Thickness SafeAreaPadding { get; set; }
+    /// <summary>
+    /// Gets or sets the padding that accounts for the safe area.
+    /// </summary>
+    Thickness SafeAreaPadding { get; set; }
 }
