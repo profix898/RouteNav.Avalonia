@@ -9,11 +9,12 @@
     <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
         <TextBlock Margin="0,0,0,10">-> We are on Page 3.</TextBlock>
+      
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
             <StackPanel Spacing="10">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Some controls</TextBlock>
-                <ProgressBar Value="0.5" />
-                <CheckBox IsChecked="true" />
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Some content to fill the page for illustration ...</TextBlock>
+                <ProgressBar Height="5" Value="50" />
+                <CheckBox IsChecked="true">CheckBox</CheckBox>
                 <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
                 <TimePicker />
             </StackPanel>

@@ -108,6 +108,7 @@ public class Dialog : ContentControl
         // Correct page/dialog size (to account for page margins and title bar height)
         if (Content is Page page)
         {
+            Height = Height + dialogTitleBarPanel?.Height ?? Height;
             page.Bind(HeightProperty, this.GetBindingObservable(HeightProperty, height => height - dialogTitleBarPanel?.Height ?? height));
             page.Bind(WidthProperty, this.GetBindingObservable(WidthProperty));
         }

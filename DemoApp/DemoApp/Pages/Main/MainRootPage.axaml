@@ -5,21 +5,26 @@
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Root Page" Padding="8,5"
+               Title="RootPage Title" Padding="8,5"
                x:Class="DemoApp.Pages.Main.MainRootPage">
-    <StackPanel Spacing="5">
-        <TextBlock Margin="0,0,0,10" FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-        <TextBlock TextWrapping="Wrap">Take a look at 'App.axaml.xs' to discover the navigation structure of this sample app.</TextBlock>
+    <StackPanel Spacing="5" HorizontalAlignment="Left">
+        <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
       
-        <routing:RouteButton RoutePath="/main/page1">To Page1</routing:RouteButton>
-        <routing:RouteButton RoutePath="/main/page2">To Page2</routing:RouteButton>
-        <routing:RouteButton RoutePath="/main/page3">To Page3</routing:RouteButton>
+        <Border Background="#EEEEEE" Margin="0,10" Padding="10" MaxWidth="800">
+            <TextBlock Margin="0,0,0,10" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed">The main stack showcases most of the features of RouteNav.Avalonia. It's probably a good idea to start on pages 1+2 of the main stack to explore what RouteNav.Avalonia offers. The sidebar menu and tabbed stacks show alternative navigation layouts using a hamburger menu and tabbed interface, respectively.</TextBlock>
+        </Border>
+      
+        <routing:RouteButton RoutePath="/main/page1">To Main Page1</routing:RouteButton>
+        <routing:RouteButton RoutePath="/main/page2">To Main Page2</routing:RouteButton>
+        <routing:RouteButton RoutePath="/main/page3">To Main Page3</routing:RouteButton>
 
         <Border Background="#EEEEEE" Margin="0,10" Padding="10">
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">SidebarMenu stack</TextBlock>
                 <routing:RouteButton RoutePath="/sidebar/" Target="Window">To Sidebar Root</routing:RouteButton>
                 <routing:RouteButton RoutePath="/sidebar/page1" Target="Window">To Sidebar Page1</routing:RouteButton>
+                <routing:RouteButton RoutePath="/sidebar/page2" Target="Window">To Sidebar Page2</routing:RouteButton>
+                <routing:RouteButton RoutePath="/sidebar/page3" Target="Window">To Sidebar Page3</routing:RouteButton>
             </StackPanel>
         </Border>
         <Border Background="#EEEEEE" Margin="0,10" Padding="10">
@@ -27,6 +32,8 @@
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Tabbed stack</TextBlock>
                 <routing:RouteButton RoutePath="/tabbed/" Target="Window">To Tabbed Root</routing:RouteButton>
                 <routing:RouteButton RoutePath="/tabbed/page1" Target="Window">To Tabbed Page1</routing:RouteButton>
+                <routing:RouteButton RoutePath="/tabbed/page2" Target="Window">To Tabbed Page2</routing:RouteButton>
+                <routing:RouteButton RoutePath="/tabbed/page3" Target="Window">To Tabbed Page3</routing:RouteButton>
             </StackPanel>
         </Border>
     </StackPanel>

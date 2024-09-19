@@ -17,12 +17,12 @@
             <StackPanel Spacing="5">
                 <TextBlock Margin="0,0,0,10" FontWeight="Bold">Dialog Integration</TextBlock>
                 <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenMsgDlgCommand">Open Message Dialog</Button>
-                    <TextBlock Text=" (message dialog)" VerticalAlignment="Center" />
+                    <Button Click="OpenDlgCommand">Open Dialog</Button>
+                    <TextBlock Text=" (content dialog)" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenDlgCommand">Open Dialog</Button>
-                    <TextBlock Text=" (content dialog + message dialog)" VerticalAlignment="Center" />
+                    <Button Click="OpenMsgDlgCommand">Open Message Dialog</Button>
+                    <TextBlock Text=" (message dialog + error dialog)" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Button Click="OpenDlgEmbeddedCommand">Open Embedded Dialog</Button>
@@ -34,14 +34,14 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Button Click="OpenDlgPageOverlayCommand">Open Page as Overlay Dialog</Button>
-                    <TextBlock Text=" (Test page as dialog in different sizes) displayed in overlay" VerticalAlignment="Center" />
+                    <TextBlock Text=" (Test page as dialog in different sizes) displayed in content overlay" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
         </Border>
       
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
             <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Error Pages</TextBlock>
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Default Error Pages</TextBlock>
                 <routing:RouteButton RoutePath="/main/error404">NotFoundPage</routing:RouteButton>
                 <routing:RouteButton RoutePath="/main/error500">InternalErrorPage</routing:RouteButton>
             </StackPanel>

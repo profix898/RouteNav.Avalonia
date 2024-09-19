@@ -12,17 +12,11 @@
         <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
         <TextBlock Margin="0,0,0,10">-> We are on Page 2.</TextBlock>
         <routing:RouteButton RoutePath="/main/page3">To Page3</routing:RouteButton>
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Page as Dialog</TextBlock>
-                <routing:RouteButton RoutePath="/main/error404" Target="Dialog">Error404 as dialog</routing:RouteButton>
-                <routing:RouteButton RoutePath="/main/error404" Target="DialogOverlay">Error404 as overlay dialog</routing:RouteButton>
-            </StackPanel>
-        </Border>
+          
         <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
             <StackPanel Orientation="Horizontal" Spacing="100">
                 <StackPanel Spacing="5">
-                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">HyperlinkButton (V11.1)</TextBlock>
+                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">HyperlinkButton (Avalonia 11.1+)</TextBlock>
                     <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkButton>
                     <routeCtrl:HyperlinkButton RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkButton>
                 </StackPanel>
@@ -31,6 +25,15 @@
                     <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkLabel>
                     <routeCtrl:HyperlinkLabel RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkLabel>
                 </StackPanel>
+            </StackPanel>
+        </Border>
+      
+        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+            <StackPanel Spacing="5">
+                <TextBlock FontWeight="Bold">Direct navigation for page (IPageNavigation) / dialog (IDialogNavigation)</TextBlock>
+                <TextBlock Margin="0,0,0,10">Note: This does not go through a route (Uri), but pushes pages/dialog directly to the stack.</TextBlock>
+                <Button Click="PushPageCommand">Push page (directly)</Button>
+                <Button Click="PushDialogCommand">Push dialog (directly)</Button>
             </StackPanel>
         </Border>
     </StackPanel>

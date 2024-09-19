@@ -87,7 +87,7 @@ In such a case, the container page can be constructed using a factory method. Th
 </NavigationPageContainer>
 ```
 
-#### Dynamic page resolver
+#### Custom page resolver
 
 Generally, pages are registered in the `INavigationStack` with their route via `AddPage()` so that they can be retrieved later by route Uri. Where there is a large number of pages or if the pages are not known in advance, a custom `IPageResolver` can be provided via the `INavigationStack.PageResolver` property. The `IPageResolver` interface contains a single member `Page? ResolveRoute(Uri routeUri)`, which is used to find and instantiate the appropriate page for a given route Uri.
 
@@ -152,7 +152,7 @@ sidebarMenuStack.AddMenuItem("/otherStack/pageX", "External Page"); // Links to 
 ```
 
 ### Documentation
-There is currently only limited documentation (incl. API docs) available. Please refer to the *DemoApp* for preliminary instructions and usage examples. The navigation structure of the *DemoApp* is defined in ``App.axaml.cs``.
+There is currently only limited documentation (incl. API docs) available. Please refer to the *DemoApp* for preliminary instructions and usage examples. For starters, the navigation structure of the *DemoApp* is defined in ``App.axaml.cs``.
 
 ### License
 RouteNav.Avalonia is licensed under the terms of the MIT license (<http://opensource.org/licenses/MIT>, see LICENSE.txt).

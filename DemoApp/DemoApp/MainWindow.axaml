@@ -4,6 +4,6 @@
         x:Class="DemoApp.MainWindow"
         Background="White"
         Icon="/Assets/avalonia-logo.ico"
-        Title="DemoApp Title">
+        Title="RouteNav.Avalonia DemoApp">
   
 </routeNav:Window>

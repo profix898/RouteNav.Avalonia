@@ -14,11 +14,11 @@ public static class DialogSizeUtility
     public static Size SmallMinSize { get; set; } = new Size(200, 200);
     public static Size SmallMaxSize { get; set; } = new Size(400, 400);
     
-    public static Size MediumScale { get; set; } = new Size(0.6, 0.6);
+    public static Size MediumScale { get; set; } = new Size(0.5, 0.5);
     public static Size MediumMinSize { get; set; } = new Size(350, 350);
     public static Size MediumMaxSize { get; set; } = new Size(700, 700);
     
-    public static Size LargeScale { get; set; } = new Size(0.9, 0.9);
+    public static Size LargeScale { get; set; } = new Size(0.8, 0.8);
     public static Size LargeMinSize { get; set; } = new Size(500, 500);
     public static Size LargeMaxSize { get; set; } = new Size(1000, 1000);
     

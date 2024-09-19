@@ -3,11 +3,20 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                Title="Root Page" Padding="8,5"
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuRootPage">
     <StackPanel Spacing="5">
         <TextBlock FontWeight="Bold">Welcome on the SidebarMenu stack!</TextBlock>
         <TextBlock Margin="0,0,0,10">-> We are on Root Page.</TextBlock>
+      
+        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
+            <StackPanel Spacing="5">
+                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Main stack</TextBlock>
+                <routing:RouteButton RoutePath="/main" Target="Parent">To Main Root</routing:RouteButton>
+                <routing:RouteButton RoutePath="/main/page2" Target="Parent">To Main Page 2</routing:RouteButton>
+            </StackPanel>
+        </Border>
     </StackPanel>
 </routeNav:Page>

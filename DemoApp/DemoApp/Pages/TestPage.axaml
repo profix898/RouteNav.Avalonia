@@ -1,7 +1,7 @@
 <avalonia:Page xmlns="https://github.com/avaloniaui"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-      Title="Demo Dialog Title"
+      Title="Demo Page Title"
       x:Class="DemoApp.TestPage">
 
     <StackPanel Spacing="10" Margin="15,10">
