@@ -36,7 +36,7 @@ public static class DialogPageExtensions
         };
 
         // Calculate dialog size (from parent)
-        var size = GetSize(dialog, parent, minSize, maxSize);
+        var size = dialog.GetSize(parent, minSize, maxSize);
         if (dialogSize == DialogSize.Custom) // Special case: custom size
         {
             if (!IsNaN(page.Width) && !IsNaN(page.Height)) // Custom size from page

@@ -26,28 +26,28 @@ public static class DialogSizeUtility
 
     #endregion
 
-    public static IDisposable SetSizeBinding(this Dialog dialog, Layoutable parent, Size? minSize = null, Size? maxSize = null)
+    public static IDisposable SetSizeBinding(this Dialog dialog, Layoutable parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
-        return Disposable.Create(dialog.Bind(Layoutable.WidthProperty, parent.GetBindingObservable(Layoutable.WidthProperty, _ => GetSize(dialog, parent, minSize, maxSize).Width)),
-                                 dialog.Bind(Layoutable.HeightProperty, parent.GetBindingObservable(Layoutable.HeightProperty, _ => GetSize(dialog, parent, minSize, maxSize).Height)));
+        return Disposable.Create(dialog.Bind(Layoutable.WidthProperty, parent.GetBindingObservable(Layoutable.WidthProperty, _ => GetSize(dialog, parent, minSize, maxSize, dialogSize).Width)),
+                                 dialog.Bind(Layoutable.HeightProperty, parent.GetBindingObservable(Layoutable.HeightProperty, _ => GetSize(dialog, parent, minSize, maxSize, dialogSize).Height)));
     }
 
-    public static void SetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
+    public static void SetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
-        var size = GetSize(dialog, parent, minSize, maxSize);
+        var size = GetSize(dialog, parent, minSize, maxSize, dialogSize);
         
         dialog.Width = size.Width;
         dialog.Height = size.Height;
     }
 
-    public static Size GetSize(Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null)
+    public static Size GetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
         if (parent == null)
             return FallbackSize;
 
         var baseSize = GetBaseSize(parent);
 
-        return dialog.DialogSize switch
+        return (dialogSize ?? dialog.DialogSize) switch
         {
             DialogSize.Small => GetSize(baseSize, SmallScale, minSize ?? SmallMinSize, maxSize ?? SmallMaxSize),
             DialogSize.Medium => GetSize(baseSize, MediumScale, minSize ?? MediumMinSize, maxSize ?? MediumMaxSize),
@@ -55,8 +55,6 @@ public static class DialogSizeUtility
             DialogSize.Custom => (!Double.IsNaN(dialog.Width) && !Double.IsNaN(dialog.Height)) ? new Size(dialog.Width, dialog.Height) : GetSize(baseSize, new Size(0.5, 0.5)),
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
-        
-        
     }
 
     #region Private
