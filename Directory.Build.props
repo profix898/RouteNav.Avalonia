@@ -1,37 +1,61 @@
-<Project>
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>false</ImplicitUsings>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Product>RouteNav.Avalonia</Product>
-    <Description>RouteNav.Avalonia Package</Description>
+<Project InitialTargets="GitInfo">
+	<!-- GitInfo (SemVer) -->
+	<Target Name="GitInfo">
+        <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low">
+            <Output TaskParameter="ConsoleOutput" PropertyName="GitSHA"/>
+        </Exec>
+		<PropertyGroup>
+			<MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+			<MinVerDefaultPreReleaseIdentifiers>dev</MinVerDefaultPreReleaseIdentifiers>
+			<MinVerBuildMetadata Condition=" '$(Configuration)' == 'Debug' ">$(GitSHA)</MinVerBuildMetadata>
+			<!-- <MinVerIgnoreHeight Condition=" '$(Configuration)' != 'Debug' ">true</MinVerIgnoreHeight> -->
+      <MinVerVerbosity>normal</MinVerVerbosity>
+      <MinVerTagPrefix>v</MinVerTagPrefix>
+    </PropertyGroup>
+  </Target>
+	<Target Name="Versioning" AfterTargets="MinVer">
+		<PropertyGroup>
+			<BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2025/01/01"))).TotalDays.ToString("0"))</BuildNumber>
+			<Version>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(BuildNumber)-dev+$(GitSHA)</Version>
+      <Version Condition=" '$(Configuration)' == 'Release' ">$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(BuildNumber)</Version>
+			<PackageVersion>$(Version)</PackageVersion>
+		</PropertyGroup>
+		<Message Text="Version: $(Version)" Importance="high"/>
+		<Message Text="FileVersion: $(FileVersion)" Importance="high"/>
+		<Message Text="AssemblyVersion: $(AssemblyVersion)" Importance="high"/>
+	</Target>
+	<!-- Project Defaults  -->
+	<PropertyGroup>
+		<LangVersion>13.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>false</ImplicitUsings>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+	<!-- Assembly Info -->
+	<PropertyGroup>
+		<Product>RouteNav.Avalonia</Product>
+		<Description>RouteNav.Avalonia Package</Description>
     <Authors>Thilo Viereck</Authors>
-    <Company></Company>
-    <Copyright>Copyright (c) Thilo Viereck 2022-2024</Copyright>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2024/08/01"))).TotalDays.ToString("0"))</BuildNumber>
-    <Version>1.0.$(BuildNumber)</Version>
-    <FileVersion>$(Version)</FileVersion>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Company></Company>
+		<Copyright>Copyright &#169; Thilo Viereck 2022-$([System.DateTime]::Now.ToString(`yyyy`))</Copyright>
+		<DefaultLanguage>en-US</DefaultLanguage>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageReadmeFile>Readme.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/profix898/RouteNav.Avalonia</PackageProjectUrl>
-  </PropertyGroup>
-  <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-  <!--<PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!--<IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
-    <PackageOutputPath>$(SolutionDir)\Build\$(Configuration)\Packages\</PackageOutputPath>
-  </PropertyGroup>
-  <ItemGroup>
+	</PropertyGroup>
+	<!-- Packaging -->
+	<!--<PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<!--<IncludeSymbols>true</IncludeSymbols>
+    	<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+		<PackageOutputPath>$(SolutionDir)\Build\$(Configuration)\Packages\</PackageOutputPath>
+	</PropertyGroup>
+	<!-- NuGet Assets -->
+	<ItemGroup>
     <None Include="$(SolutionDir)\logo.png" Pack="true" Visible="false" PackagePath="" />
     <None Include="$(SolutionDir)\Readme.pkg.md" Pack="true" Visible="false" PackagePath="Readme.md" />
   </ItemGroup>
