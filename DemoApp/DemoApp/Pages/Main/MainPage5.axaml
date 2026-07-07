@@ -1,0 +1,48 @@
+<routeNav:Page xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
+               xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="620"
+               Title="Theme and Error States" Background="{DynamicResource DemoPageBackground}"
+               x:Class="DemoApp.Pages.Main.MainPage5">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Theme and error states" />
+                <TextBlock Classes="PageSubtitle" Text="This page checks dark-mode readability and links to RouteNav's built-in error pages." />
+            </StackPanel>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Readable typography" />
+                    <TextBlock Text="Normal body text should follow the current theme foreground." TextWrapping="Wrap" />
+                    <TextBlock FontWeight="Bold" Text="Bold text should stay readable in both light and dark mode." TextWrapping="Wrap" />
+                    <TextBlock Classes="Hint" Text="Muted helper text intentionally uses a softer foreground." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Classes="Badge"><TextBlock Text="Badge" /></Border>
+                        <Border Classes="Badge"><TextBlock Text="Dynamic resources" /></Border>
+                        <Border Classes="Badge"><TextBlock Text="Theme dictionaries" /></Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Built-in error pages" />
+                    <TextBlock Classes="Hint" Text="These routes are registered only for the demo. Applications can replace RouteNav's error visuals with their own factory or route registrations." />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <routing:RouteButton RoutePath="/main/error404" Content="Open 404 page" />
+                        <routing:RouteButton RoutePath="/main/error500" Content="Open 500 page" />
+                        <routing:RouteButton RoutePath="/main/not-registered" Content="Unknown route" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="HintCard">
+                <TextBlock Text="Switch between Light and Dark on the home page, then return here to verify headings, bold labels, cards, badges, and error pages keep enough contrast." />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</routeNav:Page>

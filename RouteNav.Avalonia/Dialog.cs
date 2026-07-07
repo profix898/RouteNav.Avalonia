@@ -28,6 +28,8 @@ public class Dialog : ContentControl
     protected Button? dialogCloseButton;
     /// <summary>The title bar panel resolved from the control template, if present.</summary>
     protected Panel? dialogTitleBarPanel;
+    /// <summary>The scroll viewer that hosts dialog content, if present.</summary>
+    protected ScrollViewer? dialogContentScrollViewer;
 
     /// <summary>
     /// Defines the <see cref="Title"/> property.
@@ -114,15 +116,64 @@ public class Dialog : ContentControl
             dialogCloseButton.Click += CloseDialog;
         
         dialogTitleBarPanel = e.NameScope.Find<Panel>("DialogTitleBar");
+        dialogContentScrollViewer = e.NameScope.Find<ScrollViewer>("DialogContentScrollViewer");
+        UpdateContentScrollViewerMaxHeight();
         
         // Correct page/dialog size (to account for page margins and title bar height)
         if (Content is Page page)
         {
-            var titleBarHeight = dialogTitleBarPanel?.Height ?? 0;
-            Height += titleBarHeight;
-            page.Bind(HeightProperty, this.GetBindingObservable(HeightProperty, height => height - titleBarHeight));
             page.Bind(WidthProperty, this.GetBindingObservable(WidthProperty));
         }
+    }
+
+    /// <inheritdoc />
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == HeightProperty || change.Property == BoundsProperty)
+            UpdateContentScrollViewerMaxHeight();
+    }
+
+    /// <summary>Constrains the dialog body so oversized content can scroll inside the dialog frame.</summary>
+    protected virtual void UpdateContentScrollViewerMaxHeight()
+    {
+        if (dialogContentScrollViewer == null)
+            return;
+
+        var frameHeight = GetConstrainedHeight();
+        if (frameHeight <= 0 || Double.IsNaN(frameHeight) || Double.IsInfinity(frameHeight))
+            return;
+
+        var titleBarHeight = GetVisibleHeight(dialogTitleBarPanel);
+        dialogContentScrollViewer.MaxHeight = Math.Max(0, frameHeight - titleBarHeight);
+    }
+
+    /// <summary>Gets the effective available height from explicit size and rendered bounds.</summary>
+    protected double GetConstrainedHeight()
+    {
+        var hasHeight = !Double.IsNaN(Height) && !Double.IsInfinity(Height) && Height > 0;
+        var hasBoundsHeight = Bounds.Height > 0 && !Double.IsNaN(Bounds.Height) && !Double.IsInfinity(Bounds.Height);
+
+        return (hasHeight, hasBoundsHeight) switch
+        {
+            (true, true) => Math.Min(Height, Bounds.Height),
+            (true, false) => Height,
+            (false, true) => Bounds.Height,
+            _ => 0
+        };
+    }
+
+    /// <summary>Gets the rendered height for visible template chrome.</summary>
+    protected static double GetVisibleHeight(Control? control)
+    {
+        if (control?.IsVisible != true)
+            return 0;
+
+        if (control.Bounds.Height > 0)
+            return control.Bounds.Height;
+
+        return !Double.IsNaN(control.Height) && !Double.IsInfinity(control.Height) ? control.Height : 0;
     }
 
     #region Events

@@ -18,7 +18,7 @@ public class App : Application
 
         // Register pages with DI container
         // (optional, can be registered by other means e.g. directly with the DI container)
-        Navigation.UIPlatform.RegisterPage<MainRootPage, MainPage1, MainPage2, MainPage3>();
+        Navigation.UIPlatform.RegisterPage<MainRootPage, MainPage1, MainPage2, MainPage3, MainPage4, MainPage5>();
         Navigation.UIPlatform.RegisterPage<SidebarMenuRootPage, SidebarMenuPage1>();
         Navigation.UIPlatform.RegisterPage<TabbedRootPage, TabbedPage1>();
 
@@ -32,9 +32,11 @@ public class App : Application
         //mainStack.AddPage(String.Empty, uri => new MainRootPage(uri));
 
         // Add more pages to the navigation stack (argument is the relative path to page on stack)
-        mainStack.AddPage<MainPage1>("page1");
-        mainStack.AddPage<MainPage2>("page2");
-        mainStack.AddPage<MainPage3>("page3");
+        mainStack.AddPage<MainPage1>("dialogs");
+        mainStack.AddPage<MainPage2>("links");
+        mainStack.AddPage<MainPage3>("content");
+        mainStack.AddPage<MainPage4>("targets");
+        mainStack.AddPage<MainPage5>("theming");
 
         // Add error pages (for testing purposes only)
         mainStack.AddPage<NotFoundPage>("error404");
@@ -48,7 +50,7 @@ public class App : Application
         sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Overview");
         sidebarMenuStack.AddMenuItem<SidebarMenuPage2>("page2", "Reports");
         sidebarMenuStack.AddMenuItem<SidebarMenuPage3>("page3", "Settings");
-        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tabbed: Summary"); // Links to external pages (on other stacks) is supported
+        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tabbed: Summary tab"); // Links to external pages (on other stacks) is supported
 
         /* Tabbed stack */
         var tabbedStack = new TabbedPageStack("tabbed", "DemoApp - Tabbed");

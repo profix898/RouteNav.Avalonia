@@ -16,9 +16,9 @@
                 <StackPanel Spacing="10">
                     <TextBlock Classes="SectionTitle" Text="Timeline" />
                     <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="09:12" /></Border><TextBlock Text="Deployment completed successfully." /></Grid>
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="08:40" /></Border><TextBlock Text="Nightly build passed all checks." /></Grid>
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="07:55" /></Border><TextBlock Text="New pull request opened." /></Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Grid.Column="0" Classes="Badge" VerticalAlignment="Top"><TextBlock Text="09:12" /></Border><TextBlock Grid.Column="1" Text="Deployment completed successfully." /></Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Grid.Column="0" Classes="Badge" VerticalAlignment="Top"><TextBlock Text="08:40" /></Border><TextBlock Grid.Column="1" Text="Nightly build passed all checks." /></Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Grid.Column="0" Classes="Badge" VerticalAlignment="Top"><TextBlock Text="07:55" /></Border><TextBlock Grid.Column="1" Text="New pull request opened." /></Grid>
                     </StackPanel>
                 </StackPanel>
             </Border>

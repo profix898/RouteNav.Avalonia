@@ -22,11 +22,25 @@
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColorPointerOver" Color="#000000" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="White" />
+            <SolidColorBrush x:Key="PageForeground" Color="#111827" />
+            <!-- Navigation -->
+            <SolidColorBrush x:Key="NavigationBarBackground" Color="#F2F2F2" />
+            <SolidColorBrush x:Key="NavigationBarForeground" Color="#000000" />
+            <SolidColorBrush x:Key="TabbedPageTabBackground" Color="#F2F2F2" />
+            <SolidColorBrush x:Key="TabbedPageTabForeground" Color="#000000" />
+            <SolidColorBrush x:Key="TabbedPageSelectedTabBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TabbedPageTabPointerOverBackground" Color="#E8E8E8" />
             <!-- InternalErrorPage -->
-            <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
+            <SolidColorBrush x:Key="ErrorPageCardBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="ErrorPageCardBorderBrush" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="ErrorPageMutedForeground" Color="#6B7280" />
+            <SolidColorBrush x:Key="InternalErrorTextColor" Color="#B91C1C" />
+            <SolidColorBrush x:Key="InternalErrorAccentBackground" Color="#FEE2E2" />
             <!-- NotFoundErrorPage -->
-            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
+            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="#1D4ED8" />
+            <SolidColorBrush x:Key="NotFoundErrorAccentBackground" Color="#DBEAFE" />
             <!-- SidebarMenu -->
+            <SolidColorBrush x:Key="SidebarMenuSelectionPipeFill" Color="#006DFF" />
             <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#E6E6E6" />
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FFFFFF" />
             <SolidColorBrush x:Key="SidebarMenuHamburgerTextColor" Color="#000000" />
@@ -57,12 +71,25 @@
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColorPointerOver" Color="#FFFFFF" />
             <!-- Page -->
             <SolidColorBrush x:Key="PageBackground" Color="#454545" />
+            <SolidColorBrush x:Key="PageForeground" Color="#F9FAFB" />
+            <!-- Navigation -->
+            <SolidColorBrush x:Key="NavigationBarBackground" Color="#171717" />
+            <SolidColorBrush x:Key="NavigationBarForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TabbedPageTabBackground" Color="#171717" />
+            <SolidColorBrush x:Key="TabbedPageTabForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TabbedPageSelectedTabBackground" Color="#454545" />
+            <SolidColorBrush x:Key="TabbedPageTabPointerOverBackground" Color="#242424" />
             <!-- InternalErrorPage -->
-            <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
+            <SolidColorBrush x:Key="ErrorPageCardBackground" Color="#2A2A30" />
+            <SolidColorBrush x:Key="ErrorPageCardBorderBrush" Color="#3A3A42" />
+            <SolidColorBrush x:Key="ErrorPageMutedForeground" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="InternalErrorTextColor" Color="#FCA5A5" />
+            <SolidColorBrush x:Key="InternalErrorAccentBackground" Color="#451A1A" />
             <!-- NotFoundErrorPage -->
-            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
+            <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="#93C5FD" />
+            <SolidColorBrush x:Key="NotFoundErrorAccentBackground" Color="#172554" />
             <!-- SidebarMenuItem -->
-            <SolidColorBrush x:Key="SidebarMenuSelectionPipeFill" Color="CornflowerBlue" />
+            <SolidColorBrush x:Key="SidebarMenuSelectionPipeFill" Color="#3390FF" />
             <!-- SidebarMenu -->
             <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#1F1F1F" />
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#000000" />

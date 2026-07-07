@@ -6,13 +6,13 @@
                xmlns:routeCtrl="clr-namespace:RouteNav.Avalonia.Controls;assembly=RouteNav.Avalonia"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="620"
-               Title="Links &amp; Navigation" Background="{DynamicResource DemoPageBackground}"
+               Title="Links and Direct Navigation" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainPage2">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
 
             <StackPanel Spacing="4">
-                <TextBlock Classes="PageTitle" Text="Links &amp; navigation" />
+                <TextBlock Classes="PageTitle" Text="Links and direct navigation" />
                 <TextBlock Classes="PageSubtitle"
                            Text="Trigger routing from hyperlink controls, or push pages and dialogs directly onto a stack without going through a route URI." />
             </StackPanel>
@@ -26,12 +26,12 @@
                         <StackPanel Grid.Column="0" Spacing="6">
                             <Border Classes="Badge"><TextBlock Text="HyperlinkButton" /></Border>
                             <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/" Content="External link (avaloniaui.net)" />
-                            <routeCtrl:HyperlinkButton RoutePath="/main/page3" Content="Internal link (Page 3)" />
+                            <routeCtrl:HyperlinkButton RoutePath="/main/content" Content="Internal link (Content page)" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="6">
                             <Border Classes="Badge"><TextBlock Text="HyperlinkLabel" /></Border>
                             <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External link (avaloniaui.net)</routeCtrl:HyperlinkLabel>
-                            <routeCtrl:HyperlinkLabel RoutePath="/main/page3">Internal link (Page 3)</routeCtrl:HyperlinkLabel>
+                            <routeCtrl:HyperlinkLabel RoutePath="/main/content">Internal link (Content page)</routeCtrl:HyperlinkLabel>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -49,7 +49,7 @@
                 </StackPanel>
             </Border>
 
-            <routing:RouteButton RoutePath="/main/page3" Classes="Accent" Content="Next: Any content →" />
+            <routing:RouteButton RoutePath="/main/content" Classes="Accent" Content="Next: Content composition" />
         </StackPanel>
     </ScrollViewer>
 </routeNav:Page>

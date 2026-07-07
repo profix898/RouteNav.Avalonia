@@ -28,7 +28,7 @@ public partial class MainRootPage : Page
         var name = String.IsNullOrWhiteSpace(NameInput.Text) ? "Ada" : NameInput.Text!.Trim();
         var count = String.IsNullOrWhiteSpace(CountInput.Text) ? "3" : CountInput.Text!.Trim();
 
-        var uri = new Uri(Navigation.BaseRouteUri, $"main/page3?name={Uri.EscapeDataString(name)}&count={Uri.EscapeDataString(count)}");
+        var uri = new Uri(Navigation.BaseRouteUri, $"main/content?name={Uri.EscapeDataString(name)}&count={Uri.EscapeDataString(count)}");
         _ = Navigation.PushAsync(uri);
     }
 

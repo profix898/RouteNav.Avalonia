@@ -6,7 +6,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Platform;
@@ -125,29 +124,12 @@ public sealed class NavigationControl : TemplatedControl, ISafeAreaAware
         if (navBarBackButton != null)
             navBarBackButton.Click += BackButton_Clicked;
 
-        if (navBarTitle != null)
-            navBarTitle.PropertyChanged -= NavContentPresenter_PropertyChanged;
         navBarTitle = e.NameScope.Get<ContentPresenter>("PART_NavigationBarTitle");
-        navBarTitle.PropertyChanged += NavContentPresenter_PropertyChanged;
 
-        if (navContentControl != null)
-            navContentControl.PropertyChanged -= NavContentPresenter_PropertyChanged;
         navContentControl = e.NameScope.Get<TransitioningContentControl>("PART_NavigationContent");
         navContentControl.PageTransition = PageTransition;
-        navContentControl.PropertyChanged += NavContentPresenter_PropertyChanged;
 
         UpdateContent();
-    }
-
-    private void NavContentPresenter_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == ContentPresenter.ChildProperty || e.Property == ContentControl.ContentProperty)
-        {
-            if (e.OldValue is ILogical oldChild)
-                LogicalChildren.Remove(oldChild);
-            if (e.NewValue is ILogical newLogical)
-                LogicalChildren.Add(newLogical);
-        }
     }
 
     /// <inheritdoc />

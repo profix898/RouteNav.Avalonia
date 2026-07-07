@@ -23,7 +23,7 @@
                     <TextBlock Classes="SectionTitle" Text="Jump to the Main stack" />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <routing:RouteButton RoutePath="/main" Target="Parent" Content="Main home" />
-                        <routing:RouteButton RoutePath="/main/page1" Target="Parent" Content="Main · Dialogs" />
+                        <routing:RouteButton RoutePath="/main/dialogs" Target="Parent" Content="Main · Dialogs" />
                     </StackPanel>
                 </StackPanel>
             </Border>

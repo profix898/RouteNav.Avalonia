@@ -57,7 +57,7 @@
                 </StackPanel>
             </Border>
 
-            <routing:RouteButton RoutePath="/main/page2" Classes="Accent" Content="Next: Links &amp; direct nav →" />
+            <routing:RouteButton RoutePath="/main/links" Classes="Accent" Content="Next: Links and direct navigation" />
         </StackPanel>
     </ScrollViewer>
 </routeNav:Page>

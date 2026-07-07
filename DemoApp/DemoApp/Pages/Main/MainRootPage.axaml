@@ -40,7 +40,7 @@
             <Border Classes="HintCard">
                 <StackPanel Spacing="4">
                     <TextBlock FontWeight="SemiBold" Text="Where to start" />
-                    <TextBlock Text="This is the Main stack — a NavigationPageStack with a navigation bar and back button. Pages 1 and 2 showcase most of RouteNav's features (dialogs, links, direct navigation). The two cards below open alternative navigation layouts in a new window." />
+                    <TextBlock Text="This is the Main stack — a NavigationPageStack with a navigation bar and back button. The pages below cover dialogs, links, content composition, navigation targets, and theme/error states." />
                 </StackPanel>
             </Border>
 
@@ -48,16 +48,22 @@
             <Border Classes="Card">
                 <StackPanel Spacing="10">
                     <TextBlock Classes="SectionTitle" Text="Explore the Main stack" />
-                    <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                        <routing:RouteButton Grid.Row="0" Grid.Column="0" RoutePath="/main/page1" Content="Dialogs &amp; errors" />
+                    <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                        <routing:RouteButton Grid.Row="0" Grid.Column="0" RoutePath="/main/dialogs" Content="Dialogs and errors" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
                                    Text="Modal / embedded / overlay dialogs, message &amp; error dialogs, page-as-dialog, and built-in error pages." />
-                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/page2" Content="Links &amp; direct nav" />
+                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/links" Content="Links and direct nav" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
                                    Text="Hyperlink controls (internal routes and external URIs) plus direct page/dialog pushing without a route." />
-                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/page3" Content="Any content" />
+                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/content" Content="Content composition" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
                                    Text="A page can host any Avalonia control — pages are just content." />
+                        <routing:RouteButton Grid.Row="3" Grid.Column="0" RoutePath="/main/targets" Content="Navigation targets" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Compare Self, Parent, Dialog, Overlay, and Window route targets." />
+                        <routing:RouteButton Grid.Row="4" Grid.Column="0" RoutePath="/main/theming" Content="Theme and error states" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Dark-mode readability plus improved built-in error pages." />
                     </Grid>
                 </StackPanel>
             </Border>
@@ -69,11 +75,11 @@
                     <TextBlock Classes="Hint"
                                Text="RouteNav navigates by URI. Type a route and press Go — this calls Navigation.PushAsync(uri)." />
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBox x:Name="RouteInput" Text="/main/page2" Width="320" Watermark="/stack/path?query" />
+                        <TextBox x:Name="RouteInput" Text="/main/links" Width="320" PlaceholderText="/stack/path?query" />
                         <Button Classes="Accent" Content="Go" Click="OnRouteGo" />
                     </StackPanel>
                     <TextBlock Classes="Hint"
-                               Text="Try /main/page1, /main/page3, /sidebar/page1 or /tabbed/page2 — or an unknown path like /main/nope to see the built-in 404 page." />
+                               Text="Try /main/dialogs, /main/content, /main/targets, /sidebar/page1 or /tabbed/page2 — or an unknown path like /main/nope to see the built-in 404 page." />
                 </StackPanel>
             </Border>
 
@@ -89,7 +95,7 @@
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="count" Classes="Mono" VerticalAlignment="Center" />
                         <TextBox Grid.Row="1" Grid.Column="1" x:Name="CountInput" Text="3" Width="220" HorizontalAlignment="Left" />
                     </Grid>
-                    <Button Classes="Accent" Content="Send to Page 3 →" Click="OnSendParams" HorizontalAlignment="Left" />
+                    <Button Classes="Accent" Content="Send to Content page" Click="OnSendParams" HorizontalAlignment="Left" />
                 </StackPanel>
             </Border>
 
@@ -103,15 +109,15 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="URI routing / deep links" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" Text="Try the router (above)" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Route parameters (PageQuery)" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" Text="Route parameters (above) → Page 3" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" Text="Route parameters (above) → Content composition" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Dialogs (modal / embedded / overlay)" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" Text="Main · Dialogs &amp; errors (page 1)" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" Text="Dialogs and errors" />
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Message &amp; built-in error pages" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" Text="Main · Dialogs &amp; errors (page 1)" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" Text="Theme and error states" />
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Hyperlink controls &amp; direct push" />
-                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" Text="Main · Links &amp; direct nav (page 2)" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" Text="Links and direct navigation" />
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="Navigation targets (Self / Parent / Window)" />
-                        <TextBlock Grid.Row="5" Grid.Column="1" Classes="Hint" Text="RouteButtons throughout" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Classes="Hint" Text="Navigation targets" />
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="Cross-stack navigation" />
                         <TextBlock Grid.Row="6" Grid.Column="1" Classes="Hint" Text="Sidebar &amp; Tabbed root pages" />
                         <TextBlock Grid.Row="7" Grid.Column="0" Text="Sidebar / DrawerPage layout" />

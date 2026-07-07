@@ -14,7 +14,19 @@ public class TabbedPageContainer : NavigationContainer
     /// <summary>Initializes a new instance of the <see cref="TabbedPageContainer"/> class.</summary>
     public TabbedPageContainer()
     {
-        RegisterScopedControl(this, TabControlName, Content = new TabControl());
+        TabControl = new TabControl();
+        TabControl.Classes.Add("RouteNavTabbedPageTabs");
+        TabControl.SetValue(Panel.ZIndexProperty, 1);
+
+        var headerBackground = new Border { Height = 38, VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Top };
+        headerBackground.Classes.Add("RouteNavTabbedPageHeaderBackground");
+
+        var host = new Grid();
+        host.Children.Add(headerBackground);
+        host.Children.Add(TabControl);
+
+        RegisterScopedControl(this, TabControlName, TabControl);
+        Content = host;
     }
 
     /// <summary>Gets or sets the scoped name used to resolve the tab control.</summary>

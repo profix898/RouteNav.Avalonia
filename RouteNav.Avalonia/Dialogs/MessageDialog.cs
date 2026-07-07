@@ -13,6 +13,7 @@ namespace RouteNav.Avalonia.Dialogs;
 public class MessageDialog : Dialog
 {
     private ContentPresenter? dialogButtons;
+    private Panel? dialogButtonBar;
 
     /// <summary>Defines the <see cref="Buttons"/> property.</summary>
     public static readonly StyledProperty<MessageDialogButtons> ButtonsProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtons>(nameof(Buttons));
@@ -82,9 +83,28 @@ public class MessageDialog : Dialog
             dialogButtons.PropertyChanged -= ContentPresenter_ChildPropertyChanged;
         dialogButtons = e.NameScope.Get<ContentPresenter>("MessageDialogButtons");
         dialogButtons.PropertyChanged += ContentPresenter_ChildPropertyChanged;
+        dialogButtonBar = e.NameScope.Find<Panel>("DialogButtonBar");
 
         dialogButtons.ContentTemplate = ButtonsTemplate;
         dialogButtons.Content = this;
+
+        UpdateContentScrollViewerMaxHeight();
+    }
+
+    /// <inheritdoc />
+    protected override void UpdateContentScrollViewerMaxHeight()
+    {
+        if (dialogContentScrollViewer == null)
+            return;
+
+        var frameHeight = GetConstrainedHeight();
+        if (frameHeight <= 0 || Double.IsNaN(frameHeight) || Double.IsInfinity(frameHeight))
+            return;
+
+        var titleBarHeight = GetVisibleHeight(dialogTitleBarPanel);
+        var buttonBarHeight = GetVisibleHeight(dialogButtonBar);
+
+        dialogContentScrollViewer.MaxHeight = Math.Max(0, frameHeight - titleBarHeight - buttonBarHeight);
     }
 
     private void ContentPresenter_ChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)

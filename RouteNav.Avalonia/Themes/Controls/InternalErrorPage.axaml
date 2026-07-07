@@ -12,7 +12,38 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{DynamicResource PageBackground}">
-                    <TextBlock Text="500 - Internal Error!" Foreground="{DynamicResource InternalErrorTextColor}" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Border Background="{DynamicResource ErrorPageCardBackground}"
+                            BorderBrush="{DynamicResource ErrorPageCardBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="28"
+                            MaxWidth="560"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <StackPanel Spacing="14">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="{DynamicResource ErrorPageCardBorderBrush}"
+                                        CornerRadius="999"
+                                        Width="48"
+                                        Height="48"
+                                        VerticalAlignment="Center">
+                                    <PathIcon Data="M10,2 A8,8 0 1 1 10,18 A8,8 0 1 1 10,2 M10,5.5 L10,11 M10,14 L10,15"
+                                              Width="24"
+                                              Height="24"
+                                              Foreground="{DynamicResource ErrorPageMutedForeground}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                                </Border>
+                                <TextBlock Text="500"
+                                           Foreground="{DynamicResource InternalErrorTextColor}"
+                                           FontSize="34"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Text="Something went wrong" Foreground="{DynamicResource PageForeground}" FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text="RouteNav reached an internal error page. In a production app you can replace this view through the error view factory." Foreground="{DynamicResource ErrorPageMutedForeground}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
                 </Panel>
             </ControlTemplate>
         </Setter>

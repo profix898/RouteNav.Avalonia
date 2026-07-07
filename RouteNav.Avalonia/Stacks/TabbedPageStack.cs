@@ -51,16 +51,20 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     protected override TC InitContainer()
     {
         var tabbedPageContainer = new TC { NavigationStack = this };
-        tabbedPageContainer.HostControlAttached += () =>
+        var tabsInitialized = false;
+        void EnsureTabsInitialized()
         {
             if (tabbedPageContainer.TabControl == null)
                 throw new InvalidOperationException($"No {nameof(TabControl)} found in NavigationContainer.");
+            if (tabsInitialized)
+                return;
 
             var items = new List<TabItem>();
             foreach (var pageKvp in pages)
             {
                 var page = pageKvp.Value(this.BuildRoute(pageKvp.Key));
                 var tabItem = new TabItem { Header = page.Title, Content = page };
+                tabItem.Classes.Add("RouteNavTabbedPageTab");
                 items.Add(tabItem);
 
                 if (pageKvp.Key == String.Empty) // Initial page
@@ -70,8 +74,12 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             RootPage = new LazyValue<Page>(() => rootPage);
 
             tabbedPageContainer.TabControl.ItemsSource = items;
-            tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, rootPage);
-        };
+            tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, CurrentPage ?? rootPage);
+            tabsInitialized = true;
+        }
+        tabbedPageContainer.HostControlAttached += EnsureTabsInitialized;
+        if (tabbedPageContainer.TabControl != null)
+            EnsureTabsInitialized();
 
         return tabbedPageContainer;
     }

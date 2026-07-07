@@ -40,15 +40,17 @@
                         VerticalAlignment="Center"
                         Margin="20,10,20,10"
                         BoxShadow="0 8 32 0 #66000000">
-                    <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                        <DockPanel x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
-                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar"
-                                   Height="{StaticResource MessageDialogTitleBarHeight}">
+                          <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
+                           <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                              RowDefinitions="Auto,*,Auto">
+                            <Panel Grid.Row="0" x:Name="DialogTitleBar"
+                                Height="{StaticResource MessageDialogTitleBarHeight}">
                                 <Border Background="{TemplateBinding TitleBarBackground}" />
                                 <TextBlock Margin="15,0,0,0" Padding="0" Text="{TemplateBinding Title}"
                                            Foreground="{TemplateBinding TitleBarTextColor}"
                                            FontSize="{StaticResource MessageDialogTitleBarFontSize}"
+                                           FontWeight="Bold"
                                            VerticalAlignment="Center" />
                                 <Button x:Name="DialogCloseButton" Margin="0,0,5,0"
                                         Width="{StaticResource MessageDialogTitleBarButtonWidth}"
@@ -58,7 +60,7 @@
                                     X
                                 </Button>
                             </Panel>
-                            <Panel x:Name="DialogButtonBar" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+                            <Panel Grid.Row="2" x:Name="DialogButtonBar" VerticalAlignment="Bottom">
                                 <Border BorderBrush="{DynamicResource MessageDialogButtonBarBorderColor}" BorderThickness="0,1,0,0">
                                     <Grid Background="{DynamicResource MessageDialogButtonBarBackground}" ColumnDefinitions="*,Auto">
                                         <Grid.RowDefinitions>
@@ -76,13 +78,19 @@
                                     </Grid>
                                 </Border>
                             </Panel>
-                            <ContentPresenter DockPanel.Dock="Top" x:Name="PART_ContentPresenter" Padding="0"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
-                            </ContentPresenter>
-                        </DockPanel>
+                            <ScrollViewer Grid.Row="1" x:Name="DialogContentScrollViewer"
+                                          MaxHeight="{TemplateBinding Height}"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ContentPresenter x:Name="PART_ContentPresenter" Padding="0"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                </ContentPresenter>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </Border>
             </ControlTemplate>

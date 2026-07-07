@@ -35,11 +35,12 @@
                         VerticalAlignment="Center"
                         Margin="20,10,20,10"
                         BoxShadow="0 8 32 0 #66000000">
-                    <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                        <DockPanel x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
-                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <Panel DockPanel.Dock="Top" x:Name="DialogTitleBar"
-                                   Height="{StaticResource DialogTitleBarHeight}">
+                          <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
+                           <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                              RowDefinitions="Auto,*">
+                            <Panel Grid.Row="0" x:Name="DialogTitleBar"
+                                Height="{StaticResource DialogTitleBarHeight}">
                                 <Border Background="{TemplateBinding TitleBarBackground}" />
                                 <TextBlock Margin="15,0,0,0" Padding="0" Text="{TemplateBinding Title}"
                                            Foreground="{TemplateBinding TitleBarTextColor}"
@@ -53,15 +54,20 @@
                                     X
                                 </Button>
                             </Panel>
-                            <ContentPresenter DockPanel.Dock="Top" x:Name="PART_ContentPresenter" Padding="0"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}"
-                                              VerticalAlignment="Stretch"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              HorizontalAlignment="Stretch"
-                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
-                            </ContentPresenter>
-                        </DockPanel>
+                            <ScrollViewer Grid.Row="1" x:Name="DialogContentScrollViewer"
+                                          MaxHeight="{TemplateBinding Height}"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ContentPresenter x:Name="PART_ContentPresenter" Padding="0"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  VerticalAlignment="Top"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  HorizontalAlignment="Stretch"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                </ContentPresenter>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </Border>
             </ControlTemplate>

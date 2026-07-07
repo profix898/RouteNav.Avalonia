@@ -17,8 +17,7 @@ RouteNav.Avalonia
 ### Concept
 In most applications the navigation system is *operated* from within, i.e. clicking a button or menu item triggers the UI to rearrange. It is usually the task of the button/menu handler to perform the desired UI changes. This approach is also used in most MVVM frameworks.
 
-**RouteNav.Avalonia** inverts that approach: navigation is addressed from the outside by URI. URI navigation is invoked by calling `Navigation.PushAsync(Uri, NavigationTarget)`. The trigger source can be a control (button, menu item, etc.), a command, or an external event such as URI activation.
-The UI update happens implicitly based on the association of the (named) `NavigationStack` with a `NavigationContainer` (i.e. a window or navigation layout). Currently, there are four layouts available: `ContentPageStack` (single page), `NavigationPageStack` (mobile-like, navigation bar with back button), `TabbedPageStack` (TabControl), `SidebarMenuPageStack` (hamburger/drawer menu, built on Avalonia's `DrawerPage`).
+**RouteNav.Avalonia** inverts that approach: navigation is addressed from the outside by URI. URI navigation is invoked by calling `Navigation.PushAsync(Uri, NavigationTarget)`. The trigger source can be a control (button, menu item, etc.), a command, or an external event such as URI activation. The UI update happens implicitly based on the association of the (named) `NavigationStack` with a `NavigationContainer` (i.e. a window or navigation layout). Currently, there are four layouts available: `ContentPageStack` (single page), `NavigationPageStack` (mobile-like, navigation bar with back button), `TabbedPageStack` (TabControl), `SidebarMenuPageStack` (hamburger/drawer menu, built on Avalonia's `DrawerPage`).
 
 **RouteNav.Avalonia** also supports navigation with modal dialogs (and message dialogs).
 
@@ -97,8 +96,7 @@ public enum NavigationTarget
 
 #### Complex container pages
 
-When a new stack is loaded (by navigating to a page on that stack), the `Container` page is instantiated first. In the simplest case, a `NavigationContainer` (derived from `ContentControl`) is used directly. For more complex applications, however, it is often desirable for the `NavigationControl` to be embedded in an application-specific layout. An example would be a window with a menu or toolbar at the top and the control for navigation located below.
-In such a case, the container can be customized by deriving from `NavigationContainer` (or a derived container such as `NavigationPageContainer` / `TabbedPageContainer`) and placing the navigation host control at any desired location. For `NavigationPageContainer`, the `NavigationControl` only needs to be identified by name through `NavigationControlName` (`NavigationControl` is the default name):
+When a new stack is loaded (by navigating to a page on that stack), the `Container` page is instantiated first. In the simplest case, a `NavigationContainer` (derived from `ContentControl`) is used directly. For more complex applications, however, it is often desirable for the `NavigationControl` to be embedded in an application-specific layout. An example would be a window with a menu or toolbar at the top and the control for navigation located below. In such a case, the container can be customized by deriving from `NavigationContainer` (or a derived container such as `NavigationPageContainer` / `TabbedPageContainer`) and placing the navigation host control at any desired location. For `NavigationPageContainer`, the `NavigationControl` only needs to be identified by name through `NavigationControlName` (`NavigationControl` is the default name):
 
 ```XML
 /// public partial class DesktopContainer : NavigationPageContainer { }

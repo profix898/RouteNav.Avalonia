@@ -1,0 +1,41 @@
+<routeNav:Page xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
+               xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="620"
+               Title="Navigation Targets" Background="{DynamicResource DemoPageBackground}"
+               x:Class="DemoApp.Pages.Main.MainPage4">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Navigation targets" />
+                <TextBlock Classes="PageSubtitle" Text="RouteNav can show a route in the current stack, parent stack, modal dialog, overlay, or a separate window depending on the target." />
+            </StackPanel>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Try target modes" />
+                    <TextBlock Classes="Hint" Text="Each button routes to an existing page, but asks RouteNav to present it differently." />
+                    <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                        <routing:RouteButton Grid.Row="0" Grid.Column="0" RoutePath="/main/content" Content="Self: Content page" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Text="Pushes onto this NavigationPageStack." />
+                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/dialogs" Target="Dialog" Content="Dialog: Dialog demos" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Text="Wraps the target page in a modal dialog." />
+                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/dialogs" Target="DialogOverlay" Content="Overlay: Dialog demos" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Text="Forces the dialog to render inside the current top-level overlay." />
+                        <routing:RouteButton Grid.Row="3" Grid.Column="0" RoutePath="/tabbed/" Target="Window" Content="Window: Tabbed stack" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Text="Opens a separate window on desktop, with single-view fallback on mobile/browser." />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="HintCard">
+                <TextBlock Text="Target selection is part of the route item, so the same URI can be reused from buttons, menu items, commands, or direct Navigation.PushAsync calls." />
+            </Border>
+
+            <routing:RouteButton RoutePath="/main/theming" Classes="Accent" Content="Next: Theme and error states" />
+        </StackPanel>
+    </ScrollViewer>
+</routeNav:Page>

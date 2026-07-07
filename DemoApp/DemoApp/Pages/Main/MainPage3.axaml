@@ -2,15 +2,16 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="520"
-               Title="Any Content" Background="{DynamicResource DemoPageBackground}"
+               Title="Content Composition" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainPage3">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
 
             <StackPanel Spacing="4">
-                <TextBlock Classes="PageTitle" Text="A page is just content" />
+                <TextBlock Classes="PageTitle" Text="Content composition" />
                 <TextBlock Classes="PageSubtitle"
                            Text="A RouteNav Page can host any Avalonia control tree — build it in XAML or code, with or without a view model." />
             </StackPanel>
@@ -49,6 +50,8 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
+
+            <routing:RouteButton RoutePath="/main/targets" Classes="Accent" Content="Next: Navigation targets" />
 
         </StackPanel>
     </ScrollViewer>
