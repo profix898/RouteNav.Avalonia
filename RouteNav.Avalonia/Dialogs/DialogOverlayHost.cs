@@ -11,6 +11,9 @@ using Avalonia.VisualTree;
 
 namespace RouteNav.Avalonia.Dialogs;
 
+/// <summary>
+/// Hosts overlay dialogs in an Avalonia <see cref="OverlayLayer"/> and restores focus when the last dialog closes.
+/// </summary>
 public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigation, IDisposable
 {
     private readonly HashSet<Dialog> dialogCollection = new HashSet<Dialog>();
@@ -20,6 +23,7 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
     private IInputElement? lastFocusElement;
     private IDisposable? disposable;
 
+    /// <summary>Initializes a new instance of the <see cref="DialogOverlayHost"/> class.</summary>
     public DialogOverlayHost(TopLevel topLevel, OverlayLayer overlayLayer)
     {
         lastFocusElement = topLevel.FocusManager?.GetFocusedElement();
@@ -32,8 +36,10 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
         this.overlayLayer.Children.Add(this);
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(DialogOverlayHost);
     
+    /// <summary>Shows the given dialog in the overlay host.</summary>
     public void SetContent(Dialog dialog)
     {
         disposable = dialog.SetSizeBinding(topLevel);
@@ -53,6 +59,7 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
         };
     }
 
+    /// <inheritdoc />
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
@@ -67,6 +74,7 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
     
     #region Implementation of ICustomKeyboardNavigation
 
+    /// <inheritdoc />
     public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction)
     {
         return element.Equals(this) 
@@ -78,6 +86,7 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
 
     #region Implementation of IDisposable
 
+    /// <inheritdoc />
     public void Dispose()
     {
         Content = null;

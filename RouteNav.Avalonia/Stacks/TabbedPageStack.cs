@@ -8,8 +8,10 @@ using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
+/// <summary>A navigation stack that presents each registered page as a tab.</summary>
 public class TabbedPageStack : TabbedPageStack<TabbedPageContainer>
 {
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack"/> class.</summary>
     public TabbedPageStack(string name, string title)
         : base(name, title)
     {
@@ -20,12 +22,15 @@ public class TabbedPageStack : TabbedPageStack<TabbedPageContainer>
     }
 }
 
+/// <summary>A navigation stack that presents each registered page as a tab.</summary>
+/// <typeparam name="TC">The navigation container type.</typeparam>
 public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRouteNavigation, INavigationStack
     where TC : TabbedPageContainer, new()
 
 {
     private Page? rootPage;
 
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack{TC}"/> class.</summary>
     public TabbedPageStack(string name, string title)
         : base(name, title)
     {
@@ -42,6 +47,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 
     #region Overrides of NavigationStackBase<TabbedPage>
 
+    /// <inheritdoc />
     protected override TC InitContainer()
     {
         var tabbedPageContainer = new TC { NavigationStack = this };
@@ -70,6 +76,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
         return tabbedPageContainer;
     }
 
+    /// <inheritdoc />
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         pages.Set(relativeRoute.Trim('/'), pageFactory);

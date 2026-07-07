@@ -70,8 +70,10 @@ public class MessageDialog : Dialog
         set { SetValue(ContentProperty, new TextBlock { Text = value }); }
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(MessageDialog);
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -96,6 +98,7 @@ public class MessageDialog : Dialog
         }
     }
 
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -109,11 +112,13 @@ public class MessageDialog : Dialog
 
     #region Factory
 
+    /// <summary>Creates a message dialog with plain text content.</summary>
     public static MessageDialog Create(string title, string text, MessageDialogButtons buttons)
     {
         return new MessageDialog { Title = title, TextContent = text, Buttons = buttons };
     }
 
+    /// <summary>Creates a message dialog with custom content.</summary>
     public static MessageDialog Create(string title, object content, MessageDialogButtons buttons)
     {
         return new MessageDialog { Title = title, Content = content, Buttons = buttons };

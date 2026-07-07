@@ -5,15 +5,18 @@ using Avalonia.Layout;
 
 namespace RouteNav.Avalonia.Dialogs;
 
+/// <summary>Default template that builds the button row for a <see cref="MessageDialog"/>.</summary>
 public sealed class MessageDialogButtonsTemplate : IDataTemplate
 {
     #region Implementation of IDataTemplate
 
+    /// <inheritdoc />
     public bool Match(object data)
     {
         return data is MessageDialog;
     }
 
+    /// <inheritdoc />
     public Control Build(object data)
     {
         var messageDialog = data as MessageDialog;

@@ -10,14 +10,20 @@ using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
+/// <summary>Base implementation for RouteNav navigation stacks.</summary>
+/// <typeparam name="TC">The navigation container type used by the stack.</typeparam>
 public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
     where TC : NavigationContainer, new()
 {
+    /// <summary>Stores page factories by stack-relative route path.</summary>
     protected readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
     
+    /// <summary>Stores the active page history.</summary>
     protected readonly List<Page> pageStack = new List<Page>();
+    /// <summary>Stores the active dialog history.</summary>
     protected readonly List<Dialog> dialogStack = new List<Dialog>();
     
+    /// <summary>Initializes a new instance of the <see cref="NavigationStackBase{TC}"/> class.</summary>
     protected NavigationStackBase(string name, string title)
     {
         if (String.IsNullOrEmpty(name))
@@ -41,8 +47,10 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         });
     }
 
+    /// <summary>Gets the lazily-created typed container for this stack.</summary>
     protected LazyValue<TC> Container { get; }
 
+    /// <summary>Resolves a route to a page using the dynamic resolver first, then registered page factories.</summary>
     protected virtual Page? ResolveRoute(Uri routeUri)
     {
         var page = PageResolver?.ResolveRoute(routeUri);
@@ -54,18 +62,25 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of INavigationStack
 
+    /// <inheritdoc />
     public virtual string Name { get; }
 
+    /// <inheritdoc />
     public virtual string Title { get; }
 
+    /// <inheritdoc />
     public virtual Uri BaseUri { get; }
 
+    /// <inheritdoc />
     public virtual bool IsMainStack => Name.Equals(Navigation.MainStackName);
 
+    /// <inheritdoc />
     public bool IsEventStack => false;
 
+    /// <inheritdoc />
     public event Action? Entered;
 
+    /// <inheritdoc />
     public event Action? Exited;
 
     private LazyValue<NavigationContainer>? containerPage;
@@ -76,15 +91,19 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     /// <summary>Gets the lazily-created root (initial) page of this stack.</summary>
     public LazyValue<Page> RootPage { get; protected set; } = null!;
 
+    /// <inheritdoc />
     public IPageResolver? PageResolver { get; set; }
 
+    /// <summary>Creates and initializes the stack container.</summary>
     protected abstract TC InitContainer();
     
+    /// <summary>Builds a dialog wrapper for a page pushed as a dialog.</summary>
     protected virtual Dialog BuildDialog(Page page)
     {
         return page.ToDialog(CurrentPage);
     }
     
+    /// <inheritdoc />
     public virtual void AddPage(string relativeRoute, Type pageType)
     {
         if (!pageType.IsSubclassOf(typeof(Page)))
@@ -94,17 +113,20 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
                                       ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
     }
 
+    /// <inheritdoc />
     public virtual void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         var pageKey = relativeRoute.Trim('/');
         pages.Set(pageKey, pageFactory);
     }
 
+    /// <inheritdoc />
     public virtual INavigationStack? RequestStack(string stackName)
     {
         return null;
     }
 
+    /// <inheritdoc />
     public virtual void Reset()
     {
         pageStack.Clear();
@@ -121,22 +143,28 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IPageNavigation
 
+    /// <inheritdoc />
     public event Action<NavigationEventArgs<Page>>? PageNavigated;
 
+    /// <summary>Raises <see cref="PageNavigated"/>.</summary>
     protected void OnPageNavigated(Page? pageFrom, Page? pageTo)
     {
         PageNavigated?.Invoke(new NavigationEventArgs<Page>(pageFrom, pageTo));
     }
 
+    /// <inheritdoc />
     public virtual IReadOnlyList<Page> PageStack => pageStack;
 
+    /// <inheritdoc />
     public virtual Page? CurrentPage { get; protected set; }
 
+    /// <inheritdoc />
     public virtual void InsertPageBefore(Page page, Page beforePage)
     {
         pageStack.Insert(pageStack.IndexOf(beforePage), page);
     }
 
+    /// <inheritdoc />
     public virtual void RemovePage(Page page)
     {
         if (pageStack.LastOrDefault() == page)
@@ -148,6 +176,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         pageStack.Remove(page);
     }
 
+    /// <inheritdoc />
     public virtual Task<Page> PushAsync(Page page)
     {
         if (page.Equals(CurrentPage))
@@ -164,6 +193,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         return Task.FromResult(CurrentPage);
     }
 
+    /// <inheritdoc />
     public virtual Task<Page> PopAsync()
     {
         if (pageStack.Count < 1)
@@ -187,6 +217,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         return Task.FromResult(previousPage);
     }
 
+    /// <inheritdoc />
     public virtual Task PopToRootAsync()
     {
         var previousPage = pageStack.Last();
@@ -205,17 +236,22 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IDialogNavigation
 
+    /// <inheritdoc />
     public event Action<NavigationEventArgs<Dialog>>? DialogNavigated;
 
+    /// <summary>Raises <see cref="DialogNavigated"/>.</summary>
     protected void OnDialogNavigated(Dialog? dialogFrom, Dialog? dialogTo)
     {
         DialogNavigated?.Invoke(new NavigationEventArgs<Dialog>(dialogFrom, dialogTo));
     }
 
+    /// <inheritdoc />
     public virtual IReadOnlyList<Dialog> DialogStack => dialogStack;
 
+    /// <inheritdoc />
     public virtual Dialog? CurrentDialog { get; protected set; }
 
+    /// <inheritdoc />
     public virtual Task<object?> PushDialogAsync(Dialog dialog, bool forceOverlay = false)
     {
         var previousDialog = dialogStack.LastOrDefault();
@@ -230,6 +266,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         return dialogTask;
     }
 
+    /// <inheritdoc />
     public virtual Task<Dialog> PopDialogAsync()
     {
         if (dialogStack.Count < 1)
@@ -247,6 +284,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         return Task.FromResult(previousDialog);
     }
 
+    /// <inheritdoc />
     public virtual Task PopDialogAllAsync()
     {
         var previousDialog = dialogStack.LastOrDefault();
@@ -265,18 +303,22 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     #region Implementation of IRouteNavigation
 
+    /// <inheritdoc />
     public event Action<NavigationEventArgs<Uri>>? RouteNavigated;
 
+    /// <summary>Raises <see cref="RouteNavigated"/>.</summary>
     protected void OnRouteNavigated(Uri? routeFrom, Uri? routeTo)
     {
         RouteNavigated?.Invoke(new NavigationEventArgs<Uri>(routeFrom, routeTo));
     }
 
+    /// <inheritdoc />
     public Task<Page> PushAsync(string relativeRoute, NavigationTarget target = NavigationTarget.Self)
     {
         return PushAsync(this.BuildRoute(relativeRoute), target);
     }
 
+    /// <inheritdoc />
     public virtual async Task<Page> PushAsync(Uri routeUri, NavigationTarget target = NavigationTarget.Self)
     {
         if (routeUri.IsAbsoluteUri && !BaseUri.IsBaseOf(routeUri))

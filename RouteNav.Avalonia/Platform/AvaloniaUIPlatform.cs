@@ -27,11 +27,13 @@ public class AvaloniaUIPlatform : IUIPlatform
     private readonly Lazy<IServiceProvider> serviceProvider;
     private readonly IServiceCollection? serviceCollection;
 
+    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform"/> class with the default window manager.</summary>
     public AvaloniaUIPlatform(Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
         : this(new AvaloniaWindowManager(), serviceProvider, serviceCollection)
     {
     }
 
+    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform"/> class.</summary>
     public AvaloniaUIPlatform(IWindowManager windowManager, Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
     {
         WindowManager = windowManager;
@@ -45,12 +47,15 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     #region IUIPlatform Members
 
+    /// <inheritdoc />
     public IWindowManager WindowManager { get; }
     
+    /// <inheritdoc />
     public ILauncher Launcher { get; set; }
 
     #region Pages
 
+    /// <inheritdoc />
     public void RegisterPage(params Type[] pageTypes)
     {
         if (pageTypes == null)
@@ -68,6 +73,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         }
     }
 
+    /// <inheritdoc />
     public Page GetPage(Type pageType, Uri uri, params object[] parameters)
     {
         if (pageType == null)
@@ -96,6 +102,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     #region Stacks
 
+    /// <inheritdoc />
     public void AddStack(INavigationStack stack)
     {
         if (stack == null)
@@ -104,6 +111,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         navigationStacks.Add(stack.Name, stack);
     }
 
+    /// <inheritdoc />
     public void RemoveStack(string stackName)
     {
         if (activeStacks.Any(stack => stack.Value.Name.Equals(stackName)))
@@ -112,6 +120,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         navigationStacks.Remove(stackName);
     }
 
+    /// <inheritdoc />
     public INavigationStack? GetStack(string stackName)
     {
         return navigationStacks.TryGetValue(stackName, out var stack) ? stack : null;
@@ -121,6 +130,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     #region ActiveStacks
 
+    /// <inheritdoc />
     public INavigationStack GetMainStack()
     {
         if (navigationStacks.TryGetValue(Navigation.MainStackName, out var mainStack))
@@ -130,6 +140,7 @@ public class AvaloniaUIPlatform : IUIPlatform
                ?? throw new NavigationException($"Stack '{Navigation.MainStackName}' is not available.");
     }
 
+    /// <inheritdoc />
     public INavigationStack? GetActiveStack(string stackName)
     {
         if (String.IsNullOrEmpty(stackName))
@@ -138,6 +149,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         return activeStacks.FirstOrDefault(stack => stack.Value.Name.Equals(stackName)).Value;
     }
 
+    /// <inheritdoc />
     public INavigationStack? GetActiveStackFromWindow(Window? window)
     {
         window ??= Application.Current!.GetMainWindow();
@@ -145,6 +157,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         return activeStacks.TryGetValue(window, out var stack) ? stack : null;
     }
 
+    /// <inheritdoc />
     public Window? GetActiveWindowFromStack(INavigationStack? navigationStack)
     {
         navigationStack ??= GetMainStack();
@@ -159,6 +172,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     #region Targets
 
+    /// <inheritdoc />
     public INavigationStack? ActivateStack(string stackName, INavigationStack? sourceStack = null)
     {
         if (String.IsNullOrEmpty(stackName))
@@ -197,6 +211,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         return stack ?? GetMainStack();
     }
 
+    /// <inheritdoc />
     public INavigationStack? ActivateStackInWindow(string stackName)
     {
         if (String.IsNullOrEmpty(stackName))

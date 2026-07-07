@@ -5,8 +5,10 @@ using System.Text;
 
 namespace RouteNav.Avalonia.Errors;
 
+/// <summary>Formats exceptions (including inner exceptions) for display in error views.</summary>
 public static class ExceptionFormatter
 {
+    /// <summary>Formats an exception and its nested exceptions as plain text.</summary>
     public static string ToString(Exception ex)
     {
         if (ex == null)

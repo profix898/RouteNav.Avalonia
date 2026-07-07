@@ -10,18 +10,26 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Platform;
 
+/// <summary>
+/// Default <see cref="IWindowManager"/> implementation for Avalonia desktop and single-view platforms.
+/// </summary>
 public class AvaloniaWindowManager : IWindowManager
 {
     private static IApplicationLifetime? ApplicationLifetime => Application.Current!.ApplicationLifetime;
 
+    /// <inheritdoc />
     public virtual bool SupportsMultiWindow => ApplicationLifetime is IClassicDesktopStyleApplicationLifetime;
 
+    /// <inheritdoc />
     public bool ForceSingleWindow { get; init; }
 
+    /// <inheritdoc />
     public bool ForceOverlayDialogs { get; init; }
 
+    /// <inheritdoc />
     public event IWindowManager.WindowCustomizationHandler WindowCustomizationEvent;
 
+    /// <inheritdoc />
     public virtual bool OpenWindow(Window window, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform
@@ -41,6 +49,7 @@ public class AvaloniaWindowManager : IWindowManager
         return false;
     }
 
+    /// <inheritdoc />
     public virtual bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform -> open dialog window
@@ -85,6 +94,7 @@ public class AvaloniaWindowManager : IWindowManager
         return false;
     }
 
+    /// <inheritdoc />
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
     {
         var platformWindow = new AvaloniaWindow
@@ -100,6 +110,7 @@ public class AvaloniaWindowManager : IWindowManager
         return platformWindow;
     }
 
+    /// <inheritdoc />
     public virtual ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime)
     {
         var platformControl = new UserControl();

@@ -9,6 +9,10 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>
+/// Helper extensions for wiring RouteNav's <see cref="Window"/> abstraction into the various Avalonia
+/// application lifetimes (desktop, single-view and activity), and for retrieving the main window/top level.
+/// </summary>
 public static class AppUtility
 {
     // Tracks the RouteNav main-window abstraction independently of the platform lifetime, so that
@@ -19,6 +23,10 @@ public static class AppUtility
 
     #region SetMainWindow
 
+    /// <summary>Sets the RouteNav main window on the given application lifetime, dispatching to the matching lifetime type.</summary>
+    /// <param name="lifetime">The application lifetime (desktop, activity or single-view).</param>
+    /// <param name="newMainWindow">The main window abstraction to host.</param>
+    /// <param name="initMainRoute">When <c>true</c>, immediately enters the main navigation stack.</param>
     public static void SetMainWindow(this IApplicationLifetime? lifetime, Window newMainWindow, bool initMainRoute = true)
     {
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
@@ -34,6 +42,7 @@ public static class AppUtility
             throw new NotSupportedException($"IApplicationLifetime of type '{lifetime?.GetType()}' not supported.");
     }
 
+    /// <summary>Sets the RouteNav main window on a desktop lifetime.</summary>
     public static void SetMainWindow(this IClassicDesktopStyleApplicationLifetime desktopLifetime, Window newMainWindow, bool initMainRoute = true)
     {
         (desktopLifetime.MainWindow?.Tag as Window ?? mainWindow)?.OnClosed();
@@ -46,6 +55,7 @@ public static class AppUtility
             EnterMainStack();
     }
 
+    /// <summary>Sets the RouteNav main window on an activity lifetime (Avalonia 12 Android) via its main-view factory.</summary>
     public static void SetMainWindow(this IActivityApplicationLifetime activityLifetime, Window newMainWindow, bool initMainRoute = true)
     {
         mainWindow?.OnClosed();
@@ -58,6 +68,7 @@ public static class AppUtility
             EnterMainStack();
     }
 
+    /// <summary>Sets the RouteNav main window on a single-view lifetime (mobile/browser).</summary>
     public static void SetMainWindow(this ISingleViewApplicationLifetime singleViewLifetime, Window newMainWindow, bool initMainRoute = true)
     {
         (singleViewLifetime.MainView?.Tag as Window ?? mainWindow)?.OnClosed();
@@ -84,11 +95,13 @@ public static class AppUtility
 
     #region GetMainWindow
 
+    /// <summary>Gets the RouteNav main window for the given application.</summary>
     public static Window GetMainWindow(this Application application)
     {
         return application.ApplicationLifetime!.GetMainWindow();
     }
 
+    /// <summary>Gets the RouteNav main window tracked for the given application lifetime.</summary>
     public static Window GetMainWindow(this IApplicationLifetime appLifetime)
     {
         if (mainWindow != null)
@@ -113,6 +126,7 @@ public static class AppUtility
 
     #region Helpers
 
+    /// <summary>Gets the active <see cref="TopLevel"/> (the given window, the active desktop window, or the single-view host).</summary>
     public static TopLevel GetTopLevel(AvaloniaWindow? window = null)
     {
         if (window != null)

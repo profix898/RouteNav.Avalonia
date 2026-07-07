@@ -79,6 +79,7 @@ public class HyperlinkButton : Button, IRouteItem
         
     #region Overrides of StyledElement
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(global::Avalonia.Controls.HyperlinkButton);
 
     #endregion
@@ -104,12 +105,14 @@ public class HyperlinkButton : Button, IRouteItem
         set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
     }
         
+    /// <inheritdoc />
     public NavigationTarget Target
     {
         get { return GetValue(TargetProperty); }
         set { SetValue(TargetProperty, value); }
     }
         
+    /// <inheritdoc />
     public void NavigateToRoute()
     {
         if (RouteUri == null)

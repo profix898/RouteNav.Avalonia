@@ -5,8 +5,10 @@ using RouteNav.Avalonia.StackContainers;
 
 namespace RouteNav.Avalonia.Stacks;
 
+/// <summary>A navigation stack that presents pages with a navigation bar and back-button history.</summary>
 public class NavigationPageStack : NavigationPageStack<NavigationPageContainer>
 {
+    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack"/> class.</summary>
     public NavigationPageStack(string name, string title)
         : base(name, title)
     {
@@ -17,9 +19,12 @@ public class NavigationPageStack : NavigationPageStack<NavigationPageContainer>
     }
 }
 
+/// <summary>A navigation stack that presents pages with a navigation bar and back-button history.</summary>
+/// <typeparam name="TC">The navigation container type.</typeparam>
 public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
     where TC : NavigationPageContainer, new()
 {
+    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack{TC}"/> class.</summary>
     public NavigationPageStack(string name, string title)
         : base(name, title)
     {
@@ -31,6 +36,7 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
 
     #region Overrides of NavigationStackBase<NavigationPage>
 
+    /// <inheritdoc />
     protected override TC InitContainer()
     {
         RootPage = new LazyValue<Page>(() => ResolveRoute(this.BuildRoute(String.Empty))

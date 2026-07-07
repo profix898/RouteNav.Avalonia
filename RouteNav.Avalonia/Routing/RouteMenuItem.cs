@@ -21,6 +21,7 @@ public class RouteMenuItem : MenuItem, IRouteItem
         Click += (_, _) => NavigateToRoute();
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(MenuItem);
 
     #region Implementation of IRouteItem

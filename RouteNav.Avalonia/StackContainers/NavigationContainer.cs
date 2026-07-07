@@ -14,23 +14,28 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackContainers;
 
+/// <summary>Base container that hosts a navigation stack's current page and dialog overlays.</summary>
 public class NavigationContainer : ContentControl, ISafeAreaAware
 {
     private TopLevel? topLevel;
     private IInsetsManager? insetsManager;
     private INavigationStack? navigationStack;
 
+    /// <summary>Defines the <see cref="SafeAreaPadding"/> property.</summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<NavigationContainer, Thickness>(nameof(SafeAreaPadding));
 
     #region NavigationContainer
 
+    /// <summary>Raised when the host control used by the container is attached/resolved.</summary>
     public event Action? HostControlAttached;
 
+    /// <summary>Raises <see cref="HostControlAttached"/>.</summary>
     protected void OnHostControlAttached()
     {
         HostControlAttached?.Invoke();
     }
 
+    /// <summary>Gets the navigation stack associated with this container.</summary>
     public INavigationStack? NavigationStack
     {
         get { return navigationStack; }
@@ -54,11 +59,13 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
                ?? new DialogOverlayHost(topLevel, overlayLayer);
     }
 
+    /// <summary>Updates the page shown by the container.</summary>
     public virtual void UpdatePage(Page? page)
     {
         Content = page?.Content;
     }
 
+    /// <summary>Updates the dialog shown by the container, opening it in a window or overlay as appropriate.</summary>
     public virtual Task<object?> UpdateDialog(Dialog? dialog, bool forceOverlay = false)
     {
         // All dialogs closed (dispose overlay host)
@@ -127,6 +134,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
 
     #region Implementation of ISafeAreaAware
 
+    /// <inheritdoc />
     public Thickness SafeAreaPadding
     {
         get { return GetValue(SafeAreaPaddingProperty); }
@@ -135,8 +143,10 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
 
     #endregion
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(ContentControl);
 
+    /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -158,6 +168,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         }
     }
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -165,6 +176,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         UpdateContentSafeAreaPadding();
     }
 
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -173,6 +185,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             UpdateContentSafeAreaPadding();
     }
 
+    /// <summary>Applies the remaining safe-area padding to the hosted content.</summary>
     protected virtual void UpdateContentSafeAreaPadding()
     {
         if (Content != null && Presenter != null)
@@ -204,6 +217,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
 
     #region Internal
 
+    /// <summary>Registers a named control in a scoped name scope on the given element.</summary>
     protected static void RegisterScopedControl(StyledElement styledElement, string name, object element)
     {
         var nameScope = new NameScope();

@@ -9,14 +9,17 @@ using static RouteNav.Avalonia.Dialogs.DialogSizeUtility;
 
 namespace RouteNav.Avalonia.Dialogs;
 
+/// <summary>Extensions for showing a <see cref="Page"/> as a <see cref="Dialog"/>.</summary>
 public static class DialogPageExtensions
 {
+    /// <summary>Wraps the page in a dialog and pushes it onto the stack's dialog stack.</summary>
     public static Task<object?> PushDialogAsync(this INavigationStack stack, Page page, DialogSize? dialogSize = null,
                                                 Size? minSize = null, Size? maxSize = null, bool forceOverlay = false)
     {
         return stack.PushDialogAsync(page.ToDialog(stack.CurrentPage, dialogSize, minSize, maxSize), forceOverlay);
     }
 
+    /// <summary>Builds a <see cref="Dialog"/> that hosts the given page, sized from the size hint/parent.</summary>
     public static Dialog ToDialog(this Page page, Layoutable? parent = null, DialogSize? dialogSize = null,
                                   Size? minSize = null, Size? maxSize = null)
     {

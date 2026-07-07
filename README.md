@@ -2,22 +2,22 @@ RouteNav.Avalonia
 ==========
 [![Nuget](https://img.shields.io/nuget/v/RouteNav.Avalonia?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/RouteNav.Avalonia)
 
-**RouteNav.Avalonia** provides URI routing navigation for **[Avalonia](https://avaloniaui.net/)**. It supports a code-first, modular/extensible navigation approach with page (and dialog) primitives.
+**RouteNav.Avalonia** provides URI-based navigation for **[Avalonia](https://avaloniaui.net/)**. It supports a code-first, modular/extensible navigation model built around page, dialog and stack primitives.
 
 ### Features
 
-- **URI-based navigation** from a central `Navigation` facade — `Navigation.PushAsync(uri, target)`.
+- **URI-based navigation** from the central `Navigation` facade — `Navigation.PushAsync(uri, target)`.
 - **Four navigation layouts**: single page, navigation stack (back button), tabbed, and sidebar/drawer — the latter built on Avalonia 12's native `DrawerPage`.
 - **Modal, message and error dialogs**, shown as windows (desktop) or overlays/embedded (mobile, browser); any `Page` can be shown as a dialog.
 - **Cross-stack navigation** with explicit targets (`Self`, `Parent`, `Dialog`, `DialogOverlay`, `Window`).
-- **Dependency-injection** page registration (or register pages by any means you like).
+- **Dependency-injection friendly** page registration (or custom page factories/resolvers).
 - **Multi-window** (desktop) and **single-view** (mobile/browser) support behind one `Window` abstraction.
-- **Routing controls**: `RouteButton`, `RouteMenuItem`, `RouteCommand`, `HyperlinkButton`, `HyperlinkLabel`.
+- **Routing controls**: `RouteButton`, `RouteMenuItem`, `RouteCommand`, `HyperlinkButton` and `HyperlinkLabel`.
 
 ### Concept
 In most applications the navigation system is *operated* from within, i.e. clicking a button or menu item triggers the UI to rearrange. It is usually the task of the button/menu handler to perform the desired UI changes. This approach is also used in most MVVM frameworks.
 
-**RouteNav.Avalonia** on the other hand inverts that approach (inside-out). All navigation is handled via a central `Navigation` class. URI-based Navigation is invoked by calling `Navigation.PushAsync(Uri, NavigationTarget)`. The trigger source can again be a control (button, menu item, etc.), but it can also be an external event (e.g. URI activation).
+**RouteNav.Avalonia** inverts that approach: navigation is addressed from the outside by URI. URI navigation is invoked by calling `Navigation.PushAsync(Uri, NavigationTarget)`. The trigger source can be a control (button, menu item, etc.), a command, or an external event such as URI activation.
 The UI update happens implicitly based on the association of the (named) `NavigationStack` with a `NavigationContainer` (i.e. a window or navigation layout). Currently, there are four layouts available: `ContentPageStack` (single page), `NavigationPageStack` (mobile-like, navigation bar with back button), `TabbedPageStack` (TabControl), `SidebarMenuPageStack` (hamburger/drawer menu, built on Avalonia's `DrawerPage`).
 
 **RouteNav.Avalonia** also supports navigation with modal dialogs (and message dialogs).
@@ -27,9 +27,9 @@ The UI update happens implicitly based on the association of the (named) `Naviga
 - **Avalonia** 12.x
 - **.NET** 10
 
-RouteNav's navigation layouts build on Avalonia 12's native page-navigation primitives where possible and stay theme-compatible with them. For example, the sidebar/drawer layout builds on Avalonia's `DrawerPage`, so the standard Fluent theming applies and can be overridden the usual way.
+RouteNav's navigation controls use Avalonia 12 primitives and resource keys where practical, so standard Fluent theming still applies. The sidebar/drawer layout composes Avalonia's native `DrawerPage`, and `NavigationControl` uses Avalonia 12's shared navigation-bar resource keys.
 
-Upgrading from the Avalonia 11 build? See the [migration guide](MIGRATION.md).
+Upgrading from the Avalonia 11 build? See the [migration guide](Docs/Migration.md).
 
 ### Installation
 
@@ -41,12 +41,12 @@ dotnet add package RouteNav.Avalonia
 
 ### Usage
 
-During initialization of the application all `Page`s are registered with the DI container of the navigation system (or manually with a custom DI container):
+During application initialization, register the `Page` types that should be resolved through the navigation DI container:
 ```CSharp
 Navigation.UIPlatform.RegisterPage<RootPage, Page1>();
 ```
 
-We then create a `NavigationStack` and add the individual pages with their associated URI routes:
+Then create a `NavigationStack` and add the individual pages with their associated routes:
 
 ```CSharp
 var stack = new NavigationPageStack("stackName", "Stack Label");
@@ -58,11 +58,11 @@ stack.AddPage<Page1>("page1");
 stack.AddPage("page1", uri => new Page1(uri));
 ```
 
-Upon navigating to a route, i.e. `/stackName/page1` (which in this example maps to `Page1`), the page is requested from the DI container (incl. optional DI injection of all dependencies) and pushed to the `NavigationContainer` for display. Each stack contains a root page (with empty relative path), which is displayed as the default page for the stack.
+Upon navigating to a route, e.g. `/stackName/page1` (which in this example maps to `Page1`), the page is requested from the DI container (including optional dependency injection) and pushed to the `NavigationContainer` for display. Each stack contains a root page (empty relative path), which is displayed as the default page for that stack.
 
 The library provides `Page` and `Dialog` primitives, which enable construction of pages / dialogs via *XAML* or code. `Page`s constitute the main building blocks for content in **RouteNav.Avalonia**. Pages can also be converted for display in dialogs on the fly. In contrast, `Dialog`s are always shown in dialog windows (on desktop platforms), as overlays or embedded into a page.
 
-**Note:** For multi-window (desktop) plaforms, you can enforce single-window (via `Navigation.WindowManager.ForceSingleWindow`) and/or overlay dialogs (via `Navigation.WindowManager.ForceOverlayDialogs`). On mobile (Android/iOS) and Browser platforms requesting a new window always replaces the current `NavigationStack` and dialogs are always displayed in page overlay (`NavigationTarget.Window` and `NavigationTarget.Dialog` behave the same then). On desktop platforms, multi-window and dialog windows are supported.
+**Note:** On multi-window desktop platforms, you can force single-window behavior via `Navigation.UIPlatform.WindowManager.ForceSingleWindow` and/or force overlay dialogs via `Navigation.UIPlatform.WindowManager.ForceOverlayDialogs`. On mobile (Android/iOS) and Browser platforms, requesting a new window falls back to replacing the current `NavigationStack`, and dialogs are displayed as overlays.
 
 ### Details & Advanced Usage
 
@@ -76,7 +76,7 @@ ApplicationLifetime.SetMainWindow(new MyWindow());
 
 #### BaseUri
 
-All navigation operations are URI-based. In many cases, it is sufficient to specify the relative path to a page or a stack, e.g. `/stackName/page1`. Internally, all URIs are stored fully qualified. The base URI for all routes can be customized via `Navigation.BaseRouteUri` (defaults to `https://avalonia.local/`). Especially, for URI activation events this allows a seamless integration with the URI schema of the application.
+All navigation operations are URI-based. In many cases, it is sufficient to specify the relative path to a page or a stack, e.g. `/stackName/page1`. Internally, all routes are resolved against a fully qualified base URI. The base URI can be customized via `Navigation.BaseRouteUri` (defaults to `https://avalonia.local/`), which is useful for URI activation/deep-link scenarios.
 
 #### NavigationTarget
 
@@ -98,7 +98,7 @@ public enum NavigationTarget
 #### Complex container pages
 
 When a new stack is loaded (by navigating to a page on that stack), the `Container` page is instantiated first. In the simplest case, a `NavigationContainer` (derived from `ContentControl`) is used directly. For more complex applications, however, it is often desirable for the `NavigationControl` to be embedded in an application-specific layout. An example would be a window with a menu or toolbar at the top and the control for navigation located below.
-In such a case, the container page can be constructed using a factory method. The freely designed page will then inherit a `NavigationContainer` (or derived control, e.g. `TabbedPageContainer`) and contain the `NavigationControl` at any desired location. The `NavigationControl` only needs to be identified by name to the `NavigationContainer` by settings its `NavigationControlName` property (`NavigationControl` is the default name):
+In such a case, the container can be customized by deriving from `NavigationContainer` (or a derived container such as `NavigationPageContainer` / `TabbedPageContainer`) and placing the navigation host control at any desired location. For `NavigationPageContainer`, the `NavigationControl` only needs to be identified by name through `NavigationControlName` (`NavigationControl` is the default name):
 
 ```XML
 /// public partial class DesktopContainer : NavigationPageContainer { }
@@ -120,7 +120,7 @@ Generally, pages are registered in the `INavigationStack` with their route via `
 
 #### Page to Dialog
 
-**RouteNav.Avalonia** utilizes automatic conversion of `Page` to `Dialog` in cases where a `Page` is invoked for display as a dialog (or overlay dialog). You can also explicitely perform the conversion by calling the `ToDialog(Layoutable? parent)` extension method for `Page`.
+**RouteNav.Avalonia** utilizes automatic conversion of `Page` to `Dialog` in cases where a `Page` is invoked for display as a dialog (or overlay dialog). You can also explicitly perform the conversion by calling the `ToDialog(Layoutable? parent)` extension method for `Page`.
 
 ```CSharp
 var dialog = new TestPage { DialogSizeHint = DialogSize.Small }.ToDialog(this);
@@ -130,7 +130,7 @@ A `Dialog` contains a few additional properties to control the title bar and siz
 
 #### Direct dialog usage
 
-When `Navigation.PushAsync(Uri routeUri, NavigationTarget target)` is called with the target option `Dialog` (or `OverlayDialog`), the corresponding page is displayed as a dialog. However, it is also possible to display a dialog explicitly. The `Dialog` class contains the following methods for this purpose:
+When `Navigation.PushAsync(Uri routeUri, NavigationTarget target)` is called with the target option `Dialog` (or `DialogOverlay`), the corresponding page is displayed as a dialog. It is also possible to display a dialog explicitly. The `Dialog` class contains the following methods for this purpose:
 
 ```CSharp
 Task<object?> ShowDialog(Window? parentWindow)
@@ -138,17 +138,17 @@ Task<object?> ShowDialog(Window? parentWindow)
 Task<object?> ShowDialog(Page? parentPage)
 ```
 
-A `Dialog` should have a `Window` or a `Page` as a parent. If a `Dialog` is closed via the `void Close(object? result)` method, the dialog's `object? Result` property is set, and the `ShowDialog()` call returns the result (or `null`, if the dialog is closed without result).
+A `Dialog` should have a `Window` or a `Page` as a parent. If a dialog is closed via `Close(object? result)`, the dialog's `Result` property is set and the `ShowDialog()` task returns that result (or `null`, if the dialog is closed without a result).
 
 #### Message Dialog / Error Dialog
 
-**RouteNav.Avalonia** contains a simple MessageBox implementation represented by the `MessageDialog` type. In the simplest case, a text message can be displayed as follows:
+**RouteNav.Avalonia** contains a simple message-box implementation represented by the `MessageDialog` type. In the simplest case, a text message can be displayed as follows:
 
 ```CSharp
 var result = await MessageDialog.Create("Title", "Message Text", MessageDialogButtons.OkCancel).ShowDialog(this);
 ```
 
-`MessageDialog` is also used for the output of user-relevant error messages (*internal error* and *page not found*). Custom errors in the program execution can be rendered into corresponding error messages using the static class `Error`, e.g. `var page = Error.Page(string message, Exception ex)` or even `Error.ShowDialog(string message, Exception ex)`.
+`MessageDialog` is also used for user-relevant error messages (*internal error* and *page not found*). Custom errors can be rendered using the static `Error` factory, e.g. `var page = Error.Page(string message, Exception ex)` or `await Error.ShowDialog(string message, Exception ex)`.
 
 #### Specialized controls for URI Routing
 
@@ -159,7 +159,7 @@ A frequently used source for navigation events are `Button`s. Therefore, **Route
 <RouteButton RoutePath="page1">To Page1 on current stack</RouteButton>
 ```
 
-The library also contains a `HyperlinkButton`, i.e. a `Button` control that functions as a navigable hyperlink, and a `HyperlinkLabel`, which is a `TextBlock` that functions as a navigable hyperlink. Both controls inspect the specified URI (`NavigateUri`): a valid internal route leads to URI navigation, other URIs are passed to the standard launcher (e.g. to be displayed in the browser or to trigger a URI activation on the platform).
+The library also contains a `HyperlinkButton`, i.e. a `Button` control that functions as a navigable hyperlink, and a `HyperlinkLabel`, which is a `TextBlock` that functions as a navigable hyperlink. Both controls inspect the specified URI (`NavigateUri` / `RouteUri`): a valid internal route leads to RouteNav navigation, while other URIs are passed to Avalonia's standard launcher (e.g. to open a browser or trigger a platform URI activation).
 
 ```XML
 <HyperlinkButton NavigateUri="https://www.avaloniaui.net/">External Link</HyperlinkButton>
@@ -179,9 +179,23 @@ sidebarMenuStack.AddMenuItem("/otherStack/pageX", "External Page"); // Links to 
 ```
 
 ### Documentation
-There is currently only limited documentation (incl. API docs) available. Please refer to the *DemoApp* for preliminary instructions and usage examples. For starters, the navigation structure of the *DemoApp* is defined in ``App.axaml.cs``.
+The repository includes XML API documentation, a multi-head *DemoApp*, and detailed guides in the [Docs](Docs/README.md) folder.
 
-Upgrading from the Avalonia 11 build of RouteNav.Avalonia? See [MIGRATION.md](MIGRATION.md) for the breaking changes and step-by-step guidance.
+Recommended reading:
+
+- [Getting Started](Docs/GettingStarted.md)
+- [Concepts](Docs/Concepts.md)
+- [Routing](Docs/Routing.md)
+- [Navigation Stacks](Docs/NavigationStacks.md)
+- [Dialogs and Errors](Docs/DialogsAndErrors.md)
+- [Controls](Docs/Controls.md)
+- [Theming and Layout](Docs/ThemingAndLayout.md)
+- [Platform Notes](Docs/PlatformNotes.md)
+- [Advanced Topics](Docs/AdvancedTopics.md)
+
+The demo app contains examples for main-stack navigation, route parameters, dialogs, hyperlinks, sidebar/drawer navigation and tabbed navigation. Its navigation structure is defined in `DemoApp/DemoApp/App.axaml.cs`.
+
+Upgrading from the Avalonia 11 build of RouteNav.Avalonia? See [Docs/Migration.md](Docs/Migration.md) for the breaking changes and step-by-step guidance.
 
 ### License
 RouteNav.Avalonia is licensed under the terms of the MIT license (<http://opensource.org/licenses/MIT>, see LICENSE.txt).

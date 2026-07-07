@@ -9,6 +9,7 @@ using RouteNav.Avalonia.Dialogs;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>Base RouteNav page type, with title, safe-area and dialog-size metadata.</summary>
 public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
 {
     /// <summary>
@@ -56,8 +57,10 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
         set { SetValue(DialogSizeHintProperty, value); }
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(Page);
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -65,6 +68,7 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
         UpdateContentSafeAreaPadding();
     }
 
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -73,6 +77,7 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
             UpdateContentSafeAreaPadding();
     }
 
+    /// <summary>Applies the remaining safe-area padding to the hosted content.</summary>
     protected virtual void UpdateContentSafeAreaPadding()
     {
         if (Content != null && Presenter != null)

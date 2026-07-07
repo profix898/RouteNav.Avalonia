@@ -5,29 +5,36 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackContainers;
 
+/// <summary>A navigation container that hosts pages in a <see cref="TabControl"/>.</summary>
 public class TabbedPageContainer : NavigationContainer
 {
+    /// <summary>Defines the <see cref="TabControlName"/> property.</summary>
     public static readonly StyledProperty<string> TabControlNameProperty = AvaloniaProperty.Register<TabbedPageContainer, string>(nameof(TabControlName), "TabControl");
 
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageContainer"/> class.</summary>
     public TabbedPageContainer()
     {
         RegisterScopedControl(this, TabControlName, Content = new TabControl());
     }
 
+    /// <summary>Gets or sets the scoped name used to resolve the tab control.</summary>
     public string TabControlName
     {
         get { return GetValue(TabControlNameProperty); }
         set { SetValue(TabControlNameProperty, value); }
     }
 
+    /// <summary>Gets the resolved tab control.</summary>
     public TabControl? TabControl { get; private set; }
 
+    /// <inheritdoc />
     public override void UpdatePage(Page page)
     {
         if (TabControl != null)
             TabControl.SelectedItem = FindTabItem(TabControl, page);
     }
 
+    /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -41,6 +48,7 @@ public class TabbedPageContainer : NavigationContainer
         OnHostControlAttached();
     }
 
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -57,6 +65,7 @@ public class TabbedPageContainer : NavigationContainer
         }
     }
 
+    /// <inheritdoc />
     protected override void UpdateContentSafeAreaPadding()
     {
         if (TabControl != null)

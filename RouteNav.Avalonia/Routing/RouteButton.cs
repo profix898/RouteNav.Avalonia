@@ -23,6 +23,7 @@ public class RouteButton : Button, IRouteItem
         Click += (_, _) => NavigateToRoute();
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(Button);
 
     #region Implementation of IRouteItem

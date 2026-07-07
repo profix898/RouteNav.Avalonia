@@ -81,6 +81,7 @@ public class HyperlinkLabel : TextBlock, IRouteItem
 
     #region Overrides of StyledElement
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(TextBlock);
 
     #endregion
@@ -106,12 +107,14 @@ public class HyperlinkLabel : TextBlock, IRouteItem
         set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
     }
         
+    /// <inheritdoc />
     public NavigationTarget Target
     {
         get { return GetValue(TargetProperty); }
         set { SetValue(TargetProperty, value); }
     }
         
+    /// <inheritdoc />
     public void NavigateToRoute()
     {
         if (RouteUri == null)
@@ -136,6 +139,7 @@ public class HyperlinkLabel : TextBlock, IRouteItem
             PseudoClasses.Set(pcVisited, change.GetNewValue<bool>());
     }
 
+    /// <inheritdoc />
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

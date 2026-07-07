@@ -14,6 +14,7 @@ public class HyperlinkLauncher : ILauncher
 {
     #region Implementation of ILauncher
 
+    /// <inheritdoc />
     public async Task<bool> LaunchUriAsync(Uri uri)
     {
         if (Navigation.BaseRouteUri.IsBaseOf(uri))
@@ -25,6 +26,7 @@ public class HyperlinkLauncher : ILauncher
         return await AppUtility.GetTopLevel().Launcher.LaunchUriAsync(uri);
     }
 
+    /// <inheritdoc />
     public async Task<bool> LaunchFileAsync(IStorageItem storageItem)
     {
         return await AppUtility.GetTopLevel().Launcher.LaunchFileAsync(storageItem);

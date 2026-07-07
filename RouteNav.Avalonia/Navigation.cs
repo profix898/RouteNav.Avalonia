@@ -7,6 +7,7 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>Static facade for RouteNav stack activation, route navigation and pop operations.</summary>
 public static class Navigation
 {
     /// <summary>The reserved name of the main navigation stack.</summary>

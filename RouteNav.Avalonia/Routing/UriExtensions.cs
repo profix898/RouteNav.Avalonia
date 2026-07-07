@@ -6,6 +6,7 @@ using System.Text.Encodings.Web;
 
 namespace RouteNav.Avalonia.Routing;
 
+/// <summary>URI helper methods for building and parsing RouteNav route URIs.</summary>
 public static class UriExtensions
 {
     /// <summary>Constructs a URI with query string (from a key/value pair).</summary>

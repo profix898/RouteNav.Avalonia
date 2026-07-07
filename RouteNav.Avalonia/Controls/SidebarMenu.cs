@@ -27,6 +27,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 {
     #region DisplayModeEnum
 
+    /// <summary>Defines how the sidebar drawer is displayed relative to the content.</summary>
     public enum DisplayModeEnum
     {
         /// <summary>
@@ -53,16 +54,22 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
     private ListBox? menuList;
     private bool suppressSelectionChanged;
 
+    /// <summary>Defines the <see cref="SidebarHeader"/> property.</summary>
     public static readonly StyledProperty<object?> SidebarHeaderProperty = AvaloniaProperty.Register<SidebarMenu, object?>(nameof(SidebarHeader));
 
+    /// <summary>Defines the <see cref="SidebarFooter"/> property.</summary>
     public static readonly StyledProperty<object?> SidebarFooterProperty = AvaloniaProperty.Register<SidebarMenu, object?>(nameof(SidebarFooter));
 
+    /// <summary>Defines the <see cref="DisplayMode"/> property.</summary>
     public static readonly StyledProperty<DisplayModeEnum> DisplayModeProperty = AvaloniaProperty.Register<SidebarMenu, DisplayModeEnum>(nameof(DisplayMode), DisplayModeEnum.Auto);
 
+    /// <summary>Defines the <see cref="InlineThresholdWidth"/> property.</summary>
     public static readonly StyledProperty<int> InlineThresholdWidthProperty = AvaloniaProperty.Register<SidebarMenu, int>(nameof(InlineThresholdWidth), 1005);
 
+    /// <summary>Defines the <see cref="SafeAreaPadding"/> property.</summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<SidebarMenu, Thickness>(nameof(SafeAreaPadding));
 
+    /// <summary>Defines the <see cref="MenuItemsSource"/> property.</summary>
     public static readonly DirectProperty<SidebarMenu, IEnumerable<SidebarMenuItem>> MenuItemsSourceProperty =
         AvaloniaProperty.RegisterDirect<SidebarMenu, IEnumerable<SidebarMenuItem>>(nameof(MenuItemsSource), s => s.MenuItems, (s, items) =>
         {
@@ -71,8 +78,10 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
             s.RefreshMenuItems();
         });
 
+    /// <summary>Defines the <see cref="SelectedMenuItemChanged"/> routed event.</summary>
     public static readonly RoutedEvent<RoutedEventArgs> SelectedMenuItemChangedEvent = RoutedEvent.Register<SidebarMenu, RoutedEventArgs>(nameof(SelectedMenuItemChanged), RoutingStrategies.Bubble);
 
+    /// <summary>Defines the <see cref="Page"/> property.</summary>
     public static readonly StyledProperty<Page?> PageProperty = AvaloniaProperty.Register<SidebarMenu, Page?>(nameof(Page));
 
     /// <summary>Content displayed at the top of the drawer pane (forwarded to <c>DrawerPage.DrawerHeader</c>).</summary>
@@ -105,6 +114,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 
     #region Implementation of ISafeAreaAware
 
+    /// <inheritdoc />
     public Thickness SafeAreaPadding
     {
         get { return GetValue(SafeAreaPaddingProperty); }
@@ -144,6 +154,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
     /// <summary>Gets the navigation stack this menu drives.</summary>
     public INavigationStack? NavigationStack { get; internal set; }
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -164,6 +175,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         SyncSelectionToCurrentPage();
     }
 
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

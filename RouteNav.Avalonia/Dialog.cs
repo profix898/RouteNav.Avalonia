@@ -15,11 +15,18 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>
+/// A dialog surface that can be shown as a native window (desktop) or an in-app overlay/embedded control
+/// (mobile/browser), returning a result via <see cref="ShowDialog(Window?, bool)"/>.
+/// </summary>
 [PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded)]
 public class Dialog : ContentControl
 {
+    /// <summary>Completion source used by the active dialog result task.</summary>
     protected TaskCompletionSource<object?>? taskCompletionSource;
+    /// <summary>The close button resolved from the control template, if present.</summary>
     protected Button? dialogCloseButton;
+    /// <summary>The title bar panel resolved from the control template, if present.</summary>
     protected Panel? dialogTitleBarPanel;
 
     /// <summary>
@@ -42,6 +49,7 @@ public class Dialog : ContentControl
     /// </summary>
     public static readonly StyledProperty<DialogSize> DialogSizeProperty = AvaloniaProperty.Register<Dialog, DialogSize>(nameof(DialogSize), DialogSize.Medium);
 
+    /// <summary>Initializes a new instance of the <see cref="Dialog"/> class.</summary>
     public Dialog()
     {
         PseudoClasses.Add(SharedPseudoClasses.Hidden);
@@ -91,8 +99,10 @@ public class Dialog : ContentControl
         set { SetValue(DialogSizeProperty, value); }
     }
 
+    /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(Dialog);
 
+    /// <inheritdoc />
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -120,6 +130,7 @@ public class Dialog : ContentControl
     /// <summary>Fired when the window is opened.</summary>
     public event EventHandler? Opened;
 
+    /// <summary>Opens the dialog and returns the task completed when it closes.</summary>
     protected internal virtual Task<object?> Open()
     {
         taskCompletionSource = new TaskCompletionSource<object?>();
@@ -145,6 +156,7 @@ public class Dialog : ContentControl
     /// <summary>Fired when the window is closed.</summary>
     public event EventHandler? Closed;
 
+    /// <summary>Closes the dialog, completing its result task with <paramref name="result"/>.</summary>
     public virtual void Close(object? result = null)
     {
         if (taskCompletionSource == null)
@@ -179,11 +191,13 @@ public class Dialog : ContentControl
         Close();
     }
 
+    /// <summary>Gets a value indicating whether the dialog is currently open.</summary>
     [MemberNotNullWhen(true, nameof(ResultTask))]
     public bool IsOpen => taskCompletionSource != null;
 
     internal Task<object?>? ResultTask => taskCompletionSource?.Task;
 
+    /// <summary>Gets the result the dialog was closed with, if any.</summary>
     public object? Result { get; private set; }
 
     #endregion
@@ -220,6 +234,7 @@ public class Dialog : ContentControl
 
     #region ShowDialog
 
+    /// <summary>Shows the dialog on the stack associated with the given window (or the main window).</summary>
     public Task<object?> ShowDialog(Window? parentWindow = null, bool forceOverlay = false)
     {
         var stack = Navigation.UIPlatform.GetActiveStackFromWindow(parentWindow) ?? Navigation.GetMainStack();
@@ -227,6 +242,7 @@ public class Dialog : ContentControl
         return stack.PushDialogAsync(this, forceOverlay);
     }
 
+    /// <summary>Shows the dialog on the stack that owns the given page (or the main stack).</summary>
     public Task<object?> ShowDialog(Page? parentPage, bool forceOverlay = false)
     {
         INavigationStack? stack = null;
@@ -241,6 +257,7 @@ public class Dialog : ContentControl
         return stack.PushDialogAsync(this, forceOverlay);
     }
 
+    /// <summary>Shows the dialog embedded inside the given content control, optionally restoring its previous content on close.</summary>
     public Task<object?> ShowDialogEmbedded(ContentControl parentControl, bool restoreParent = false)
     {
         var previousContent = parentControl.Content;
