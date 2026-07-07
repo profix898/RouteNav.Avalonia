@@ -20,27 +20,27 @@ public class HyperlinkLabel : TextBlock, IRouteItem
     private const string pcVisited = ":visited";
 
     /// <summary>
-    /// Defines the <see cref="RouteUri"/> property.
+    /// Defines the <see cref="RouteUri" /> property.
     /// </summary>
-    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<HyperlinkLabel, Uri?>(nameof(RouteUri), defaultValue: null);
-        
-    /// <summary>
-    /// Defines the <see cref="TargetProperty"/> property.
-    /// </summary>
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<HyperlinkLabel, NavigationTarget>(nameof(Target), NavigationTarget.Self);
-        
-    /// <summary>
-    /// Defines the <see cref="IsVisited"/> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(IsVisited), defaultValue: false);
-        
-    /// <summary>
-    /// Defines the <see cref="TrackIsVisited"/> property.
-    /// </summary>
-    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(TrackIsVisited), defaultValue: false);
+    public static readonly StyledProperty<Uri?> RouteUriProperty = AvaloniaProperty.Register<HyperlinkLabel, Uri?>(nameof(RouteUri));
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HyperlinkLabel"/> class.
+    /// Defines the <see cref="TargetProperty" /> property.
+    /// </summary>
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<HyperlinkLabel, NavigationTarget>(nameof(Target));
+
+    /// <summary>
+    /// Defines the <see cref="IsVisited" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> IsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(IsVisited));
+
+    /// <summary>
+    /// Defines the <see cref="TrackIsVisited" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> TrackIsVisitedProperty = AvaloniaProperty.Register<HyperlinkLabel, bool>(nameof(TrackIsVisited));
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HyperlinkLabel" /> class.
     /// </summary>
     public HyperlinkLabel()
     {
@@ -48,30 +48,31 @@ public class HyperlinkLabel : TextBlock, IRouteItem
     }
 
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel" /> is clicked.
     /// </summary>
     /// <remarks>
-    /// The URI may be any website or file location that can be launched using the <see cref="ILauncher"/> service.
+    /// The URI may be any website or file location that can be launched using the <see cref="ILauncher" /> service.
     /// <br></br>
-    /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton"/> and <see cref="IRouteItem"/> (in this library), both <see cref="RouteUri"/> and <see cref="NavigateUri"/> are provided. Use any one of them.
+    /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton" /> and <see cref="IRouteItem" /> (in this library), both <see cref="RouteUri" /> and
+    /// <see cref="NavigateUri" /> are provided. Use any one of them.
     /// </remarks>
     public Uri? NavigateUri
     {
         get { return GetValue(RouteUriProperty); }
         set { SetValue(RouteUriProperty, value); }
     }
-        
+
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="NavigateUri"/> has been visited.
+    /// Gets or sets a value indicating whether the <see cref="NavigateUri" /> has been visited.
     /// </summary>
     public bool IsVisited
     {
         get { return GetValue(IsVisitedProperty); }
         set { SetValue(IsVisitedProperty, value); }
     }
-        
+
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="IsVisited"/> flag should be set upon visiting the Uri (default: false).
+    /// Gets or sets a value indicating whether the <see cref="IsVisited" /> flag should be set upon visiting the Uri (default: false).
     /// </summary>
     public bool TrackIsVisited
     {
@@ -85,41 +86,42 @@ public class HyperlinkLabel : TextBlock, IRouteItem
     protected override Type StyleKeyOverride => typeof(TextBlock);
 
     #endregion
-    
+
     #region Implementation of IRouteItem
 
     /// <summary>
-    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel"/> is clicked.
+    /// Gets or sets the Uniform Resource Identifier (URI) navigated to when the <see cref="HyperlinkLabel" /> is clicked.
     /// </summary>
     /// <remarks>
-    /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton"/> and <see cref="IRouteItem"/> (in this library), both <see cref="RouteUri"/> and <see cref="NavigateUri"/> are provided. Use any one of them.
+    /// For compatibility with both V11.1 <see cref="Avalonia.Controls.HyperlinkButton" /> and <see cref="IRouteItem" /> (in this library), both <see cref="RouteUri" /> and
+    /// <see cref="NavigateUri" /> are provided. Use any one of them.
     /// </remarks>
     public Uri? RouteUri
     {
         get { return GetValue(RouteUriProperty); }
         set { SetValue(RouteUriProperty, value); }
     }
-        
-    /// <summary>Set <see cref="RouteUri"/> via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
+
+    /// <summary>Set <see cref="RouteUri" /> via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
         set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
     }
-        
+
     /// <inheritdoc />
     public NavigationTarget Target
     {
         get { return GetValue(TargetProperty); }
         set { SetValue(TargetProperty, value); }
     }
-        
+
     /// <inheritdoc />
     public void NavigateToRoute()
     {
         if (RouteUri == null)
             return;
-            
+
         Dispatcher.UIThread.Post(async () =>
         {
             var success = await Navigation.UIPlatform.Launcher.LaunchUriAsync(RouteUri);
@@ -130,7 +132,7 @@ public class HyperlinkLabel : TextBlock, IRouteItem
 
     #endregion
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);

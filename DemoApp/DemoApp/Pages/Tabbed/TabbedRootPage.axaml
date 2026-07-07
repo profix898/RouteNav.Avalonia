@@ -9,7 +9,8 @@
                x:Class="DemoApp.Pages.Tabbed.TabbedRootPage">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
-            <routing:RouteButton RoutePath="/main" Target="Parent" Content="← Main" MinWidth="0" Padding="10,4" HorizontalAlignment="Left" />
+            <routing:RouteButton RoutePath="/main" Target="Parent" Content="← Main" MinWidth="0" Padding="10,4"
+                                 HorizontalAlignment="Left" />
             <StackPanel Spacing="4">
                 <TextBlock Classes="PageTitle" Text="Tabbed navigation" />
                 <TextBlock Classes="PageSubtitle"

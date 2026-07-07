@@ -1,21 +1,20 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Controls;
-using RouteNav.Avalonia.Controls;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Routing;
 
-/// <summary>A <see cref="MenuItem"/> that navigates to a route when clicked.</summary>
+/// <summary>A <see cref="MenuItem" /> that navigates to a route when clicked.</summary>
 public class RouteMenuItem : MenuItem, IRouteItem
 {
-    /// <summary>Defines the <see cref="RouteUri"/> property.</summary>
+    /// <summary>Defines the <see cref="RouteUri" /> property.</summary>
     public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<RouteMenuItem, Uri>(nameof(RouteUri));
 
-    /// <summary>Defines the <see cref="Target"/> property.</summary>
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<RouteMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
+    /// <summary>Defines the <see cref="Target" /> property.</summary>
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<RouteMenuItem, NavigationTarget>(nameof(Target));
 
-    /// <summary>Initializes a new instance of the <see cref="RouteMenuItem"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RouteMenuItem" /> class.</summary>
     public RouteMenuItem()
     {
         Click += (_, _) => NavigateToRoute();
@@ -47,7 +46,7 @@ public class RouteMenuItem : MenuItem, IRouteItem
         set { SetValue(TargetProperty, value); }
     }
 
-    /// <summary>Navigates to <see cref="RouteUri"/> using <see cref="Target"/>.</summary>
+    /// <summary>Navigates to <see cref="RouteUri" /> using <see cref="Target" />.</summary>
     public void NavigateToRoute()
     {
         Navigation.PushAsync(RouteUri, Target);

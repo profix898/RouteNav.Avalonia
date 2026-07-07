@@ -9,7 +9,8 @@
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuRootPage">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
-            <routing:RouteButton RoutePath="/main" Target="Parent" Content="← Main" MinWidth="0" Padding="10,4" HorizontalAlignment="Left" />
+            <routing:RouteButton RoutePath="/main" Target="Parent" Content="← Main" MinWidth="0" Padding="10,4"
+                                 HorizontalAlignment="Left" />
             <StackPanel Spacing="4">
                 <TextBlock Classes="PageTitle" Text="Sidebar / Drawer navigation" />
                 <TextBlock Classes="PageSubtitle"
@@ -18,7 +19,8 @@
             <Border Classes="HintCard">
                 <StackPanel Spacing="4">
                     <TextBlock FontWeight="SemiBold" Text="Menu items can cross stacks" />
-                    <TextBlock Text="The drawer includes a link to a page on the Tabbed stack, and menu items can also target external URIs — without leaving the current stack." />
+                    <TextBlock
+                        Text="The drawer includes a link to a page on the Tabbed stack, and menu items can also target external URIs — without leaving the current stack." />
                 </StackPanel>
             </Border>
             <Border Classes="Card">

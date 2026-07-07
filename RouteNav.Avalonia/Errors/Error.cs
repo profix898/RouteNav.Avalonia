@@ -14,34 +14,19 @@ public static class Error
     /// <summary>Builds an error page from an exception.</summary>
     public static Page Page(Exception exception)
     {
-        return new Page
-        {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(exception.Message, ExceptionFormatter.ToString(exception))
-        };
+        return new Page { Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(exception.Message, ExceptionFormatter.ToString(exception)) };
     }
 
     /// <summary>Builds an error page from a message and an exception.</summary>
     public static Page Page(string message, Exception exception)
     {
-        return new Page
-        {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception))
-        };
+        return new Page { Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception)) };
     }
 
     /// <summary>Builds an error page from a message and optional exception details.</summary>
     public static Page Page(string message, string? exceptionDetails = null)
     {
-        return new Page
-        {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(message, exceptionDetails)
-        };
+        return new Page { Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(message, exceptionDetails) };
     }
 
     /// <summary>Builds an error dialog from an exception.</summary>
@@ -49,9 +34,7 @@ public static class Error
     {
         return new MessageDialog
         {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(exception.Message, ExceptionFormatter.ToString(exception)),
+            Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(exception.Message, ExceptionFormatter.ToString(exception)),
             Buttons = MessageDialogButtons.Ok
         };
     }
@@ -61,23 +44,14 @@ public static class Error
     {
         return new MessageDialog
         {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception)),
-            Buttons = MessageDialogButtons.Ok
+            Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(message, ExceptionFormatter.ToString(exception)), Buttons = MessageDialogButtons.Ok
         };
     }
 
     /// <summary>Builds an error dialog from a message and optional exception details.</summary>
     public static Dialog Dialog(string message, string? exceptionDetails = null)
     {
-        return new MessageDialog
-        {
-            Title = "Error",
-            Classes = { "Error" },
-            Content = ErrorFactory.BuildErrorView(message, exceptionDetails),
-            Buttons = MessageDialogButtons.Ok
-        };
+        return new MessageDialog { Title = "Error", Classes = { "Error" }, Content = ErrorFactory.BuildErrorView(message, exceptionDetails), Buttons = MessageDialogButtons.Ok };
     }
 
     #region ShowDialog

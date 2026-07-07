@@ -21,15 +21,21 @@
             <Border Classes="Card">
                 <StackPanel Spacing="12">
                     <TextBlock Classes="SectionTitle" Text="Hyperlink controls" />
-                    <TextBlock Classes="Hint" Text="Internal routes navigate the stack; external URIs are handed to the platform launcher (browser, mail, …)." />
+                    <TextBlock Classes="Hint"
+                               Text="Internal routes navigate the stack; external URIs are handed to the platform launcher (browser, mail, …)." />
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
                         <StackPanel Grid.Column="0" Spacing="6">
-                            <Border Classes="Badge"><TextBlock Text="HyperlinkButton" /></Border>
-                            <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/" Content="External link (avaloniaui.net)" />
+                            <Border Classes="Badge">
+                                <TextBlock Text="HyperlinkButton" />
+                            </Border>
+                            <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/"
+                                                       Content="External link (avaloniaui.net)" />
                             <routeCtrl:HyperlinkButton RoutePath="/main/content" Content="Internal link (Content page)" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Spacing="6">
-                            <Border Classes="Badge"><TextBlock Text="HyperlinkLabel" /></Border>
+                            <Border Classes="Badge">
+                                <TextBlock Text="HyperlinkLabel" />
+                            </Border>
                             <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External link (avaloniaui.net)</routeCtrl:HyperlinkLabel>
                             <routeCtrl:HyperlinkLabel RoutePath="/main/content">Internal link (Content page)</routeCtrl:HyperlinkLabel>
                         </StackPanel>
@@ -41,7 +47,8 @@
             <Border Classes="Card">
                 <StackPanel Spacing="10">
                     <TextBlock Classes="SectionTitle" Text="Direct navigation (no route)" />
-                    <TextBlock Classes="Hint" Text="Push a page (IPageNavigation) or dialog (IDialogNavigation) straight onto the stack — useful for dynamically created content that has no registered route." />
+                    <TextBlock Classes="Hint"
+                               Text="Push a page (IPageNavigation) or dialog (IDialogNavigation) straight onto the stack — useful for dynamically created content that has no registered route." />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <Button Click="PushPageCommand" Content="Push a page" />
                         <Button Click="PushDialogCommand" Content="Push a dialog" />

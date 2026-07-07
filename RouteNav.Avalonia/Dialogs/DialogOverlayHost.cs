@@ -12,22 +12,22 @@ using Avalonia.VisualTree;
 namespace RouteNav.Avalonia.Dialogs;
 
 /// <summary>
-/// Hosts overlay dialogs in an Avalonia <see cref="OverlayLayer"/> and restores focus when the last dialog closes.
+/// Hosts overlay dialogs in an Avalonia <see cref="OverlayLayer" /> and restores focus when the last dialog closes.
 /// </summary>
 public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigation, IDisposable
 {
     private readonly HashSet<Dialog> dialogCollection = new HashSet<Dialog>();
     private readonly TopLevel topLevel;
     private readonly OverlayLayer overlayLayer;
-    
+
     private IInputElement? lastFocusElement;
     private IDisposable? disposable;
 
-    /// <summary>Initializes a new instance of the <see cref="DialogOverlayHost"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DialogOverlayHost" /> class.</summary>
     public DialogOverlayHost(TopLevel topLevel, OverlayLayer overlayLayer)
     {
         lastFocusElement = topLevel.FocusManager?.GetFocusedElement();
-        
+
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment = VerticalAlignment.Center;
 
@@ -38,21 +38,21 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
 
     /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(DialogOverlayHost);
-    
+
     /// <summary>Shows the given dialog in the overlay host.</summary>
     public void SetContent(Dialog dialog)
     {
         disposable = dialog.SetSizeBinding(topLevel);
-        
+
         Content = dialog;
         overlayLayer.UpdateLayout();
-        
+
         // Track dialog lifetime
         dialogCollection.Add(dialog);
         dialog.Closed += (_, _) =>
         {
             dialogCollection.Remove(dialog);
-            
+
             // If last dialog gets closed, dispose overlay
             if (dialogCollection.Count == 0)
                 Dispatcher.UIThread.Invoke(Dispose);
@@ -71,13 +71,13 @@ public sealed class DialogOverlayHost : ContentControl, ICustomKeyboardNavigatio
             _ => size
         };
     }
-    
+
     #region Implementation of ICustomKeyboardNavigation
 
     /// <inheritdoc />
     public (bool handled, IInputElement? next) GetNext(IInputElement element, NavigationDirection direction)
     {
-        return element.Equals(this) 
+        return element.Equals(this)
             ? (true, this.GetVisualDescendants().OfType<IInputElement>().FirstOrDefault(visual => visual.Focusable))
             : (false, null);
     }

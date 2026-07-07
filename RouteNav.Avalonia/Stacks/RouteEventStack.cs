@@ -14,7 +14,7 @@ namespace RouteNav.Avalonia.Stacks;
 /// </summary>
 public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
 {
-    /// <summary>Initializes a new instance of the <see cref="RouteEventStack"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RouteEventStack" /> class.</summary>
     public RouteEventStack(string name, Func<Uri, Page?>? eventHandler = null)
     {
         if (String.IsNullOrEmpty(name))
@@ -81,7 +81,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     {
         throw new NotSupportedException($"{nameof(RouteEventStack)} does not support pages.");
     }
-    
+
     /// <inheritdoc />
     public void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
@@ -188,7 +188,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
             // Show result page in popup view
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Navigation.GetMainStack().PushDialogAsync(page, forceOverlay: (target == NavigationTarget.DialogOverlay));
+                await Navigation.GetMainStack().PushDialogAsync(page, forceOverlay: target == NavigationTarget.DialogOverlay);
 
                 return page;
             });

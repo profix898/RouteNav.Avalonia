@@ -1,12 +1,15 @@
 <avalonia:Page xmlns="https://github.com/avaloniaui"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-      Title="Demo Page Title"
-      x:Class="DemoApp.TestPage">
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+               Title="Demo Page Title"
+               x:Class="DemoApp.Pages.TestPage">
 
     <StackPanel Spacing="12" Margin="18,16">
-        <Border Classes="Badge" HorizontalAlignment="Left"><TextBlock Text="Page" /></Border>
-        <TextBlock Classes="Hint" Text="This is a regular Page shown as a dialog via .ToDialog(). Its size comes from DialogSizeHint." />
+        <Border Classes="Badge" HorizontalAlignment="Left">
+            <TextBlock Text="Page" />
+        </Border>
+        <TextBlock Classes="Hint"
+                   Text="This is a regular Page shown as a dialog via .ToDialog(). Its size comes from DialogSizeHint." />
         <ProgressBar Height="6" Value="50" />
         <CheckBox IsChecked="True" Content="Remember my choice" />
         <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180" HorizontalAlignment="Left" />

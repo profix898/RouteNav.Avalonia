@@ -24,28 +24,30 @@ public sealed class NavigationControl : TemplatedControl, ISafeAreaAware
     private ContentPresenter? navBarTitle;
     private TransitioningContentControl? navContentControl;
 
-    /// <summary>Defines the <see cref="NavigationBarBackground"/> property.</summary>
+    /// <summary>Defines the <see cref="NavigationBarBackground" /> property.</summary>
     public static readonly StyledProperty<IBrush> NavigationBarBackgroundProperty = AvaloniaProperty.Register<NavigationControl, IBrush>(nameof(NavigationBarBackground));
 
-    /// <summary>Defines the <see cref="NavigationBarTextColor"/> property.</summary>
+    /// <summary>Defines the <see cref="NavigationBarTextColor" /> property.</summary>
     public static readonly StyledProperty<IBrush> NavigationBarTextColorProperty = AvaloniaProperty.Register<NavigationControl, IBrush>(nameof(NavigationBarTextColor));
 
-    /// <summary>Defines the <see cref="NavigationBarVisible"/> property.</summary>
+    /// <summary>Defines the <see cref="NavigationBarVisible" /> property.</summary>
     public static readonly StyledProperty<bool> NavigationBarVisibleProperty = AvaloniaProperty.Register<NavigationControl, bool>(nameof(NavigationBarVisible), true);
 
-    /// <summary>Defines the <see cref="BackButtonEnabled"/> property.</summary>
+    /// <summary>Defines the <see cref="BackButtonEnabled" /> property.</summary>
     public static readonly StyledProperty<bool> BackButtonEnabledProperty = AvaloniaProperty.Register<NavigationControl, bool>(nameof(BackButtonEnabled));
 
-    /// <summary>Defines the <see cref="BackButtonClick"/> routed event.</summary>
-    public static readonly RoutedEvent<RoutedEventArgs> BackButtonClickEvent = RoutedEvent.Register<NavigationControl, RoutedEventArgs>(nameof(BackButtonClick), RoutingStrategies.Bubble);
+    /// <summary>Defines the <see cref="BackButtonClick" /> routed event.</summary>
+    public static readonly RoutedEvent<RoutedEventArgs> BackButtonClickEvent =
+        RoutedEvent.Register<NavigationControl, RoutedEventArgs>(nameof(BackButtonClick), RoutingStrategies.Bubble);
 
-    /// <summary>Defines the <see cref="Page"/> property.</summary>
+    /// <summary>Defines the <see cref="Page" /> property.</summary>
     public static readonly StyledProperty<Page?> PageProperty = AvaloniaProperty.Register<NavigationControl, Page?>(nameof(Page));
 
-    /// <summary>Defines the <see cref="PageTransition"/> property.</summary>
-    public static readonly StyledProperty<IPageTransition> PageTransitionProperty = AvaloniaProperty.Register<NavigationControl, IPageTransition>(nameof(PageTransition), new CrossFade(TimeSpan.FromSeconds(0.125)));
+    /// <summary>Defines the <see cref="PageTransition" /> property.</summary>
+    public static readonly StyledProperty<IPageTransition> PageTransitionProperty =
+        AvaloniaProperty.Register<NavigationControl, IPageTransition>(nameof(PageTransition), new CrossFade(TimeSpan.FromSeconds(0.125)));
 
-    /// <summary>Defines the <see cref="SafeAreaPadding"/> property.</summary>
+    /// <summary>Defines the <see cref="SafeAreaPadding" /> property.</summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<NavigationControl, Thickness>(nameof(SafeAreaPadding));
 
     /// <summary>Gets or sets the background brush of the navigation bar.</summary>

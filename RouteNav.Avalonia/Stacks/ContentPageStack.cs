@@ -8,7 +8,7 @@ namespace RouteNav.Avalonia.Stacks;
 /// <summary>A minimal navigation stack that shows a single page at a time (no navigation bar or history).</summary>
 public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavigationStack
 {
-    /// <summary>Initializes a new instance of the <see cref="ContentPageStack"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ContentPageStack" /> class.</summary>
     public ContentPageStack(string name, string title)
         : base(name, title)
     {
@@ -25,13 +25,8 @@ public class ContentPageStack : NavigationStackBase<NavigationContainer>, INavig
     {
         RootPage = new LazyValue<Page>(() => ResolveRoute(this.BuildRoute(String.Empty))
                                              ?? throw new NavigationException("RootPage can not be retrieved."));
-        
-        return new NavigationContainer
-        {
-            VerticalAlignment = VerticalAlignment.Stretch,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            NavigationStack = this
-        };
+
+        return new NavigationContainer { VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch, NavigationStack = this };
     }
 
     /// <inheritdoc />

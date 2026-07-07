@@ -1,6 +1,6 @@
 using RouteNav.Avalonia;
 
-namespace DemoApp;
+namespace DemoApp.Pages;
 
 public partial class TestPage : Page
 {

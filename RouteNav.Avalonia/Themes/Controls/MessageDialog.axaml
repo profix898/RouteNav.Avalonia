@@ -40,12 +40,12 @@
                         VerticalAlignment="Center"
                         Margin="20,10,20,10"
                         BoxShadow="0 8 32 0 #66000000">
-                          <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                           <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                    <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               RowDefinitions="Auto,*,Auto">
                             <Panel Grid.Row="0" x:Name="DialogTitleBar"
-                                Height="{StaticResource MessageDialogTitleBarHeight}">
+                                   Height="{StaticResource MessageDialogTitleBarHeight}">
                                 <Border Background="{TemplateBinding TitleBarBackground}" />
                                 <TextBlock Margin="15,0,0,0" Padding="0" Text="{TemplateBinding Title}"
                                            Foreground="{TemplateBinding TitleBarTextColor}"
@@ -61,8 +61,10 @@
                                 </Button>
                             </Panel>
                             <Panel Grid.Row="2" x:Name="DialogButtonBar" VerticalAlignment="Bottom">
-                                <Border BorderBrush="{DynamicResource MessageDialogButtonBarBorderColor}" BorderThickness="0,1,0,0">
-                                    <Grid Background="{DynamicResource MessageDialogButtonBarBackground}" ColumnDefinitions="*,Auto">
+                                <Border BorderBrush="{DynamicResource MessageDialogButtonBarBorderColor}"
+                                        BorderThickness="0,1,0,0">
+                                    <Grid Background="{DynamicResource MessageDialogButtonBarBackground}"
+                                          ColumnDefinitions="*,Auto">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="{StaticResource MessageDialogButtonsBarHeight}" />
                                         </Grid.RowDefinitions>
@@ -87,8 +89,7 @@
                                                   Content="{TemplateBinding Content}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
-                                </ContentPresenter>
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
                             </ScrollViewer>
                         </Grid>
                     </Border>

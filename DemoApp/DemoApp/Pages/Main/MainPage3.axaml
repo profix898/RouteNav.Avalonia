@@ -27,7 +27,8 @@
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="count" Classes="Mono" />
                         <TextBlock Grid.Row="1" Grid.Column="1" x:Name="ParamCount" Classes="Mono" Text="(none)" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="routeUri" Classes="Mono" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ParamRaw" Classes="Mono" Text="(none)" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ParamRaw" Classes="Mono" Text="(none)"
+                                   TextWrapping="Wrap" />
                     </Grid>
                 </StackPanel>
             </Border>
@@ -42,7 +43,8 @@
                     <CheckBox IsChecked="True" Content="Enable notifications" />
                     <StackPanel Spacing="6">
                         <TextBlock Text="Quantity" Classes="Hint" />
-                        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180" HorizontalAlignment="Left" />
+                        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180"
+                                       HorizontalAlignment="Left" />
                     </StackPanel>
                     <StackPanel Spacing="6">
                         <TextBlock Text="Reminder" Classes="Hint" />

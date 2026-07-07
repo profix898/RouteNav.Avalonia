@@ -2,7 +2,6 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using RouteNav.Avalonia;
 using Page = RouteNav.Avalonia.Page;
 using SidebarMenuControl = RouteNav.Avalonia.Controls.SidebarMenu;
 

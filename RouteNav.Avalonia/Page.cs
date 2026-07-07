@@ -1,11 +1,11 @@
-﻿using Avalonia;
+﻿using System;
+using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using RouteNav.Avalonia.Platform;
-using System;
-using System.Collections.Generic;
-using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Dialogs;
+using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Platform;
 
 namespace RouteNav.Avalonia;
 
@@ -13,17 +13,17 @@ namespace RouteNav.Avalonia;
 public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
 {
     /// <summary>
-    /// Defines the <see cref="Title"/> property.
+    /// Defines the <see cref="Title" /> property.
     /// </summary>
     public static readonly StyledProperty<string?> TitleProperty = AvaloniaProperty.Register<Page, string?>(nameof(Title));
 
     /// <summary>
-    /// Defines the <see cref="SafeAreaPadding"/> property.
+    /// Defines the <see cref="SafeAreaPadding" /> property.
     /// </summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
 
     /// <summary>
-    /// Defines the <see cref="DialogSizeHint"/> property.
+    /// Defines the <see cref="DialogSizeHint" /> property.
     /// </summary>
     public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Page, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
 

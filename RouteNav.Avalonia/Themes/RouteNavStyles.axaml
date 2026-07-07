@@ -7,7 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <MergeResourceInclude Source="/Themes/Colors.axaml" />
-              
+
                 <MergeResourceInclude Source="/Themes/Controls/DialogOverlayHost.axaml" />
                 <MergeResourceInclude Source="/Themes/Controls/Dialog.axaml" />
                 <MergeResourceInclude Source="/Themes/Controls/MessageDialog.axaml" />
@@ -47,7 +47,7 @@
     <Style Selector="Button.MessageDialogButton:nth-last-child(1)">
         <Setter Property="Margin" Value="8,10,25,10" />
     </Style>
-  
+
     <!-- Hyperlink -->
     <Style Selector="TextBlock.Hyperlink">
         <Setter Property="Foreground" Value="{DynamicResource HyperlinkColor}" />
@@ -89,5 +89,5 @@
     <Style Selector="TabItem.RouteNavTabbedPageTab:selected">
         <Setter Property="Background" Value="{DynamicResource TabbedPageSelectedTabBackground}" />
     </Style>
-  
+
 </themes:RouteNavStyles>

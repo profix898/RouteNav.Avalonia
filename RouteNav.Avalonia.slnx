@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/DemoApp/">
+    <Project Path="DemoApp/DemoApp.Android/DemoApp.Android.csproj">
+      <Deploy Solution="Debug|*" />
+    </Project>
+    <Project Path="DemoApp/DemoApp.Browser/DemoApp.Browser.csproj" />
+    <Project Path="DemoApp/DemoApp.Desktop/DemoApp.Desktop.csproj" />
+    <Project Path="DemoApp/DemoApp.iOS/DemoApp.iOS.csproj">
+      <Deploy Solution="Debug|*" />
+    </Project>
+    <Project Path="DemoApp/DemoApp/DemoApp.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="RouteNav.Avalonia/RouteNav.Avalonia.csproj" />
+</Solution>

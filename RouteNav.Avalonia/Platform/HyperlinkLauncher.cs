@@ -8,7 +8,7 @@ namespace RouteNav.Avalonia.Platform;
 /// Provides functionality to launch hyperlinks within the application. It can handle both internal (routes) and external URIs.
 /// </summary>
 /// <remarks>
-/// The class provides a RouteNav-compatible replacement for <see cref="ILauncher"/>.
+/// The class provides a RouteNav-compatible replacement for <see cref="ILauncher" />.
 /// </remarks>
 public class HyperlinkLauncher : ILauncher
 {

@@ -12,7 +12,7 @@ public sealed class LazyValue<T>
 
     private T? value;
 
-    /// <summary>Initializes a new instance of the <see cref="LazyValue{T}"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="LazyValue{T}" /> class.</summary>
     public LazyValue(Func<T> valueFactory)
     {
         this.valueFactory = valueFactory;

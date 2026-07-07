@@ -6,16 +6,18 @@ using RouteNav.Avalonia.Internal;
 
 namespace RouteNav.Avalonia.StackContainers;
 
-/// <summary>A navigation container that hosts pages in a <see cref="NavigationControl"/>.</summary>
+/// <summary>A navigation container that hosts pages in a <see cref="NavigationControl" />.</summary>
 public class NavigationPageContainer : NavigationContainer
 {
-    /// <summary>Defines the <see cref="HideNavigationBarForRootPage"/> property.</summary>
-    public static readonly StyledProperty<bool> HideNavigationBarForRootPageProperty = AvaloniaProperty.Register<NavigationPageContainer, bool>(nameof(HideNavigationBarForRootPage));
+    /// <summary>Defines the <see cref="HideNavigationBarForRootPage" /> property.</summary>
+    public static readonly StyledProperty<bool> HideNavigationBarForRootPageProperty =
+        AvaloniaProperty.Register<NavigationPageContainer, bool>(nameof(HideNavigationBarForRootPage));
 
-    /// <summary>Defines the <see cref="NavigationControlName"/> property.</summary>
-    public static readonly StyledProperty<string> NavigationControlNameProperty = AvaloniaProperty.Register<NavigationPageContainer, string>(nameof(NavigationControlName), "NavigationControl");
+    /// <summary>Defines the <see cref="NavigationControlName" /> property.</summary>
+    public static readonly StyledProperty<string> NavigationControlNameProperty =
+        AvaloniaProperty.Register<NavigationPageContainer, string>(nameof(NavigationControlName), "NavigationControl");
 
-    /// <summary>Initializes a new instance of the <see cref="NavigationPageContainer"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="NavigationPageContainer" /> class.</summary>
     public NavigationPageContainer()
     {
         RegisterScopedControl(this, NavigationControlName, Content = new NavigationControl());
@@ -44,7 +46,7 @@ public class NavigationPageContainer : NavigationContainer
         if (NavigationControl != null)
         {
             NavigationControl.Page = page;
-            NavigationControl.BackButtonEnabled = NavigationStack != null && (NavigationStack.PageStack.Count > (NavigationStack.IsMainStack ? 1 : 0));
+            NavigationControl.BackButtonEnabled = NavigationStack != null && NavigationStack.PageStack.Count > (NavigationStack.IsMainStack ? 1 : 0);
 
             if (HideNavigationBarForRootPage)
                 NavigationControl.NavigationBarVisible = !page.Equals(NavigationStack.RootPage.Value);

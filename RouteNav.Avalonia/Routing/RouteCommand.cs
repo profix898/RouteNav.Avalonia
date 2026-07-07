@@ -4,16 +4,16 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Routing;
 
-/// <summary>An <see cref="ICommand"/> that navigates to a route when executed.</summary>
+/// <summary>An <see cref="ICommand" /> that navigates to a route when executed.</summary>
 public class RouteCommand : ICommand, IRouteItem
 {
-    /// <summary>Initializes a new instance of the <see cref="RouteCommand"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RouteCommand" /> class.</summary>
     public RouteCommand()
     {
         Target = NavigationTarget.Self;
     }
 
-    /// <summary>Initializes a new instance of the <see cref="RouteCommand"/> class from an existing route item.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RouteCommand" /> class from an existing route item.</summary>
     public RouteCommand(IRouteItem routeItem)
     {
         RouteUri = routeItem.RouteUri;
@@ -35,7 +35,7 @@ public class RouteCommand : ICommand, IRouteItem
     /// <summary>Gets or sets where the target route is shown when the command executes.</summary>
     public NavigationTarget Target { get; set; }
 
-    /// <summary>Navigates to <see cref="RouteUri"/> using <see cref="Target"/>.</summary>
+    /// <summary>Navigates to <see cref="RouteUri" /> using <see cref="Target" />.</summary>
     public void NavigateToRoute()
     {
         Navigation.PushAsync(RouteUri, Target);

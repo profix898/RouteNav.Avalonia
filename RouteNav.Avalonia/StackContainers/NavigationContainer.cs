@@ -19,9 +19,8 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
 {
     private TopLevel? topLevel;
     private IInsetsManager? insetsManager;
-    private INavigationStack? navigationStack;
 
-    /// <summary>Defines the <see cref="SafeAreaPadding"/> property.</summary>
+    /// <summary>Defines the <see cref="SafeAreaPadding" /> property.</summary>
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<NavigationContainer, Thickness>(nameof(SafeAreaPadding));
 
     #region NavigationContainer
@@ -29,27 +28,23 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     /// <summary>Raised when the host control used by the container is attached/resolved.</summary>
     public event Action? HostControlAttached;
 
-    /// <summary>Raises <see cref="HostControlAttached"/>.</summary>
+    /// <summary>Raises <see cref="HostControlAttached" />.</summary>
     protected void OnHostControlAttached()
     {
         HostControlAttached?.Invoke();
     }
 
     /// <summary>Gets the navigation stack associated with this container.</summary>
-    public INavigationStack? NavigationStack
-    {
-        get { return navigationStack; }
-        internal set { navigationStack = value; }
-    }
+    public INavigationStack? NavigationStack { get; internal set; }
 
     /// <summary>
-    /// Gets the <see cref="Dialogs.DialogOverlayHost"/> for the current top level, creating and attaching
+    /// Gets the <see cref="Dialogs.DialogOverlayHost" /> for the current top level, creating and attaching
     /// it to the overlay layer on first use.
     /// </summary>
     /// <remarks>This is a factory-style accessor and has a side effect on first call (it creates the host).</remarks>
     public DialogOverlayHost GetDialogOverlayHost()
     {
-        if (topLevel == null || navigationStack == null)
+        if (topLevel == null || NavigationStack == null)
             throw new InvalidOperationException("NavigationContainer is not attached to a TopLevel yet.");
 
         var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel)
@@ -84,6 +79,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             {
                 // Remove dialog size (so that background fills host container)
                 dialog.Width = dialog.Height = Double.NaN;
+
                 // Update content of dialog host
                 GetDialogOverlayHost().SetContent(dialog);
             }
@@ -116,13 +112,14 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             && !Navigation.UIPlatform.WindowManager.ForceOverlayDialogs && !forceOverlay)
         {
             // Open new dialog in window
-            var parentWindow = Navigation.UIPlatform.GetActiveWindowFromStack(navigationStack);
+            var parentWindow = Navigation.UIPlatform.GetActiveWindowFromStack(NavigationStack);
             if (Navigation.UIPlatform.WindowManager.OpenDialog(dialog, out var dialogTask, parentWindow))
                 return dialogTask;
         }
 
         // Remove dialog size (so that background fills host container)
         dialog.Width = dialog.Height = Double.NaN;
+
         // Update content of dialog host
         GetDialogOverlayHost().SetContent(dialog);
         dialog.IsVisible = true;

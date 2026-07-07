@@ -4,10 +4,10 @@
                     xmlns:routeNav="clr-namespace:RouteNav.Avalonia">
     <Design.PreviewWith>
         <Border Padding="50">
-          <routeNav:Dialog Title="Title" Content="Content here ..." />
+            <routeNav:Dialog Title="Title" Content="Content here ..." />
         </Border>
     </Design.PreviewWith>
-  
+
     <x:Double x:Key="DialogTitleBarHeight">35</x:Double>
     <x:Double x:Key="DialogTitleBarFontSize">18</x:Double>
     <x:Double x:Key="DialogTitleBarButtonWidth">28</x:Double>
@@ -35,12 +35,12 @@
                         VerticalAlignment="Center"
                         Margin="20,10,20,10"
                         BoxShadow="0 8 32 0 #66000000">
-                          <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                           <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                    <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               RowDefinitions="Auto,*">
                             <Panel Grid.Row="0" x:Name="DialogTitleBar"
-                                Height="{StaticResource DialogTitleBarHeight}">
+                                   Height="{StaticResource DialogTitleBarHeight}">
                                 <Border Background="{TemplateBinding TitleBarBackground}" />
                                 <TextBlock Margin="15,0,0,0" Padding="0" Text="{TemplateBinding Title}"
                                            Foreground="{TemplateBinding TitleBarTextColor}"
@@ -64,15 +64,14 @@
                                                   VerticalAlignment="Top"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   HorizontalAlignment="Stretch"
-                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
-                                </ContentPresenter>
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
                             </ScrollViewer>
                         </Grid>
                     </Border>
                 </Border>
             </ControlTemplate>
         </Setter>
-      
+
         <!-- Dialog window -->
         <Styles>
             <Style Selector="routeNav|Dialog:dialog-window Border#DialogBackground">

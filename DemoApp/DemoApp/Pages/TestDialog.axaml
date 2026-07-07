@@ -2,11 +2,14 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:avalonia="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                  Title="Demo Dialog Title"
-                 x:Class="DemoApp.TestDialog">
+                 x:Class="DemoApp.Pages.TestDialog">
 
     <StackPanel Spacing="12" Margin="18,16">
-        <Border Classes="Badge" HorizontalAlignment="Left"><TextBlock Text="Dialog" /></Border>
-        <TextBlock Classes="Hint" Text="This is a Dialog. On desktop it opens as a window; on mobile/browser it renders as an overlay." />
+        <Border Classes="Badge" HorizontalAlignment="Left">
+            <TextBlock Text="Dialog" />
+        </Border>
+        <TextBlock Classes="Hint"
+                   Text="This is a Dialog. On desktop it opens as a window; on mobile/browser it renders as an overlay." />
         <ProgressBar Height="6" Value="50" />
         <CheckBox IsChecked="True" Content="Remember my choice" />
         <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180" HorizontalAlignment="Left" />

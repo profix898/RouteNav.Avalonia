@@ -13,25 +13,31 @@ public static class DialogSizeUtility
 
     /// <summary>Gets or sets the default scale used for small dialogs relative to the parent.</summary>
     public static Size SmallScale { get; set; } = new Size(0.3, 0.3);
+
     /// <summary>Gets or sets the default minimum size for small dialogs.</summary>
     public static Size SmallMinSize { get; set; } = new Size(200, 200);
+
     /// <summary>Gets or sets the default maximum size for small dialogs.</summary>
     public static Size SmallMaxSize { get; set; } = new Size(400, 400);
-    
+
     /// <summary>Gets or sets the default scale used for medium dialogs relative to the parent.</summary>
     public static Size MediumScale { get; set; } = new Size(0.5, 0.5);
+
     /// <summary>Gets or sets the default minimum size for medium dialogs.</summary>
     public static Size MediumMinSize { get; set; } = new Size(350, 350);
+
     /// <summary>Gets or sets the default maximum size for medium dialogs.</summary>
     public static Size MediumMaxSize { get; set; } = new Size(700, 700);
-    
+
     /// <summary>Gets or sets the default scale used for large dialogs relative to the parent.</summary>
     public static Size LargeScale { get; set; } = new Size(0.8, 0.8);
+
     /// <summary>Gets or sets the default minimum size for large dialogs.</summary>
     public static Size LargeMinSize { get; set; } = new Size(500, 500);
+
     /// <summary>Gets or sets the default maximum size for large dialogs.</summary>
     public static Size LargeMaxSize { get; set; } = new Size(1000, 1000);
-    
+
     /// <summary>Gets or sets the size used when no parent size is available.</summary>
     public static Size FallbackSize { get; set; } = new Size(400, 300);
 
@@ -40,15 +46,17 @@ public static class DialogSizeUtility
     /// <summary>Binds a dialog's width and height to a size calculated from the parent.</summary>
     public static IDisposable SetSizeBinding(this Dialog dialog, Layoutable parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
-        return Disposable.Create(dialog.Bind(Layoutable.WidthProperty, parent.GetBindingObservable(Layoutable.WidthProperty, _ => GetSize(dialog, parent, minSize, maxSize, dialogSize).Width)),
-                                 dialog.Bind(Layoutable.HeightProperty, parent.GetBindingObservable(Layoutable.HeightProperty, _ => GetSize(dialog, parent, minSize, maxSize, dialogSize).Height)));
+        return Disposable.Create(dialog.Bind(Layoutable.WidthProperty,
+                                             parent.GetBindingObservable(Layoutable.WidthProperty, _ => dialog.GetSize(parent, minSize, maxSize, dialogSize).Width)),
+                                 dialog.Bind(Layoutable.HeightProperty,
+                                             parent.GetBindingObservable(Layoutable.HeightProperty, _ => dialog.GetSize(parent, minSize, maxSize, dialogSize).Height)));
     }
 
     /// <summary>Sets a dialog's width and height from a size calculated from the parent.</summary>
     public static void SetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
-        var size = GetSize(dialog, parent, minSize, maxSize, dialogSize);
-        
+        var size = dialog.GetSize(parent, minSize, maxSize, dialogSize);
+
         dialog.Width = size.Width;
         dialog.Height = size.Height;
     }
@@ -66,7 +74,7 @@ public static class DialogSizeUtility
             DialogSize.Small => GetSize(baseSize, SmallScale, minSize ?? SmallMinSize, maxSize ?? SmallMaxSize),
             DialogSize.Medium => GetSize(baseSize, MediumScale, minSize ?? MediumMinSize, maxSize ?? MediumMaxSize),
             DialogSize.Large => GetSize(baseSize, LargeScale, minSize ?? LargeMinSize, maxSize ?? LargeMaxSize),
-            DialogSize.Custom => (!Double.IsNaN(dialog.Width) && !Double.IsNaN(dialog.Height)) ? new Size(dialog.Width, dialog.Height) : GetSize(baseSize, new Size(0.5, 0.5)),
+            DialogSize.Custom => !Double.IsNaN(dialog.Width) && !Double.IsNaN(dialog.Height) ? new Size(dialog.Width, dialog.Height) : GetSize(baseSize, new Size(0.5, 0.5)),
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
     }

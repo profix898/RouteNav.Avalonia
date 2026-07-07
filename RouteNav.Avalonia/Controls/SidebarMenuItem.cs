@@ -10,19 +10,19 @@ using RouteNav.Avalonia.Stacks;
 namespace RouteNav.Avalonia.Controls;
 
 /// <summary>
-/// A selectable item in a <see cref="SidebarMenu"/>, carrying a display text and the route it navigates to.
+/// A selectable item in a <see cref="SidebarMenu" />, carrying a display text and the route it navigates to.
 /// </summary>
 [PseudoClasses(":pressed", ":selected")]
 public class SidebarMenuItem : TemplatedControl
 {
-    /// <summary>Defines the <see cref="Text"/> property.</summary>
+    /// <summary>Defines the <see cref="Text" /> property.</summary>
     public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<SidebarMenuItem, string>(nameof(Text));
 
-    /// <summary>Defines the <see cref="RouteUri"/> property.</summary>
+    /// <summary>Defines the <see cref="RouteUri" /> property.</summary>
     public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
 
-    /// <summary>Defines the <see cref="Target"/> property.</summary>
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
+    /// <summary>Defines the <see cref="Target" /> property.</summary>
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target));
 
     static SidebarMenuItem()
     {
@@ -30,7 +30,7 @@ public class SidebarMenuItem : TemplatedControl
         FocusableProperty.OverrideDefaultValue(typeof(SidebarMenuItem), true);
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<SidebarMenuItem>(AutomationControlType.ListItem);
     }
-    
+
     /// <summary>Gets or sets the text shown for this menu item.</summary>
     public string Text
     {
@@ -45,7 +45,7 @@ public class SidebarMenuItem : TemplatedControl
         set { SetValue(RouteUriProperty, value); }
     }
 
-    /// <summary>Set <see cref="RouteUri"/> via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
+    /// <summary>Set <see cref="RouteUri" /> via route path. Both relative paths (e.g. 'myPage' relative to current stack) and
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {

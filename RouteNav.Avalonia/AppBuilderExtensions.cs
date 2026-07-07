@@ -6,7 +6,7 @@ using RouteNav.Avalonia.Platform;
 namespace RouteNav.Avalonia;
 
 /// <summary>
-/// <see cref="AppBuilder"/> extensions that bootstrap the RouteNav UI platform.
+/// <see cref="AppBuilder" /> extensions that bootstrap the RouteNav UI platform.
 /// </summary>
 public static class AppBuilderExtensions
 {
@@ -14,7 +14,7 @@ public static class AppBuilderExtensions
     public static AppBuilder UseRouteNavUIPlatform<TContainer>(this AppBuilder builder, string baseRouteUri, TContainer container)
         where TContainer : IServiceCollection, IServiceProvider
     {
-        return UseRouteNavUIPlatform(builder, baseRouteUri, new Lazy<IServiceProvider>(container), container);
+        return builder.UseRouteNavUIPlatform(baseRouteUri, new Lazy<IServiceProvider>(container), container);
     }
 
     /// <summary>Uses an IServiceCollection (for page registration) and an IServiceProvider factory (to fetch components afterwards).</summary>
@@ -23,7 +23,7 @@ public static class AppBuilderExtensions
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri,
                                                    Func<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection = null)
     {
-        return UseRouteNavUIPlatform(builder, baseRouteUri, new Lazy<IServiceProvider>(serviceProvider), serviceCollection);
+        return builder.UseRouteNavUIPlatform(baseRouteUri, new Lazy<IServiceProvider>(serviceProvider), serviceCollection);
     }
 
     /// <summary>Uses an IServiceCollection (for page registration) and an IServiceProvider factory (to fetch components afterwards).</summary>
@@ -40,7 +40,7 @@ public static class AppBuilderExtensions
         return builder;
     }
 
-    /// <summary>Bootstraps RouteNav with a pre-built <see cref="IUIPlatform"/> implementation.</summary>
+    /// <summary>Bootstraps RouteNav with a pre-built <see cref="IUIPlatform" /> implementation.</summary>
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri, IUIPlatform uiPlatform)
     {
         if (!String.IsNullOrEmpty(baseRouteUri))

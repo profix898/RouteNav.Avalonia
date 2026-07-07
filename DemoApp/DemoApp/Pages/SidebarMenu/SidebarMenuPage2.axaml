@@ -16,9 +16,18 @@
                 <StackPanel Spacing="10">
                     <TextBlock Classes="SectionTitle" Text="Recent reports" />
                     <StackPanel Spacing="8">
-                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Q3 performance summary" /><TextBlock Grid.Column="1" Classes="Hint" Text="2 days ago" /></Grid>
-                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="User retention cohort" /><TextBlock Grid.Column="1" Classes="Hint" Text="5 days ago" /></Grid>
-                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Infrastructure costs" /><TextBlock Grid.Column="1" Classes="Hint" Text="1 week ago" /></Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Q3 performance summary" />
+                            <TextBlock Grid.Column="1" Classes="Hint" Text="2 days ago" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="User retention cohort" />
+                            <TextBlock Grid.Column="1" Classes="Hint" Text="5 days ago" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Infrastructure costs" />
+                            <TextBlock Grid.Column="1" Classes="Hint" Text="1 week ago" />
+                        </Grid>
                     </StackPanel>
                 </StackPanel>
             </Border>

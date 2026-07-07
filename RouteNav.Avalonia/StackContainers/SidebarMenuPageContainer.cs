@@ -7,13 +7,13 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackContainers;
 
-/// <summary>A navigation container that hosts pages in a <see cref="SidebarMenu"/>.</summary>
+/// <summary>A navigation container that hosts pages in a <see cref="SidebarMenu" />.</summary>
 public class SidebarMenuPageContainer : NavigationContainer
 {
-    /// <summary>Defines the <see cref="SidebarMenuName"/> property.</summary>
+    /// <summary>Defines the <see cref="SidebarMenuName" /> property.</summary>
     public static readonly StyledProperty<string> SidebarMenuNameProperty = AvaloniaProperty.Register<SidebarMenuPageContainer, string>(nameof(SidebarMenuName), "SidebarMenu");
 
-    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageContainer"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageContainer" /> class.</summary>
     public SidebarMenuPageContainer()
     {
         RegisterScopedControl(this, SidebarMenuName, Content = new SidebarMenu());
@@ -47,7 +47,7 @@ public class SidebarMenuPageContainer : NavigationContainer
         SidebarMenu.NavigationStack = NavigationStack;
         if (SidebarMenu != null)
             SidebarMenu.SelectedMenuItemChanged += SidebarMenu_OnSelectedMenuItemChanged;
-        
+
         OnHostControlAttached();
     }
 

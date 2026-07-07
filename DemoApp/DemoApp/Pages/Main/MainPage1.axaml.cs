@@ -13,11 +13,11 @@ public partial class MainPage1 : Page
     {
         InitializeComponent();
     }
-    
+
     private async void OpenMsgDlgCommand(object? sender, RoutedEventArgs e)
     {
         var result = await MessageDialog.Create("MessageDialog Title", "Avalonia is fun! Don't you think?", MessageDialogButtons.YesNo).ShowDialog(this);
-        
+
         await Error.ShowDialog("Error message", new NotImplementedException("Something went terribly wrong!"), this);
     }
 
@@ -32,7 +32,7 @@ public partial class MainPage1 : Page
     private async void OpenDlgEmbeddedCommand(object? sender, RoutedEventArgs e)
     {
         var previousContent = Content;
-        
+
         await new TestDialog { DialogSize = DialogSize.Small, Title = "Small dialog" }.ShowDialogEmbedded(this);
         await new TestDialog { DialogSize = DialogSize.Medium, Title = "Medium dialog" }.ShowDialogEmbedded(this);
 

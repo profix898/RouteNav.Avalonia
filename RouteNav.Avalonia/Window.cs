@@ -10,27 +10,27 @@ namespace RouteNav.Avalonia;
 
 /// <summary>
 /// RouteNav's platform-agnostic window abstraction. It is hosted by a real desktop window or a single-view
-/// platform control, exposed via <see cref="PlatformControl"/>.
+/// platform control, exposed via <see cref="PlatformControl" />.
 /// </summary>
 public class Window : ContentControl
 {
     /// <summary>
-    /// Defines the <see cref="Title"/> property.
+    /// Defines the <see cref="Title" /> property.
     /// </summary>
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Window, string>(nameof(Title), "Window");
 
     /// <summary>
-    /// Defines the <see cref="Icon"/> property.
+    /// Defines the <see cref="Icon" /> property.
     /// </summary>
     public static readonly StyledProperty<WindowIcon> IconProperty = AvaloniaProperty.Register<Window, WindowIcon>(nameof(Icon));
 
-    /// <summary>Initializes a new instance of the <see cref="Window"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
     public Window()
         : this(null)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Window"/> class with the given content.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Window" /> class with the given content.</summary>
     public Window(object? content)
     {
         if (content != null)
@@ -136,13 +136,10 @@ public class Window : ContentControl
 
         var platformWindow = new Window
         {
-            Title = title ?? templateWindow.Title,
-            Icon = icon ?? templateWindow.Icon,
+            Title = title ?? templateWindow.Title, Icon = icon ?? templateWindow.Icon,
 
             // ContentControl
-            Content = content,
-            HorizontalContentAlignment = templateWindow.HorizontalContentAlignment,
-            VerticalContentAlignment = templateWindow.VerticalContentAlignment
+            Content = content, HorizontalContentAlignment = templateWindow.HorizontalContentAlignment, VerticalContentAlignment = templateWindow.VerticalContentAlignment
         };
         ((TemplatedControl) templateWindow).ClonePropertiesTo(platformWindow);
 

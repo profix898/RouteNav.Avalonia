@@ -17,41 +17,44 @@ namespace RouteNav.Avalonia;
 
 /// <summary>
 /// A dialog surface that can be shown as a native window (desktop) or an in-app overlay/embedded control
-/// (mobile/browser), returning a result via <see cref="ShowDialog(Window?, bool)"/>.
+/// (mobile/browser), returning a result via <see cref="ShowDialog(Window?, bool)" />.
 /// </summary>
 [PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded)]
 public class Dialog : ContentControl
 {
     /// <summary>Completion source used by the active dialog result task.</summary>
     protected TaskCompletionSource<object?>? taskCompletionSource;
+
     /// <summary>The close button resolved from the control template, if present.</summary>
     protected Button? dialogCloseButton;
+
     /// <summary>The title bar panel resolved from the control template, if present.</summary>
     protected Panel? dialogTitleBarPanel;
+
     /// <summary>The scroll viewer that hosts dialog content, if present.</summary>
     protected ScrollViewer? dialogContentScrollViewer;
 
     /// <summary>
-    /// Defines the <see cref="Title"/> property.
+    /// Defines the <see cref="Title" /> property.
     /// </summary>
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<Dialog, string>(nameof(Title), "Dialog");
 
     /// <summary>
-    /// Defines the <see cref="TitleBarBackground"/> property.
+    /// Defines the <see cref="TitleBarBackground" /> property.
     /// </summary>
     public static readonly StyledProperty<Brush> TitleBarBackgroundProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarBackground));
 
     /// <summary>
-    /// Defines the <see cref="TitleBarTextColor"/> property.
+    /// Defines the <see cref="TitleBarTextColor" /> property.
     /// </summary>
     public static readonly StyledProperty<Brush> TitleBarTextColorProperty = AvaloniaProperty.Register<Dialog, Brush>(nameof(TitleBarTextColor));
-    
+
     /// <summary>
-    /// Defines the <see cref="DialogSize"/> property.
+    /// Defines the <see cref="DialogSize" /> property.
     /// </summary>
     public static readonly StyledProperty<DialogSize> DialogSizeProperty = AvaloniaProperty.Register<Dialog, DialogSize>(nameof(DialogSize), DialogSize.Medium);
 
-    /// <summary>Initializes a new instance of the <see cref="Dialog"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Dialog" /> class.</summary>
     public Dialog()
     {
         PseudoClasses.Add(SharedPseudoClasses.Hidden);
@@ -61,7 +64,6 @@ public class Dialog : ContentControl
             // Design-time view as embedded dialog
             PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
             PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);
-            
         }
     }
 
@@ -114,16 +116,14 @@ public class Dialog : ContentControl
         dialogCloseButton = e.NameScope.Find<Button>("DialogCloseButton");
         if (dialogCloseButton != null) // MessageDialog does not have a close button
             dialogCloseButton.Click += CloseDialog;
-        
+
         dialogTitleBarPanel = e.NameScope.Find<Panel>("DialogTitleBar");
         dialogContentScrollViewer = e.NameScope.Find<ScrollViewer>("DialogContentScrollViewer");
         UpdateContentScrollViewerMaxHeight();
-        
+
         // Correct page/dialog size (to account for page margins and title bar height)
         if (Content is Page page)
-        {
             page.Bind(WidthProperty, this.GetBindingObservable(WidthProperty));
-        }
     }
 
     /// <inheritdoc />
@@ -207,7 +207,7 @@ public class Dialog : ContentControl
     /// <summary>Fired when the window is closed.</summary>
     public event EventHandler? Closed;
 
-    /// <summary>Closes the dialog, completing its result task with <paramref name="result"/>.</summary>
+    /// <summary>Closes the dialog, completing its result task with <paramref name="result" />.</summary>
     public virtual void Close(object? result = null)
     {
         if (taskCompletionSource == null)
@@ -228,9 +228,7 @@ public class Dialog : ContentControl
             Task.Delay(180).ContinueWith(_ => Closed?.Invoke(this, EventArgs.Empty));
         }
         else
-        {
             PlatformWindow.Close(result);
-        }
     }
 
     #endregion
@@ -289,7 +287,7 @@ public class Dialog : ContentControl
     public Task<object?> ShowDialog(Window? parentWindow = null, bool forceOverlay = false)
     {
         var stack = Navigation.UIPlatform.GetActiveStackFromWindow(parentWindow) ?? Navigation.GetMainStack();
-        
+
         return stack.PushDialogAsync(this, forceOverlay);
     }
 
@@ -304,7 +302,7 @@ public class Dialog : ContentControl
                 stack = Navigation.UIPlatform.GetStack(stackName);
         }
         stack ??= Navigation.GetMainStack();
-    
+
         return stack.PushDialogAsync(this, forceOverlay);
     }
 
@@ -312,7 +310,7 @@ public class Dialog : ContentControl
     public Task<object?> ShowDialogEmbedded(ContentControl parentControl, bool restoreParent = false)
     {
         var previousContent = parentControl.Content;
-        
+
         this.SetSizeBinding(parentControl);
 
         parentControl.Content = this;

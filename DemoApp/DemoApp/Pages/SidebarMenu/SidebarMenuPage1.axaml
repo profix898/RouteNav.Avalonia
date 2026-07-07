@@ -10,12 +10,28 @@
         <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
             <StackPanel Spacing="4">
                 <TextBlock Classes="PageTitle" Text="Overview" />
-                <TextBlock Classes="PageSubtitle" Text="Selecting a drawer item routes here and highlights it in the menu." />
+                <TextBlock Classes="PageSubtitle"
+                           Text="Selecting a drawer item routes here and highlights it in the menu." />
             </StackPanel>
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
-                <Border Grid.Column="0" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="128" /><TextBlock Classes="Hint" Text="Sessions" /></StackPanel></Border>
-                <Border Grid.Column="1" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="97%" /><TextBlock Classes="Hint" Text="Uptime" /></StackPanel></Border>
-                <Border Grid.Column="2" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="12" /><TextBlock Classes="Hint" Text="Alerts" /></StackPanel></Border>
+                <Border Grid.Column="0" Classes="Card">
+                    <StackPanel Spacing="2">
+                        <TextBlock FontSize="24" FontWeight="Bold" Text="128" />
+                        <TextBlock Classes="Hint" Text="Sessions" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Classes="Card">
+                    <StackPanel Spacing="2">
+                        <TextBlock FontSize="24" FontWeight="Bold" Text="97%" />
+                        <TextBlock Classes="Hint" Text="Uptime" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Classes="Card">
+                    <StackPanel Spacing="2">
+                        <TextBlock FontSize="24" FontWeight="Bold" Text="12" />
+                        <TextBlock Classes="Hint" Text="Alerts" />
+                    </StackPanel>
+                </Border>
             </Grid>
         </StackPanel>
     </ScrollViewer>

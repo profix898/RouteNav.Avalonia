@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
-using DemoApp;
 using Microsoft.Extensions.DependencyInjection;
 using RouteNav.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]
+
+namespace DemoApp.Browser;
 
 internal class Program
 {

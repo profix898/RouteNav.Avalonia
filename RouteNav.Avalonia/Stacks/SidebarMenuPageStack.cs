@@ -12,7 +12,7 @@ namespace RouteNav.Avalonia.Stacks;
 /// <summary>A navigation stack whose pages are selected from a sidebar/drawer menu.</summary>
 public class SidebarMenuPageStack : SidebarMenuPageStack<SidebarMenuPageContainer>
 {
-    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageStack"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageStack" /> class.</summary>
     public SidebarMenuPageStack(string name, string title)
         : base(name, title)
     {
@@ -30,7 +30,7 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
 {
     private readonly List<SidebarMenuItem> menuItems = new List<SidebarMenuItem>();
 
-    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageStack{TC}"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="SidebarMenuPageStack{TC}" /> class.</summary>
     public SidebarMenuPageStack(string name, string title)
         : base(name, title)
     {

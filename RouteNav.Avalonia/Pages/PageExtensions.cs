@@ -1,9 +1,9 @@
-﻿using RouteNav.Avalonia.Platform;
-using System;
+﻿using System;
+using RouteNav.Avalonia.Platform;
 
 namespace RouteNav.Avalonia.Pages;
 
-/// <summary>Convenience extensions for registering and resolving pages on an <see cref="IUIPlatform"/>.</summary>
+/// <summary>Convenience extensions for registering and resolving pages on an <see cref="IUIPlatform" />.</summary>
 public static class PageExtensions
 {
     #region Register
@@ -111,14 +111,14 @@ public static class PageExtensions
 
     #region Get
 
-    /// <summary>Resolves a page of type <typeparamref name="T1"/> using the base route URI.</summary>
+    /// <summary>Resolves a page of type <typeparamref name="T1" /> using the base route URI.</summary>
     public static Page GetPage<T1>(this IUIPlatform uiPlatform, params object[] parameters)
         where T1 : Page
     {
         return uiPlatform.GetPage(typeof(T1), Navigation.BaseRouteUri, parameters);
     }
 
-    /// <summary>Resolves a page of type <typeparamref name="T1"/> for the given route URI.</summary>
+    /// <summary>Resolves a page of type <typeparamref name="T1" /> for the given route URI.</summary>
     public static Page GetPage<T1>(this IUIPlatform uiPlatform, Uri uri, params object[] parameters)
         where T1 : Page
     {

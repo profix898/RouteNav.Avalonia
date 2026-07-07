@@ -12,7 +12,7 @@ using RouteNav.Avalonia.Stacks;
 namespace RouteNav.Avalonia.Platform;
 
 /// <summary>
-/// Default <see cref="IUIPlatform"/> implementation backed by Avalonia windows and views.
+/// Default <see cref="IUIPlatform" /> implementation backed by Avalonia windows and views.
 /// </summary>
 /// <remarks>
 /// Instances are not thread-safe. All navigation operations (stack registration, activation and
@@ -27,13 +27,13 @@ public class AvaloniaUIPlatform : IUIPlatform
     private readonly Lazy<IServiceProvider> serviceProvider;
     private readonly IServiceCollection? serviceCollection;
 
-    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform"/> class with the default window manager.</summary>
+    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform" /> class with the default window manager.</summary>
     public AvaloniaUIPlatform(Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
         : this(new AvaloniaWindowManager(), serviceProvider, serviceCollection)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="AvaloniaUIPlatform" /> class.</summary>
     public AvaloniaUIPlatform(IWindowManager windowManager, Lazy<IServiceProvider> serviceProvider, IServiceCollection? serviceCollection)
     {
         WindowManager = windowManager;
@@ -49,7 +49,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     /// <inheritdoc />
     public IWindowManager WindowManager { get; }
-    
+
     /// <inheritdoc />
     public ILauncher Launcher { get; set; }
 
@@ -182,7 +182,7 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (stack != null && !stack.IsEventStack)
         {
             var window = GetActiveWindowFromStack(stack);
-            var sourceWindow = (sourceStack != null) ? GetActiveWindowFromStack(sourceStack) : null;
+            var sourceWindow = sourceStack != null ? GetActiveWindowFromStack(sourceStack) : null;
             if (window == null)
             {
                 // Display in window associated with sourceStack or fall back to main/first application window

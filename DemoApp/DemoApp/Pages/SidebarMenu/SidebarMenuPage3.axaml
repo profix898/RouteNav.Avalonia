@@ -15,9 +15,16 @@
             <Border Classes="Card">
                 <StackPanel Spacing="14">
                     <TextBlock Classes="SectionTitle" Text="Preferences" />
-                    <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Email notifications" VerticalAlignment="Center" /><ToggleSwitch Grid.Column="1" IsChecked="True" /></Grid>
-                    <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Weekly digest" VerticalAlignment="Center" /><ToggleSwitch Grid.Column="1" /></Grid>
-                    <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Beta features" VerticalAlignment="Center" /><ToggleSwitch Grid.Column="1" /></Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Email notifications" VerticalAlignment="Center" />
+                        <ToggleSwitch Grid.Column="1" IsChecked="True" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Weekly digest" VerticalAlignment="Center" /><ToggleSwitch Grid.Column="1" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Beta features" VerticalAlignment="Center" /><ToggleSwitch Grid.Column="1" />
+                    </Grid>
                 </StackPanel>
             </Border>
         </StackPanel>

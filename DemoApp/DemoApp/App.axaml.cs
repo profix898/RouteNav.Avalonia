@@ -29,6 +29,7 @@ public class App : Application
 
         // Add main/root page (= initial page) to the stack (either by type or via factory method)
         mainStack.AddPage<MainRootPage>(String.Empty);
+
         //mainStack.AddPage(String.Empty, uri => new MainRootPage(uri));
 
         // Add more pages to the navigation stack (argument is the relative path to page on stack)
@@ -45,6 +46,7 @@ public class App : Application
         /* SidebarMenu stack */
         var sidebarMenuStack = new SidebarMenuPageStack("sidebar", "DemoApp - Sidebar");
         Navigation.UIPlatform.AddStack(sidebarMenuStack);
+
         // SidebarMenu manages a 'SidebarMenuItem' collection, use .AddMenuItem() to add items
         sidebarMenuStack.AddMenuItem<SidebarMenuRootPage>(String.Empty, "Home");
         sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Overview");

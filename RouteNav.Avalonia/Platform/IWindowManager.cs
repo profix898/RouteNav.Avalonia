@@ -25,7 +25,7 @@ public interface IWindowManager
     /// <summary>Raised for each platform window created, allowing callers to customize it.</summary>
     event WindowCustomizationHandler WindowCustomizationEvent;
 
-    /// <summary>Opens the given window (optionally owned by <paramref name="parentWindow"/>). Returns <c>false</c> if unsupported.</summary>
+    /// <summary>Opens the given window (optionally owned by <paramref name="parentWindow" />). Returns <c>false</c> if unsupported.</summary>
     bool OpenWindow(Window window, Window? parentWindow = null);
 
     /// <summary>Opens the given dialog as a window. Returns <c>false</c> (and no task) if dialog windows are unsupported.</summary>

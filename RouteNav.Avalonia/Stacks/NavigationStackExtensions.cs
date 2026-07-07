@@ -36,7 +36,7 @@ public static class NavigationStackExtensions
     public static string GetRoutePath(this INavigationStack stack, Uri routeUri, out string query)
     {
         query = String.Empty;
-        
+
         // AbsoluteUri -> RelativeUri
         if (routeUri.IsAbsoluteUri)
         {
@@ -91,7 +91,7 @@ public static class NavigationStackExtensions
     /// <summary>Gets a value indicating whether the route URI targets the given stack (relative URIs assume the same stack).</summary>
     public static bool IsRouteOnStack(this Uri routeUri, INavigationStack stack)
     {
-        var stackName = GetStackName(routeUri);
+        var stackName = routeUri.GetStackName();
         if (stackName == null)
             return true; // Relative route -> assume same stack
 
@@ -136,7 +136,7 @@ public static class NavigationStackExtensions
 
     #region AddPage_RouteButton
 
-    /// <summary>Registers a page type at the route carried by the given <see cref="RouteButton"/>.</summary>
+    /// <summary>Registers a page type at the route carried by the given <see cref="RouteButton" />.</summary>
     public static void AddPage<T1>(this INavigationStack stack, RouteButton routeButton)
         where T1 : Page
     {
@@ -147,7 +147,7 @@ public static class NavigationStackExtensions
                       ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), typeof(T1));
     }
 
-    /// <summary>Registers a page type at the route carried by the given <see cref="RouteButton"/>.</summary>
+    /// <summary>Registers a page type at the route carried by the given <see cref="RouteButton" />.</summary>
     public static void AddPage(this INavigationStack stack, RouteButton routeButton, Type pageType)
     {
         if (!routeButton.RouteUri.IsAbsoluteUri)
@@ -157,7 +157,7 @@ public static class NavigationStackExtensions
                       ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), pageType);
     }
 
-    /// <summary>Registers a page factory at the route carried by the given <see cref="RouteButton"/>.</summary>
+    /// <summary>Registers a page factory at the route carried by the given <see cref="RouteButton" />.</summary>
     public static void AddPage(this INavigationStack stack, RouteButton routeButton, Func<Uri, Page> pageFactory)
     {
         if (!routeButton.RouteUri.IsAbsoluteUri)
@@ -171,7 +171,7 @@ public static class NavigationStackExtensions
 
     #region AddPage_RouteMenuItem
 
-    /// <summary>Registers a page type at the route carried by the given <see cref="RouteMenuItem"/>.</summary>
+    /// <summary>Registers a page type at the route carried by the given <see cref="RouteMenuItem" />.</summary>
     public static void AddPage<T1>(this INavigationStack stack, RouteMenuItem routeMenuItem)
         where T1 : Page
     {
@@ -182,7 +182,7 @@ public static class NavigationStackExtensions
                       ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
     }
 
-    /// <summary>Registers a page type at the route carried by the given <see cref="RouteMenuItem"/>.</summary>
+    /// <summary>Registers a page type at the route carried by the given <see cref="RouteMenuItem" />.</summary>
     public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Type pageType)
     {
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
@@ -192,7 +192,7 @@ public static class NavigationStackExtensions
                       ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageType);
     }
 
-    /// <summary>Registers a page factory at the route carried by the given <see cref="RouteMenuItem"/>.</summary>
+    /// <summary>Registers a page factory at the route carried by the given <see cref="RouteMenuItem" />.</summary>
     public static void AddPage(this INavigationStack stack, RouteMenuItem routeMenuItem, Func<Uri, Page> pageFactory)
     {
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
@@ -219,7 +219,7 @@ public static class NavigationStackExtensions
         var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
             stack.AddPage(relativeRoute, typeof(TPage));
     }
 
@@ -229,17 +229,18 @@ public static class NavigationStackExtensions
         var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
             stack.AddPage(relativeRoute, pageType);
     }
 
     /// <summary>Adds a sidebar menu item for the given relative route and registers the page factory when it targets this stack.</summary>
-    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Func<Uri, Page> pageFactory, NavigationTarget target = NavigationTarget.Self)
+    public static void AddMenuItem(this ISidebarMenuPageStack stack, string relativeRoute, string text, Func<Uri, Page> pageFactory,
+                                   NavigationTarget target = NavigationTarget.Self)
     {
         var menuItem = new SidebarMenuItem { RoutePath = relativeRoute, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
             stack.AddPage(relativeRoute, pageFactory);
     }
 
@@ -256,8 +257,8 @@ public static class NavigationStackExtensions
         var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
-            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), typeof(TPage));
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
+            stack.AddPage(stack.GetRoutePath(menuItem.RouteUri), typeof(TPage));
     }
 
     /// <summary>Adds a sidebar menu item for the given route URI and registers the page type when it targets this stack.</summary>
@@ -266,8 +267,8 @@ public static class NavigationStackExtensions
         var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
-            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), pageType);
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
+            stack.AddPage(stack.GetRoutePath(menuItem.RouteUri), pageType);
     }
 
     /// <summary>Adds a sidebar menu item for the given route URI and registers the page factory when it targets this stack.</summary>
@@ -276,8 +277,8 @@ public static class NavigationStackExtensions
         var menuItem = new SidebarMenuItem { RouteUri = routeUri, Text = text, Target = target };
         stack.AddMenuItem(menuItem);
 
-        if (IsRouteOnStack(menuItem.RouteUri, stack))
-            stack.AddPage(GetRoutePath(stack, menuItem.RouteUri), pageFactory);
+        if (menuItem.RouteUri.IsRouteOnStack(stack))
+            stack.AddPage(stack.GetRoutePath(menuItem.RouteUri), pageFactory);
     }
 
     #endregion

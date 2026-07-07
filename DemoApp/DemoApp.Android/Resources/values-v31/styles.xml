@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
 
   <style name="MyTheme">
@@ -15,7 +16,7 @@
 
   </style>
   <style name="MyTheme.Main"
-         parent ="MyTheme.NoActionBar">
+         parent="MyTheme.NoActionBar">
     <item name="android:windowIsTranslucent">true</item>
   </style>
 </resources>

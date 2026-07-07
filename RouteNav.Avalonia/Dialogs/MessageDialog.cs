@@ -9,30 +9,31 @@ using Avalonia.Media;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-/// <summary>A <see cref="Dialog"/> that presents a message with a configurable set of buttons and returns a <see cref="MessageDialogResult"/>.</summary>
+/// <summary>A <see cref="Dialog" /> that presents a message with a configurable set of buttons and returns a <see cref="MessageDialogResult" />.</summary>
 public class MessageDialog : Dialog
 {
     private ContentPresenter? dialogButtons;
     private Panel? dialogButtonBar;
 
-    /// <summary>Defines the <see cref="Buttons"/> property.</summary>
+    /// <summary>Defines the <see cref="Buttons" /> property.</summary>
     public static readonly StyledProperty<MessageDialogButtons> ButtonsProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtons>(nameof(Buttons));
 
-    /// <summary>Defines the <see cref="ButtonsTemplate"/> property.</summary>
-    public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
+    /// <summary>Defines the <see cref="ButtonsTemplate" /> property.</summary>
+    public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty =
+        AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
 
-    /// <summary>Defines the <see cref="ButtonsBarBackground"/> property.</summary>
+    /// <summary>Defines the <see cref="ButtonsBarBackground" /> property.</summary>
     public static readonly StyledProperty<Brush> ButtonsBarBackgroundProperty = AvaloniaProperty.Register<MessageDialog, Brush>(nameof(ButtonsBarBackground));
 
-    /// <summary>Defines the <see cref="DefaultResult"/> property.</summary>
+    /// <summary>Defines the <see cref="DefaultResult" /> property.</summary>
     public static readonly StyledProperty<MessageDialogResult> DefaultResultProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogResult>(nameof(DefaultResult));
 
-    /// <summary>Initializes a new instance of the <see cref="MessageDialog"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="MessageDialog" /> class.</summary>
     public MessageDialog()
     {
         DialogSize = DialogSize.Small;
         DefaultResult = MessageDialogResult.None;
-        
+
         HorizontalContentAlignment = HorizontalAlignment.Center;
         VerticalContentAlignment = VerticalAlignment.Center;
     }

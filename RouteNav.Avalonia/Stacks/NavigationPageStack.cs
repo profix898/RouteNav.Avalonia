@@ -8,7 +8,7 @@ namespace RouteNav.Avalonia.Stacks;
 /// <summary>A navigation stack that presents pages with a navigation bar and back-button history.</summary>
 public class NavigationPageStack : NavigationPageStack<NavigationPageContainer>
 {
-    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack" /> class.</summary>
     public NavigationPageStack(string name, string title)
         : base(name, title)
     {
@@ -24,7 +24,7 @@ public class NavigationPageStack : NavigationPageStack<NavigationPageContainer>
 public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
     where TC : NavigationPageContainer, new()
 {
-    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack{TC}"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="NavigationPageStack{TC}" /> class.</summary>
     public NavigationPageStack(string name, string title)
         : base(name, title)
     {
@@ -42,12 +42,7 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
         RootPage = new LazyValue<Page>(() => ResolveRoute(this.BuildRoute(String.Empty))
                                              ?? throw new NavigationException("RootPage can not be retrieved."));
 
-        var navigationPageContainer = new TC
-        {
-            VerticalAlignment = VerticalAlignment.Stretch,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            NavigationStack = this
-        };
+        var navigationPageContainer = new TC { VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch, NavigationStack = this };
         navigationPageContainer.HostControlAttached += () =>
         {
             if (navigationPageContainer.NavigationControl == null)
@@ -56,6 +51,6 @@ public class NavigationPageStack<TC> : NavigationStackBase<TC>, INavigationStack
 
         return navigationPageContainer;
     }
-    
+
     #endregion
 }

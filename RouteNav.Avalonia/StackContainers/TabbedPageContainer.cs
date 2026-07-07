@@ -1,24 +1,25 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.StackContainers;
 
-/// <summary>A navigation container that hosts pages in a <see cref="TabControl"/>.</summary>
+/// <summary>A navigation container that hosts pages in a <see cref="TabControl" />.</summary>
 public class TabbedPageContainer : NavigationContainer
 {
-    /// <summary>Defines the <see cref="TabControlName"/> property.</summary>
+    /// <summary>Defines the <see cref="TabControlName" /> property.</summary>
     public static readonly StyledProperty<string> TabControlNameProperty = AvaloniaProperty.Register<TabbedPageContainer, string>(nameof(TabControlName), "TabControl");
 
-    /// <summary>Initializes a new instance of the <see cref="TabbedPageContainer"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageContainer" /> class.</summary>
     public TabbedPageContainer()
     {
         TabControl = new TabControl();
         TabControl.Classes.Add("RouteNavTabbedPageTabs");
-        TabControl.SetValue(Panel.ZIndexProperty, 1);
+        TabControl.SetValue(ZIndexProperty, 1);
 
-        var headerBackground = new Border { Height = 38, VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Top };
+        var headerBackground = new Border { Height = 38, VerticalAlignment = VerticalAlignment.Top };
         headerBackground.Classes.Add("RouteNavTabbedPageHeaderBackground");
 
         var host = new Grid();

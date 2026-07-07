@@ -1,9 +1,9 @@
 <routeNav:Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-        x:Class="DemoApp.MainWindow"
-        Background="{DynamicResource DemoPageBackground}"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="RouteNav.Avalonia DemoApp">
-  
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
+                 x:Class="DemoApp.MainWindow"
+                 Background="{DynamicResource DemoPageBackground}"
+                 Icon="/Assets/avalonia-logo.ico"
+                 Title="RouteNav.Avalonia DemoApp">
+
 </routeNav:Window>

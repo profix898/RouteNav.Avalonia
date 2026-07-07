@@ -13,7 +13,7 @@ internal static class ControlPropertiesExtensions
         controlTarget.HorizontalContentAlignment = controlSource.HorizontalContentAlignment;
         controlTarget.VerticalContentAlignment = controlSource.VerticalContentAlignment;
 
-        ClonePropertiesTo((TemplatedControl) controlSource, controlTarget);
+        ((TemplatedControl) controlSource).ClonePropertiesTo(controlTarget);
     }
 
     public static void ClonePropertiesTo(this TemplatedControl controlSource, TemplatedControl controlTarget)
@@ -31,7 +31,7 @@ internal static class ControlPropertiesExtensions
         controlTarget.Foreground = controlSource.Foreground;
         controlTarget.Padding = controlSource.Padding;
 
-        ClonePropertiesTo((Control) controlSource, controlTarget);
+        ((Control) controlSource).ClonePropertiesTo(controlTarget);
     }
 
     public static void ClonePropertiesTo(this Control controlSource, Control controlTarget)

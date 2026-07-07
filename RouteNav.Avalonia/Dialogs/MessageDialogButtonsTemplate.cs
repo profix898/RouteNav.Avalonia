@@ -5,7 +5,7 @@ using Avalonia.Layout;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-/// <summary>Default template that builds the button row for a <see cref="MessageDialog"/>.</summary>
+/// <summary>Default template that builds the button row for a <see cref="MessageDialog" />.</summary>
 public sealed class MessageDialogButtonsTemplate : IDataTemplate
 {
     #region Implementation of IDataTemplate

@@ -12,7 +12,7 @@ public interface IPageResolver
     /// </summary>
     /// <param name="routeUri">URI of the route to resolve.</param>
     /// <returns>
-    /// The resolved <see cref="Page"/> if the route is successfully resolved; otherwise <c>null</c>.
+    /// The resolved <see cref="Page" /> if the route is successfully resolved; otherwise <c>null</c>.
     /// </returns>
     Page? ResolveRoute(Uri routeUri);
 }

@@ -21,7 +21,7 @@ public static class Navigation
     private static IUIPlatform? uiPlatform;
 
     /// <summary>
-    /// Gets or sets the active <see cref="IUIPlatform"/> implementation that backs all navigation.
+    /// Gets or sets the active <see cref="IUIPlatform" /> implementation that backs all navigation.
     /// </summary>
     /// <exception cref="NavigationException">Thrown when accessed before a UI platform has been bootstrapped.</exception>
     public static IUIPlatform UIPlatform
@@ -29,7 +29,8 @@ public static class Navigation
         get
         {
             return uiPlatform
-                   ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavUIPlatform)}().");
+                   ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavUIPlatform)
+                   }().");
         }
         set { uiPlatform = value; }
     }
@@ -46,8 +47,9 @@ public static class Navigation
 
     /// <summary>Gets the main navigation stack.</summary>
     /// <exception cref="NavigationException">Thrown when the main stack is not available.</exception>
-    public static INavigationStack GetMainStack() => UIPlatform.GetStack(MainStackName)
-                                                     ?? throw new NavigationException("Main NavigationStack not available.");
+    public static INavigationStack GetMainStack()
+        => UIPlatform.GetStack(MainStackName)
+           ?? throw new NavigationException("Main NavigationStack not available.");
 
     /// <summary>Activates the given stack (or the main stack) and pushes its root page.</summary>
     /// <param name="stack">The stack to enter, or <c>null</c> to enter the main stack.</param>
@@ -72,7 +74,7 @@ public static class Navigation
         return PushAsync(BuildRoute(stackName, relativeRoute), target);
     }
 
-    /// <summary>Navigates to the page identified by <paramref name="routeUri"/>.</summary>
+    /// <summary>Navigates to the page identified by <paramref name="routeUri" />.</summary>
     /// <param name="routeUri">The (absolute or relative) route URI to resolve.</param>
     /// <param name="target">Where the resolved page should be shown.</param>
     public static Task<Page> PushAsync(Uri routeUri, NavigationTarget target = NavigationTarget.Self)
@@ -172,7 +174,7 @@ public static class Navigation
                           ?? UIPlatform.ActivateStack(stackName, activeStack)
                           ?? activeStack;
         }
-        
+
         // Ensure that we can always return to the main stack
         if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
             activeStack = UIPlatform.ActivateStack(stackName);
@@ -236,7 +238,7 @@ public static class Navigation
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
             var page404 = new NotFoundPage();
-            await activeStack.PushDialogAsync(page404, forceOverlay: (target == NavigationTarget.DialogOverlay));
+            await activeStack.PushDialogAsync(page404, forceOverlay: target == NavigationTarget.DialogOverlay);
 
             return page404;
         }
@@ -264,7 +266,7 @@ public static class Navigation
         // Fallback: Replace page/stack in current window
         return await PushParentAsync(routeUri);
     }
-    
+
     #endregion
 
     #endregion

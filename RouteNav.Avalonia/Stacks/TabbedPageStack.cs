@@ -11,7 +11,7 @@ namespace RouteNav.Avalonia.Stacks;
 /// <summary>A navigation stack that presents each registered page as a tab.</summary>
 public class TabbedPageStack : TabbedPageStack<TabbedPageContainer>
 {
-    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack" /> class.</summary>
     public TabbedPageStack(string name, string title)
         : base(name, title)
     {
@@ -30,7 +30,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
 {
     private Page? rootPage;
 
-    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack{TC}"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="TabbedPageStack{TC}" /> class.</summary>
     public TabbedPageStack(string name, string title)
         : base(name, title)
     {
@@ -52,6 +52,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     {
         var tabbedPageContainer = new TC { NavigationStack = this };
         var tabsInitialized = false;
+
         void EnsureTabsInitialized()
         {
             if (tabbedPageContainer.TabControl == null)
@@ -77,6 +78,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, CurrentPage ?? rootPage);
             tabsInitialized = true;
         }
+
         tabbedPageContainer.HostControlAttached += EnsureTabsInitialized;
         if (tabbedPageContainer.TabControl != null)
             EnsureTabsInitialized();

@@ -3,11 +3,11 @@ using System.Windows.Input;
 
 namespace RouteNav.Avalonia.Routing;
 
-/// <summary>A strongly-typed <see cref="ICommand"/> whose parameter is coerced to <typeparamref name="T"/>.</summary>
+/// <summary>A strongly-typed <see cref="ICommand" /> whose parameter is coerced to <typeparamref name="T" />.</summary>
 /// <typeparam name="T">The command parameter type.</typeparam>
 public class Command<T> : Command
 {
-    /// <summary>Initializes a new instance of the <see cref="Command{T}"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Command{T}" /> class.</summary>
     public Command(Action<T> execute)
         : base(o =>
         {
@@ -17,7 +17,7 @@ public class Command<T> : Command
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Command{T}"/> class with a can-execute predicate.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Command{T}" /> class with a can-execute predicate.</summary>
     public Command(Action<T> execute, Func<T, bool>? canExecute)
         : base(o =>
         {
@@ -40,19 +40,19 @@ public class Command<T> : Command
     }
 }
 
-/// <summary>A simple relay <see cref="ICommand"/> implementation.</summary>
+/// <summary>A simple relay <see cref="ICommand" /> implementation.</summary>
 public class Command : ICommand
 {
     private readonly Func<object?, bool> canExecute;
     private readonly Action<object?> executeFunc;
 
-    /// <summary>Initializes a new instance of the <see cref="Command"/> class from parameterless delegates.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Command" /> class from parameterless delegates.</summary>
     public Command(Action executeFunc, Func<bool>? canExecute = null)
         : this(_ => executeFunc(), _ => canExecute?.Invoke() ?? true)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="Command"/> class from parameterized delegates.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Command" /> class from parameterized delegates.</summary>
     public Command(Action<object?> executeFunc, Func<object?, bool>? canExecute = null)
     {
         this.executeFunc = executeFunc;
@@ -78,7 +78,7 @@ public class Command : ICommand
 
     #endregion
 
-    /// <summary>Raises <see cref="CanExecuteChanged"/> to re-query <see cref="CanExecute"/>.</summary>
+    /// <summary>Raises <see cref="CanExecuteChanged" /> to re-query <see cref="CanExecute" />.</summary>
     public void ChangeCanExecute()
     {
         CanExecuteChanged?.Invoke(this, EventArgs.Empty);

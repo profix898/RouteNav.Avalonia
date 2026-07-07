@@ -11,7 +11,7 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 namespace RouteNav.Avalonia.Platform;
 
 /// <summary>
-/// Default <see cref="IWindowManager"/> implementation for Avalonia desktop and single-view platforms.
+/// Default <see cref="IWindowManager" /> implementation for Avalonia desktop and single-view platforms.
 /// </summary>
 public class AvaloniaWindowManager : IWindowManager
 {
@@ -63,24 +63,16 @@ public class AvaloniaWindowManager : IWindowManager
 
             var platformWindow = new AvaloniaWindow
             {
-                Title = dialog.Title,
-                Icon = parentWindow?.Icon,
+                Title = dialog.Title, Icon = parentWindow?.Icon,
 
                 // ContentControl
-                Content = dialog,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                VerticalContentAlignment = VerticalAlignment.Stretch,
-
-                Width = dialog.Width,
-                Height = dialog.Height,
-                MinWidth = dialog.Width,
-                MinHeight = dialog.Height,
-                CanResize = false,
+                Content = dialog, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch, Width = dialog.Width,
+                Height = dialog.Height, MinWidth = dialog.Width, MinHeight = dialog.Height, CanResize = false
             };
 
             // Customize to show platform dialog (border style, etc.)
             platformWindow.SetDialogStyle();
-            
+
             WindowCustomizationEvent?.Invoke(platformWindow, true);
             dialog.RegisterPlatform(platformWindow);
             dialogTask = dialog.Open();
@@ -97,14 +89,10 @@ public class AvaloniaWindowManager : IWindowManager
     /// <inheritdoc />
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
     {
-        var platformWindow = new AvaloniaWindow
-        {
-            Title = window.Title,
-            Icon = window.Icon
-        };
+        var platformWindow = new AvaloniaWindow { Title = window.Title, Icon = window.Icon };
         window.ClonePropertiesTo(platformWindow);
 
-        WindowCustomizationEvent?.Invoke(platformWindow, false);
+        WindowCustomizationEvent?.Invoke(platformWindow);
         window.RegisterPlatform(desktopLifetime, platformWindow);
 
         return platformWindow;

@@ -12,6 +12,6 @@ public enum DialogSize
     /// <summary>Large dialog (default: 0.9 * width/height of window).</summary>
     Large,
 
-    /// <summary>Custom-sized dialog (uses <c>Width</c> and <c>Height</c> members of <see cref="Dialog"/> to determine size).</summary>
+    /// <summary>Custom-sized dialog (uses <c>Width</c> and <c>Height</c> members of <see cref="Dialog" /> to determine size).</summary>
     Custom
 }

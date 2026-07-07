@@ -1,8 +1,8 @@
 <Project>
-	<!-- GitInfo (SemVer) -->
+  <!-- GitInfo (SemVer) -->
   <Target Name="GitInfo" BeforeTargets="MinVer">
     <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" StandardOutputImportance="low">
-        <Output TaskParameter="ConsoleOutput" PropertyName="GitSHA"/>
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitSHA" />
     </Exec>
   </Target>
   <PropertyGroup>
@@ -17,50 +17,50 @@
     <MinVerVerbosity>normal</MinVerVerbosity>
     <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
-	<Target Name="Versioning" AfterTargets="MinVer">
+  <Target Name="Versioning" AfterTargets="MinVer">
     <PropertyGroup>
       <BuildNumber>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2026/07/01"))).TotalDays.ToString("0"))</BuildNumber>
       <Version>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(BuildNumber)-dev+$(GitSHA)</Version>
       <Version Condition=" '$(Configuration)' == 'Release' ">$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(BuildNumber)</Version>
       <PackageVersion>$(Version)</PackageVersion>
     </PropertyGroup>
-    <Message Text="Version: $(Version)" Importance="high"/>
-    <Message Text="FileVersion: $(FileVersion)" Importance="high"/>
-    <Message Text="AssemblyVersion: $(AssemblyVersion)" Importance="high"/>
-	</Target>
-	<!-- Project Defaults  -->
-	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>false</ImplicitUsings>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	</PropertyGroup>
-	<!-- Assembly Info -->
-	<PropertyGroup>
-		<Product>RouteNav.Avalonia</Product>
-		<Description>RouteNav.Avalonia Package</Description>
+    <Message Text="Version: $(Version)" Importance="high" />
+    <Message Text="FileVersion: $(FileVersion)" Importance="high" />
+    <Message Text="AssemblyVersion: $(AssemblyVersion)" Importance="high" />
+  </Target>
+  <!-- Project Defaults  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>false</ImplicitUsings>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <!-- Assembly Info -->
+  <PropertyGroup>
+    <Product>RouteNav.Avalonia</Product>
+    <Description>RouteNav.Avalonia Package</Description>
     <Authors>Thilo Viereck</Authors>
-		<Company></Company>
-		<Copyright>Copyright &#169; Thilo Viereck 2022-$([System.DateTime]::Now.ToString(`yyyy`))</Copyright>
-		<DefaultLanguage>en-US</DefaultLanguage>
-		<PackageIcon>Icon.png</PackageIcon>
-		<PackageReadmeFile>Readme.md</PackageReadmeFile>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Company></Company>
+    <Copyright>Copyright &#169; Thilo Viereck 2022-$([System.DateTime]::Now.ToString(`yyyy`))</Copyright>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PackageIcon>Icon.png</PackageIcon>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/profix898/RouteNav.Avalonia</PackageProjectUrl>
-	</PropertyGroup>
-	<!-- Packaging -->
-	<!--<PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
-	<PropertyGroup>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<!--<IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+  <!-- Packaging -->
+  <!--<PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!--<IncludeSymbols>true</IncludeSymbols>
     	<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
-		<PackageOutputPath>$(SolutionDir)\Build\$(Configuration)\Packages\</PackageOutputPath>
-	</PropertyGroup>
-	<!-- NuGet Assets -->
-	<ItemGroup>
+    <PackageOutputPath>$(SolutionDir)\Build\$(Configuration)\Packages\</PackageOutputPath>
+  </PropertyGroup>
+  <!-- NuGet Assets -->
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Icon.png" Pack="true" Visible="false" PackagePath="" />
-	<None Include="$(MSBuildThisFileDirectory)README.pkg.md" Pack="true" Visible="false" PackagePath="Readme.md" />
+    <None Include="$(MSBuildThisFileDirectory)README.pkg.md" Pack="true" Visible="false" PackagePath="Readme.md" />
   </ItemGroup>
 </Project>

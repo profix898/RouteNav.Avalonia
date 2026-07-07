@@ -5,11 +5,10 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using RouteNav.Avalonia.Stacks;
 using static System.Double;
-using static RouteNav.Avalonia.Dialogs.DialogSizeUtility;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-/// <summary>Extensions for showing a <see cref="Page"/> as a <see cref="Dialog"/>.</summary>
+/// <summary>Extensions for showing a <see cref="Page" /> as a <see cref="Dialog" />.</summary>
 public static class DialogPageExtensions
 {
     /// <summary>Wraps the page in a dialog and pushes it onto the stack's dialog stack.</summary>
@@ -19,7 +18,7 @@ public static class DialogPageExtensions
         return stack.PushDialogAsync(page.ToDialog(stack.CurrentPage, dialogSize, minSize, maxSize), forceOverlay);
     }
 
-    /// <summary>Builds a <see cref="Dialog"/> that hosts the given page, sized from the size hint/parent.</summary>
+    /// <summary>Builds a <see cref="Dialog" /> that hosts the given page, sized from the size hint/parent.</summary>
     public static Dialog ToDialog(this Page page, Layoutable? parent = null, DialogSize? dialogSize = null,
                                   Size? minSize = null, Size? maxSize = null)
     {
@@ -27,15 +26,11 @@ public static class DialogPageExtensions
             throw new ArgumentNullException(nameof(page));
 
         dialogSize ??= page.DialogSizeHint ?? DialogSize.Medium;
-        
+
         // Build Dialog from Page
         var dialog = new Dialog
         {
-            Title = page.Title ?? "Dialog",
-            Content = page,
-            DataContext = page.DataContext,
-            Background = page.Background ?? Brushes.White,
-            DialogSize = dialogSize.Value
+            Title = page.Title ?? "Dialog", Content = page, DataContext = page.DataContext, Background = page.Background ?? Brushes.White, DialogSize = dialogSize.Value
         };
 
         // Calculate dialog size (from parent)

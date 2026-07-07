@@ -15,7 +15,8 @@
             <Border Classes="Card">
                 <StackPanel Spacing="8">
                     <TextBlock Classes="SectionTitle" Text="Highlights" />
-                    <TextBlock Classes="Hint" Text="Switching tabs keeps all pages alive, so each tab preserves its state." />
+                    <TextBlock Classes="Hint"
+                               Text="Switching tabs keeps all pages alive, so each tab preserves its state." />
                     <ProgressBar Height="6" Value="72" Margin="0,4,0,0" />
                 </StackPanel>
             </Border>

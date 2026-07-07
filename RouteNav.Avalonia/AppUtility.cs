@@ -4,13 +4,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using RouteNav.Avalonia.Platform;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
 /// <summary>
-/// Helper extensions for wiring RouteNav's <see cref="Window"/> abstraction into the various Avalonia
+/// Helper extensions for wiring RouteNav's <see cref="Window" /> abstraction into the various Avalonia
 /// application lifetimes (desktop, single-view and activity), and for retrieving the main window/top level.
 /// </summary>
 public static class AppUtility
@@ -31,6 +30,7 @@ public static class AppUtility
     {
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
             desktopLifetime.SetMainWindow(newMainWindow, initMainRoute);
+
         // Note: Avalonia 12's Android lifetime implements both IActivityApplicationLifetime and
         // ISingleViewApplicationLifetime. Prefer the factory-based activity path (avoids the
         // "MainView is not fully supported on Android" warning and supports multiple activities).
@@ -48,7 +48,7 @@ public static class AppUtility
         (desktopLifetime.MainWindow?.Tag as Window ?? mainWindow)?.OnClosed();
         mainWindow = newMainWindow;
 
-        IWindowManager windowManager = Navigation.UIPlatform.WindowManager;
+        var windowManager = Navigation.UIPlatform.WindowManager;
         desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(newMainWindow, desktopLifetime);
 
         if (initMainRoute)
@@ -61,7 +61,7 @@ public static class AppUtility
         mainWindow?.OnClosed();
         mainWindow = newMainWindow;
 
-        IWindowManager windowManager = Navigation.UIPlatform.WindowManager;
+        var windowManager = Navigation.UIPlatform.WindowManager;
         activityLifetime.MainViewFactory = () => windowManager.CreatePlatformView(newMainWindow, activityLifetime);
 
         if (initMainRoute)
@@ -74,7 +74,7 @@ public static class AppUtility
         (singleViewLifetime.MainView?.Tag as Window ?? mainWindow)?.OnClosed();
         mainWindow = newMainWindow;
 
-        IWindowManager windowManager = Navigation.UIPlatform.WindowManager;
+        var windowManager = Navigation.UIPlatform.WindowManager;
         singleViewLifetime.MainView = windowManager.CreatePlatformView(newMainWindow, singleViewLifetime);
 
         if (initMainRoute)
@@ -126,7 +126,7 @@ public static class AppUtility
 
     #region Helpers
 
-    /// <summary>Gets the active <see cref="TopLevel"/> (the given window, the active desktop window, or the single-view host).</summary>
+    /// <summary>Gets the active <see cref="TopLevel" /> (the given window, the active desktop window, or the single-view host).</summary>
     public static TopLevel GetTopLevel(AvaloniaWindow? window = null)
     {
         if (window != null)

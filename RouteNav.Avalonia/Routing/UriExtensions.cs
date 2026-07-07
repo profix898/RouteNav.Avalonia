@@ -35,7 +35,8 @@ public static class UriExtensions
                   .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
                   .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
                   .GroupBy(parts => parts[0],
-                           parts => parts.Length > 2 ? String.Join("=", parts.Select(Uri.UnescapeDataString), 1, parts.Length - 1) : parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : "")
+                           parts => parts.Length > 2 ? String.Join("=", parts.Select(Uri.UnescapeDataString), 1, parts.Length - 1) :
+                               parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : "")
                   .ToDictionary(grouping => grouping.Key,
                                 grouping => String.Join(",", grouping));
     }

@@ -22,24 +22,34 @@
                     <TextBlock Classes="SectionTitle" Text="Dialog integration" />
 
                     <Grid ColumnDefinitions="230,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
-                        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgCommand" Content="Content dialog" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgCommand"
+                                Content="Content dialog" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
                                    Text="A Dialog shown in Small / Medium / Large / Custom sizes." />
 
-                        <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenMsgDlgCommand" Content="Message &amp; error dialog" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                        <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenMsgDlgCommand"
+                                Content="Message &amp; error dialog" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
                                    Text="MessageDialog.Create(...) and Error.ShowDialog(message, exception)." />
 
-                        <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgEmbeddedCommand" Content="Embedded dialog" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                        <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch"
+                                Click="OpenDlgEmbeddedCommand" Content="Embedded dialog" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
                                    Text="The same dialogs rendered embedded into this page instead of a window." />
 
-                        <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageCommand" Content="Page as dialog" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                        <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageCommand"
+                                Content="Page as dialog" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
                                    Text="A regular Page converted on the fly with .ToDialog() — sized via DialogSizeHint." />
 
-                        <Button Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageOverlayCommand" Content="Page as overlay dialog" />
-                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                        <Button Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch"
+                                Click="OpenDlgPageOverlayCommand" Content="Page as overlay dialog" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
                                    Text="The same page-as-dialog, forced to render as a content overlay." />
                     </Grid>
                 </StackPanel>
@@ -49,7 +59,8 @@
             <Border Classes="Card">
                 <StackPanel Spacing="10">
                     <TextBlock Classes="SectionTitle" Text="Built-in error pages" />
-                    <TextBlock Classes="Hint" Text="Navigate to an unmapped or error route to see RouteNav's default error pages (customizable via the Error helper)." />
+                    <TextBlock Classes="Hint"
+                               Text="Navigate to an unmapped or error route to see RouteNav's default error pages (customizable via the Error helper)." />
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <routing:RouteButton RoutePath="/main/error404" Content="404 — Not Found" />
                         <routing:RouteButton RoutePath="/main/error500" Content="500 — Internal Error" />

@@ -17,13 +17,14 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 {
     /// <summary>Stores page factories by stack-relative route path.</summary>
     protected readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
-    
+
     /// <summary>Stores the active page history.</summary>
     protected readonly List<Page> pageStack = new List<Page>();
+
     /// <summary>Stores the active dialog history.</summary>
     protected readonly List<Dialog> dialogStack = new List<Dialog>();
-    
-    /// <summary>Initializes a new instance of the <see cref="NavigationStackBase{TC}"/> class.</summary>
+
+    /// <summary>Initializes a new instance of the <see cref="NavigationStackBase{TC}" /> class.</summary>
     protected NavigationStackBase(string name, string title)
     {
         if (String.IsNullOrEmpty(name))
@@ -96,13 +97,13 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     /// <summary>Creates and initializes the stack container.</summary>
     protected abstract TC InitContainer();
-    
+
     /// <summary>Builds a dialog wrapper for a page pushed as a dialog.</summary>
     protected virtual Dialog BuildDialog(Page page)
     {
         return page.ToDialog(CurrentPage);
     }
-    
+
     /// <inheritdoc />
     public virtual void AddPage(string relativeRoute, Type pageType)
     {
@@ -146,7 +147,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     /// <inheritdoc />
     public event Action<NavigationEventArgs<Page>>? PageNavigated;
 
-    /// <summary>Raises <see cref="PageNavigated"/>.</summary>
+    /// <summary>Raises <see cref="PageNavigated" />.</summary>
     protected void OnPageNavigated(Page? pageFrom, Page? pageTo)
     {
         PageNavigated?.Invoke(new NavigationEventArgs<Page>(pageFrom, pageTo));
@@ -239,7 +240,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     /// <inheritdoc />
     public event Action<NavigationEventArgs<Dialog>>? DialogNavigated;
 
-    /// <summary>Raises <see cref="DialogNavigated"/>.</summary>
+    /// <summary>Raises <see cref="DialogNavigated" />.</summary>
     protected void OnDialogNavigated(Dialog? dialogFrom, Dialog? dialogTo)
     {
         DialogNavigated?.Invoke(new NavigationEventArgs<Dialog>(dialogFrom, dialogTo));
@@ -274,6 +275,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         var previousDialog = dialogStack.Last();
         previousDialog.Close();
+
         //dialogStack.Remove(previousDialog);
         var nextDialog = dialogStack.LastOrDefault();
         CurrentDialog = nextDialog;
@@ -306,7 +308,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     /// <inheritdoc />
     public event Action<NavigationEventArgs<Uri>>? RouteNavigated;
 
-    /// <summary>Raises <see cref="RouteNavigated"/>.</summary>
+    /// <summary>Raises <see cref="RouteNavigated" />.</summary>
     protected void OnRouteNavigated(Uri? routeFrom, Uri? routeTo)
     {
         RouteNavigated?.Invoke(new NavigationEventArgs<Uri>(routeFrom, routeTo));
@@ -325,11 +327,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
             return await Navigation.PushAsync(routeUri, target);
 
         var page = ResolveRoute(routeUri) ?? new NotFoundPage();
-        
+
         if (target != NavigationTarget.Dialog && target != NavigationTarget.DialogOverlay)
             await PushAsync(page);
         else
-            await PushDialogAsync(BuildDialog(page), (target == NavigationTarget.DialogOverlay));
+            await PushDialogAsync(BuildDialog(page), target == NavigationTarget.DialogOverlay);
 
         OnRouteNavigated(null, routeUri);
 
