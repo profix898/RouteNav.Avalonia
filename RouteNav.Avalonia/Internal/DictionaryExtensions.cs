@@ -29,9 +29,6 @@ internal static class DictionaryExtensions
     public static void Set<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
         where TKey : notnull
     {
-        if (!dict.ContainsKey(key))
-            dict.Add(key, value);
-        else
-            dict[key] = value;
+        dict[key] = value;
     }
 }

@@ -8,6 +8,10 @@ using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>
+/// RouteNav's platform-agnostic window abstraction. It is hosted by a real desktop window or a single-view
+/// platform control, exposed via <see cref="PlatformControl"/>.
+/// </summary>
 public class Window : ContentControl
 {
     /// <summary>
@@ -20,11 +24,13 @@ public class Window : ContentControl
     /// </summary>
     public static readonly StyledProperty<WindowIcon> IconProperty = AvaloniaProperty.Register<Window, WindowIcon>(nameof(Icon));
 
+    /// <summary>Initializes a new instance of the <see cref="Window"/> class.</summary>
     public Window()
         : this(null)
     {
     }
 
+    /// <summary>Initializes a new instance of the <see cref="Window"/> class with the given content.</summary>
     public Window(object? content)
     {
         if (content != null)
@@ -73,6 +79,8 @@ public class Window : ContentControl
 
     #endregion
 
+    /// <summary>Sets the content of the backing platform control.</summary>
+    /// <exception cref="NavigationException">Thrown when there is no backing platform control.</exception>
     public void SetContent(Control content)
     {
         if (PlatformControl != null)
@@ -81,6 +89,7 @@ public class Window : ContentControl
             throw new NavigationException("Main window/view does not have a backing platform control.");
     }
 
+    /// <summary>Closes the window (desktop) or shuts down the application where applicable.</summary>
     public void Close()
     {
         if (PlatformControl is AvaloniaWindow window)

@@ -68,9 +68,13 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
     public event Action? Exited;
 
-    public LazyValue<NavigationContainer> ContainerPage => new LazyValue<NavigationContainer>(() => Container.Value);
+    private LazyValue<NavigationContainer>? containerPage;
 
-    public LazyValue<Page> RootPage { get; protected set; }
+    /// <summary>Gets the lazily-created navigation container that hosts this stack's pages.</summary>
+    public LazyValue<NavigationContainer> ContainerPage => containerPage ??= new LazyValue<NavigationContainer>(() => Container.Value);
+
+    /// <summary>Gets the lazily-created root (initial) page of this stack.</summary>
+    public LazyValue<Page> RootPage { get; protected set; } = null!;
 
     public IPageResolver? PageResolver { get; set; }
 
@@ -107,9 +111,9 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         Exited?.Invoke();
 
-        ContainerPage.Reset();
+        containerPage?.Reset();
         Container.Reset();
-        RootPage.Reset();
+        RootPage?.Reset();
         CurrentPage = null;
     }
 

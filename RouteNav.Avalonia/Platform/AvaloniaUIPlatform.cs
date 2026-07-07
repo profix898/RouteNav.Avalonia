@@ -11,6 +11,14 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Platform;
 
+/// <summary>
+/// Default <see cref="IUIPlatform"/> implementation backed by Avalonia windows and views.
+/// </summary>
+/// <remarks>
+/// Instances are not thread-safe. All navigation operations (stack registration, activation and
+/// page/dialog pushes) are expected to run on the UI thread, which serializes access to the internal
+/// stack dictionaries.
+/// </remarks>
 public class AvaloniaUIPlatform : IUIPlatform
 {
     private readonly Dictionary<string, INavigationStack> navigationStacks = new Dictionary<string, INavigationStack>();
@@ -106,7 +114,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 
     public INavigationStack? GetStack(string stackName)
     {
-        return navigationStacks.ContainsKey(stackName) ? navigationStacks[stackName] : null;
+        return navigationStacks.TryGetValue(stackName, out var stack) ? stack : null;
     }
 
     #endregion

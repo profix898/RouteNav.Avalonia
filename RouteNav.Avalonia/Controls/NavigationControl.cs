@@ -40,42 +40,49 @@ public sealed class NavigationControl : TemplatedControl, ISafeAreaAware
 
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<NavigationControl, Thickness>(nameof(SafeAreaPadding));
 
+    /// <summary>Gets or sets the background brush of the navigation bar.</summary>
     public IBrush? NavigationBarBackground
     {
         get { return GetValue(NavigationBarBackgroundProperty); }
         set { SetValue(NavigationBarBackgroundProperty, value); }
     }
 
+    /// <summary>Gets or sets the foreground (text) brush of the navigation bar.</summary>
     public IBrush? NavigationBarTextColor
     {
         get { return GetValue(NavigationBarTextColorProperty); }
         set { SetValue(NavigationBarTextColorProperty, value); }
     }
 
+    /// <summary>Gets or sets a value indicating whether the navigation bar is visible.</summary>
     public bool NavigationBarVisible
     {
         get { return GetValue(NavigationBarVisibleProperty); }
         set { SetValue(NavigationBarVisibleProperty, value); }
     }
 
+    /// <summary>Gets or sets a value indicating whether the back button is enabled.</summary>
     public bool BackButtonEnabled
     {
         get { return GetValue(BackButtonEnabledProperty); }
         set { SetValue(BackButtonEnabledProperty, value); }
     }
 
+    /// <summary>Raised when the navigation bar back button is clicked (while enabled).</summary>
     public event EventHandler<RoutedEventArgs>? BackButtonClick
     {
         add => AddHandler(BackButtonClickEvent, value);
         remove => RemoveHandler(BackButtonClickEvent, value);
     }
 
+    /// <summary>Gets or sets the page currently hosted by this navigation control.</summary>
     public Page? Page
     {
         get { return GetValue(PageProperty); }
         set { SetValue(PageProperty, value); }
     }
 
+    /// <summary>Gets or sets the transition played when the hosted page changes.</summary>
     public IPageTransition PageTransition
     {
         get { return GetValue(PageTransitionProperty); }
@@ -135,9 +142,12 @@ public sealed class NavigationControl : TemplatedControl, ISafeAreaAware
     {
         base.OnPropertyChanged(change);
 
-        if ((change.Property == PageTransitionProperty || change.Property == PageProperty) && navContentControl != null)
+        if (navContentControl == null)
+            return;
+
+        if (change.Property == PageProperty)
             UpdateContent();
-        else if (change.Property == PageTransitionProperty && navContentControl != null)
+        else if (change.Property == PageTransitionProperty)
             navContentControl.PageTransition = PageTransition;
     }
 

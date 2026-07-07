@@ -20,7 +20,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
     private IInsetsManager? insetsManager;
     private INavigationStack? navigationStack;
 
-    public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<Page, Thickness>(nameof(SafeAreaPadding));
+    public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<NavigationContainer, Thickness>(nameof(SafeAreaPadding));
 
     #region NavigationContainer
 
@@ -37,22 +37,21 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         internal set { navigationStack = value; }
     }
 
-    public DialogOverlayHost DialogOverlayHost
+    /// <summary>
+    /// Gets the <see cref="Dialogs.DialogOverlayHost"/> for the current top level, creating and attaching
+    /// it to the overlay layer on first use.
+    /// </summary>
+    /// <remarks>This is a factory-style accessor and has a side effect on first call (it creates the host).</remarks>
+    public DialogOverlayHost GetDialogOverlayHost()
     {
-        get
-        {
-            if (topLevel == null || navigationStack == null)
-                throw new InvalidOperationException();
+        if (topLevel == null || navigationStack == null)
+            throw new InvalidOperationException("NavigationContainer is not attached to a TopLevel yet.");
 
-            var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel);
-            if (overlayLayer == null)
-                throw new InvalidOperationException();
+        var overlayLayer = OverlayLayer.GetOverlayLayer(topLevel)
+                           ?? throw new InvalidOperationException("No OverlayLayer available on the current TopLevel.");
 
-            var dialogOverlayHost = overlayLayer.Children.OfType<DialogOverlayHost>().FirstOrDefault()
-                                    ?? new DialogOverlayHost(topLevel, overlayLayer);
-
-            return dialogOverlayHost;
-        }
+        return overlayLayer.Children.OfType<DialogOverlayHost>().FirstOrDefault()
+               ?? new DialogOverlayHost(topLevel, overlayLayer);
     }
 
     public virtual void UpdatePage(Page? page)
@@ -79,7 +78,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
                 // Remove dialog size (so that background fills host container)
                 dialog.Width = dialog.Height = Double.NaN;
                 // Update content of dialog host
-                DialogOverlayHost.SetContent(dialog);
+                GetDialogOverlayHost().SetContent(dialog);
             }
 
             return dialog.ResultTask;
@@ -118,7 +117,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         // Remove dialog size (so that background fills host container)
         dialog.Width = dialog.Height = Double.NaN;
         // Update content of dialog host
-        DialogOverlayHost.SetContent(dialog);
+        GetDialogOverlayHost().SetContent(dialog);
         dialog.IsVisible = true;
 
         return dialog.Open();
@@ -147,13 +146,11 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         if (insetsManager != null)
             insetsManager.SafeAreaChanged -= SafeAreaChanged;
 
-        topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel == null)
-            throw new InvalidOperationException("No TopLevel found.");
-        insetsManager = topLevel?.InsetsManager;
-        
-        if (topLevel != null)
-            topLevel.BackRequested += SystemBackRequested;
+        topLevel = TopLevel.GetTopLevel(this)
+                   ?? throw new InvalidOperationException("No TopLevel found.");
+        insetsManager = topLevel.InsetsManager;
+
+        topLevel.BackRequested += SystemBackRequested;
         if (insetsManager != null)
         {
             SafeAreaPadding = insetsManager.SafeAreaPadding;

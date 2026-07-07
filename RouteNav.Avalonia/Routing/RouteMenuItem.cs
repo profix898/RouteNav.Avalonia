@@ -6,12 +6,16 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Routing;
 
+/// <summary>A <see cref="MenuItem"/> that navigates to a route when clicked.</summary>
 public class RouteMenuItem : MenuItem, IRouteItem
 {
-    public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<SidebarMenuItem, Uri>(nameof(RouteUri));
+    /// <summary>Defines the <see cref="RouteUri"/> property.</summary>
+    public static readonly StyledProperty<Uri> RouteUriProperty = AvaloniaProperty.Register<RouteMenuItem, Uri>(nameof(RouteUri));
 
-    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<SidebarMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
+    /// <summary>Defines the <see cref="Target"/> property.</summary>
+    public static readonly StyledProperty<NavigationTarget> TargetProperty = AvaloniaProperty.Register<RouteMenuItem, NavigationTarget>(nameof(Target), NavigationTarget.Self);
 
+    /// <summary>Initializes a new instance of the <see cref="RouteMenuItem"/> class.</summary>
     public RouteMenuItem()
     {
         Click += (_, _) => NavigateToRoute();
@@ -21,6 +25,7 @@ public class RouteMenuItem : MenuItem, IRouteItem
 
     #region Implementation of IRouteItem
 
+    /// <summary>Gets or sets the route this menu item navigates to.</summary>
     public Uri RouteUri
     {
         get { return GetValue(RouteUriProperty); }
@@ -34,12 +39,14 @@ public class RouteMenuItem : MenuItem, IRouteItem
         set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
     }
 
+    /// <summary>Gets or sets where the target route is shown when the item is clicked.</summary>
     public NavigationTarget Target
     {
         get { return GetValue(TargetProperty); }
         set { SetValue(TargetProperty, value); }
     }
 
+    /// <summary>Navigates to <see cref="RouteUri"/> using <see cref="Target"/>.</summary>
     public void NavigateToRoute()
     {
         Navigation.PushAsync(RouteUri, Target);

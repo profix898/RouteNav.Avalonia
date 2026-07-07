@@ -9,14 +9,20 @@ namespace RouteNav.Avalonia;
 
 public static class Navigation
 {
+    /// <summary>The reserved name of the main navigation stack.</summary>
     public const string MainStackName = "main";
 
+    /// <summary>Gets or sets the base URI that all stack and page routes are resolved against.</summary>
     public static Uri BaseRouteUri { get; set; } = new Uri("https://avalonia.local/");
 
     #region UIPlatform
 
     private static IUIPlatform? uiPlatform;
 
+    /// <summary>
+    /// Gets or sets the active <see cref="IUIPlatform"/> implementation that backs all navigation.
+    /// </summary>
+    /// <exception cref="NavigationException">Thrown when accessed before a UI platform has been bootstrapped.</exception>
     public static IUIPlatform UIPlatform
     {
         get
@@ -31,14 +37,19 @@ public static class Navigation
 
     #region Stacks
 
+    /// <summary>Gets the registered navigation stack with the given name, or <c>null</c> if none is registered.</summary>
     public static INavigationStack? GetStack(string stackName)
     {
         return UIPlatform.GetStack(stackName);
     }
 
+    /// <summary>Gets the main navigation stack.</summary>
+    /// <exception cref="NavigationException">Thrown when the main stack is not available.</exception>
     public static INavigationStack GetMainStack() => UIPlatform.GetStack(MainStackName)
                                                      ?? throw new NavigationException("Main NavigationStack not available.");
 
+    /// <summary>Activates the given stack (or the main stack) and pushes its root page.</summary>
+    /// <param name="stack">The stack to enter, or <c>null</c> to enter the main stack.</param>
     public static async Task<Page> EnterStack(INavigationStack? stack = null)
     {
         var activeStack = UIPlatform.ActivateStack(stack?.Name ?? MainStackName)
@@ -51,11 +62,18 @@ public static class Navigation
 
     #region RouteNavigation
 
+    /// <summary>Navigates to a route built from a stack name and a relative route.</summary>
+    /// <param name="stackName">The target stack name.</param>
+    /// <param name="relativeRoute">The route relative to the stack root.</param>
+    /// <param name="target">Where the resolved page should be shown.</param>
     public static Task<Page> PushAsync(string stackName, string relativeRoute, NavigationTarget target = NavigationTarget.Self)
     {
         return PushAsync(BuildRoute(stackName, relativeRoute), target);
     }
 
+    /// <summary>Navigates to the page identified by <paramref name="routeUri"/>.</summary>
+    /// <param name="routeUri">The (absolute or relative) route URI to resolve.</param>
+    /// <param name="target">Where the resolved page should be shown.</param>
     public static Task<Page> PushAsync(Uri routeUri, NavigationTarget target = NavigationTarget.Self)
     {
         return target switch
@@ -78,11 +96,15 @@ public static class Navigation
         };
     }
 
+    /// <summary>Pops the current page/dialog from the stack associated with the given window.</summary>
+    /// <param name="window">The window whose active stack to pop, or <c>null</c> for the main window.</param>
     public static Task PopAsync(Window? window = null)
     {
         return PopAsync(UIPlatform.GetActiveStackFromWindow(window));
     }
 
+    /// <summary>Pops the current page/dialog from the given stack (dialogs first, then pages).</summary>
+    /// <param name="stack">The stack to pop, or <c>null</c> for the main stack.</param>
     public static Task PopAsync(INavigationStack? stack = null)
     {
         var activeStack = stack
@@ -107,11 +129,13 @@ public static class Navigation
         return Task.FromResult(activeStack.CurrentPage);
     }
 
+    /// <summary>Gets a value indicating whether a pop operation is currently available for the given window's stack.</summary>
     public static bool PopAvailable(Window? window = null)
     {
         return PopAvailable(UIPlatform.GetActiveStackFromWindow(window));
     }
 
+    /// <summary>Gets a value indicating whether a pop operation is currently available for the given stack.</summary>
     public static bool PopAvailable(INavigationStack? stack = null)
     {
         var activeStack = stack
@@ -246,11 +270,13 @@ public static class Navigation
 
     #region BuildRoute
 
+    /// <summary>Builds an absolute route URI from a stack name and a relative route.</summary>
     public static Uri BuildRoute(string stackName, string relativeRoute)
     {
         return new Uri(new Uri(BaseRouteUri, stackName + "/"), relativeRoute);
     }
 
+    /// <summary>Builds an absolute route URI from a stack name and a relative route.</summary>
     public static Uri BuildRoute(string stackName, Uri relativeRoute)
     {
         return new Uri(new Uri(BaseRouteUri, stackName + "/"), relativeRoute);

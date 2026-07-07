@@ -89,6 +89,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         set { SetValue(SidebarFooterProperty, value); }
     }
 
+    /// <summary>Gets or sets how the drawer is displayed relative to the content.</summary>
     public DisplayModeEnum DisplayMode
     {
         get { return GetValue(DisplayModeProperty); }
@@ -112,21 +113,25 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 
     #endregion
 
+    /// <summary>Gets the menu items shown in the drawer.</summary>
     [Content]
     public List<SidebarMenuItem> MenuItems { get; } = new List<SidebarMenuItem>();
 
+    /// <summary>Gets or sets the source collection used to populate <see cref="MenuItems"/>.</summary>
     public IEnumerable<SidebarMenuItem> MenuItemsSource
     {
         get { return GetValue(MenuItemsSourceProperty); }
         set { SetValue(MenuItemsSourceProperty, value); }
     }
 
+    /// <summary>Raised when the selected menu item changes.</summary>
     public event EventHandler<RoutedEventArgs>? SelectedMenuItemChanged
     {
         add => AddHandler(SelectedMenuItemChangedEvent, value);
         remove => RemoveHandler(SelectedMenuItemChangedEvent, value);
     }
 
+    /// <summary>Gets the currently selected menu item, or <c>null</c> if none is selected.</summary>
     public SidebarMenuItem? SelectedMenuItem { get; private set; }
 
     /// <summary>The page shown in the detail area (forwarded to <c>DrawerPage.Content</c> via the template).</summary>
@@ -136,6 +141,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         set { SetValue(PageProperty, value); }
     }
 
+    /// <summary>Gets the navigation stack this menu drives.</summary>
     public INavigationStack? NavigationStack { get; internal set; }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -149,8 +155,8 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         menuList = e.NameScope.Find<ListBox>("PART_MenuItemList");
         if (menuList != null)
         {
-            menuList.ItemsSource = MenuItems.ToList();
             menuList.SelectionChanged += MenuList_OnSelectionChanged;
+            BindMenuItems();
         }
 
         ApplyDisplayMode();
@@ -175,8 +181,14 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         if (menuList == null)
             return;
 
-        menuList.ItemsSource = MenuItems.ToList();
+        BindMenuItems();
         SyncSelectionToCurrentPage();
+    }
+
+    private void BindMenuItems()
+    {
+        if (menuList != null)
+            menuList.ItemsSource = MenuItems.ToList();
     }
 
     private void ApplyDisplayMode()

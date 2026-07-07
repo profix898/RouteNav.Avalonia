@@ -5,6 +5,9 @@ using RouteNav.Avalonia.Platform;
 
 namespace RouteNav.Avalonia;
 
+/// <summary>
+/// <see cref="AppBuilder"/> extensions that bootstrap the RouteNav UI platform.
+/// </summary>
 public static class AppBuilderExtensions
 {
     /// <summary>For use with a single/simple (non-locking) DI container (i.e. dictionary).</summary>
@@ -37,6 +40,7 @@ public static class AppBuilderExtensions
         return builder;
     }
 
+    /// <summary>Bootstraps RouteNav with a pre-built <see cref="IUIPlatform"/> implementation.</summary>
     public static AppBuilder UseRouteNavUIPlatform(this AppBuilder builder, string baseRouteUri, IUIPlatform uiPlatform)
     {
         if (!String.IsNullOrEmpty(baseRouteUri))

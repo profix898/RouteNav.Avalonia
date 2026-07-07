@@ -26,6 +26,7 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     /// </summary>
     public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Page, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
 
+    /// <summary>Gets the query parameters supplied to this page via its route URI.</summary>
     public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 
     /// <summary>
@@ -85,6 +86,7 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
 
     #region Implementation of IEquatable<Page>
 
+    /// <inheritdoc />
     public bool Equals(Page? other)
     {
         if (other == null)

@@ -9,18 +9,24 @@ using Avalonia.Media;
 
 namespace RouteNav.Avalonia.Dialogs;
 
+/// <summary>A <see cref="Dialog"/> that presents a message with a configurable set of buttons and returns a <see cref="MessageDialogResult"/>.</summary>
 public class MessageDialog : Dialog
 {
     private ContentPresenter? dialogButtons;
 
+    /// <summary>Defines the <see cref="Buttons"/> property.</summary>
     public static readonly StyledProperty<MessageDialogButtons> ButtonsProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtons>(nameof(Buttons));
 
+    /// <summary>Defines the <see cref="ButtonsTemplate"/> property.</summary>
     public static readonly StyledProperty<MessageDialogButtonsTemplate> ButtonsTemplateProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogButtonsTemplate>(nameof(ButtonsTemplate), new MessageDialogButtonsTemplate());
 
+    /// <summary>Defines the <see cref="ButtonsBarBackground"/> property.</summary>
     public static readonly StyledProperty<Brush> ButtonsBarBackgroundProperty = AvaloniaProperty.Register<MessageDialog, Brush>(nameof(ButtonsBarBackground));
 
+    /// <summary>Defines the <see cref="DefaultResult"/> property.</summary>
     public static readonly StyledProperty<MessageDialogResult> DefaultResultProperty = AvaloniaProperty.Register<MessageDialog, MessageDialogResult>(nameof(DefaultResult));
 
+    /// <summary>Initializes a new instance of the <see cref="MessageDialog"/> class.</summary>
     public MessageDialog()
     {
         DialogSize = DialogSize.Small;
@@ -30,30 +36,35 @@ public class MessageDialog : Dialog
         VerticalContentAlignment = VerticalAlignment.Center;
     }
 
+    /// <summary>Gets or sets the button set shown by the dialog.</summary>
     public MessageDialogButtons Buttons
     {
         get { return GetValue(ButtonsProperty); }
         set { SetValue(ButtonsProperty, value); }
     }
 
+    /// <summary>Gets or sets the template used to build the buttons.</summary>
     public MessageDialogButtonsTemplate ButtonsTemplate
     {
         get { return GetValue(ButtonsTemplateProperty); }
         set { SetValue(ButtonsTemplateProperty, value); }
     }
 
+    /// <summary>Gets or sets the background brush of the buttons bar.</summary>
     public Brush ButtonsBarBackground
     {
         get { return GetValue(ButtonsBarBackgroundProperty); }
         set { SetValue(ButtonsBarBackgroundProperty, value); }
     }
 
+    /// <summary>Gets or sets the result returned when the dialog is dismissed without an explicit choice.</summary>
     public MessageDialogResult DefaultResult
     {
         get { return GetValue(DefaultResultProperty); }
         set { SetValue(DefaultResultProperty, value); }
     }
 
+    /// <summary>Sets the dialog content to a plain text block with the given text.</summary>
     public string TextContent
     {
         set { SetValue(ContentProperty, new TextBlock { Text = value }); }
