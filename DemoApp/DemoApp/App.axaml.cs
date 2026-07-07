@@ -44,11 +44,11 @@ public class App : Application
         var sidebarMenuStack = new SidebarMenuPageStack("sidebar", "DemoApp - Sidebar");
         Navigation.UIPlatform.AddStack(sidebarMenuStack);
         // SidebarMenu manages a 'SidebarMenuItem' collection, use .AddMenuItem() to add items
-        sidebarMenuStack.AddMenuItem<SidebarMenuRootPage>(String.Empty, "RootPage");
-        sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Page1");
-        sidebarMenuStack.AddMenuItem<SidebarMenuPage2>("page2", "Page2");
-        sidebarMenuStack.AddMenuItem<SidebarMenuPage3>("page3", "Page3");
-        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tab Page1"); // Links to external pages (on other stacks) is supported
+        sidebarMenuStack.AddMenuItem<SidebarMenuRootPage>(String.Empty, "Home");
+        sidebarMenuStack.AddMenuItem<SidebarMenuPage1>("page1", "Overview");
+        sidebarMenuStack.AddMenuItem<SidebarMenuPage2>("page2", "Reports");
+        sidebarMenuStack.AddMenuItem<SidebarMenuPage3>("page3", "Settings");
+        sidebarMenuStack.AddMenuItem("/tabbed/page1", "Tabbed: Summary"); // Links to external pages (on other stacks) is supported
 
         /* Tabbed stack */
         var tabbedStack = new TabbedPageStack("tabbed", "DemoApp - Tabbed");
@@ -62,6 +62,10 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
+
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
 
         // Set main window (window abstraction for desktop + mobile)
         ApplicationLifetime.SetMainWindow(new MainWindow());

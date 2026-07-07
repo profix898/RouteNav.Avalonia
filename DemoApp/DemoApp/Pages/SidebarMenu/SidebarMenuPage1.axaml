@@ -3,11 +3,20 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 1" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="480"
+               Title="Overview" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuPage1">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the SidebarMenu stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 1.</TextBlock>
-    </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Overview" />
+                <TextBlock Classes="PageSubtitle" Text="Selecting a drawer item routes here and highlights it in the menu." />
+            </StackPanel>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                <Border Grid.Column="0" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="128" /><TextBlock Classes="Hint" Text="Sessions" /></StackPanel></Border>
+                <Border Grid.Column="1" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="97%" /><TextBlock Classes="Hint" Text="Uptime" /></StackPanel></Border>
+                <Border Grid.Column="2" Classes="Card"><StackPanel Spacing="2"><TextBlock FontSize="24" FontWeight="Bold" Text="12" /><TextBlock Classes="Hint" Text="Alerts" /></StackPanel></Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

@@ -73,9 +73,6 @@ public class AvaloniaWindowManager : IWindowManager
             platformWindow.SetDialogStyle();
             
             WindowCustomizationEvent?.Invoke(platformWindow, true);
-#if DEBUG
-            platformWindow.AttachDevTools();
-#endif
             dialog.RegisterPlatform(platformWindow);
             dialogTask = dialog.Open();
 
@@ -98,20 +95,17 @@ public class AvaloniaWindowManager : IWindowManager
         window.ClonePropertiesTo(platformWindow);
 
         WindowCustomizationEvent?.Invoke(platformWindow, false);
-#if DEBUG
-        platformWindow.AttachDevTools();
-#endif
         window.RegisterPlatform(desktopLifetime, platformWindow);
 
         return platformWindow;
     }
 
-    public virtual ContentControl CreatePlatformView(Window window, ISingleViewApplicationLifetime singleViewLifetime)
+    public virtual ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime)
     {
         var platformControl = new UserControl();
         window.ClonePropertiesTo(platformControl);
 
-        window.RegisterPlatform(singleViewLifetime, platformControl);
+        window.RegisterPlatform(appLifetime, platformControl);
 
         return platformControl;
     }

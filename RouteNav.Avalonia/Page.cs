@@ -24,7 +24,7 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     /// <summary>
     /// Defines the <see cref="DialogSizeHint"/> property.
     /// </summary>
-    public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Dialog, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
+    public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Page, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
 
     public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 

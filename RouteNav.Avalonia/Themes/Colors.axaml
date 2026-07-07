@@ -26,9 +26,6 @@
             <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
             <!-- NotFoundErrorPage -->
             <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
-            <!-- NavigationControl -->
-            <SolidColorBrush x:Key="NavigationControlNavigationBarBackground" Color="#F2F2F2" />
-            <SolidColorBrush x:Key="NavigationControlNavigationBarTextColor" Color="#000000" />
             <!-- SidebarMenu -->
             <SolidColorBrush x:Key="SidebarMenuSidebarBackground" Color="#E6E6E6" />
             <SolidColorBrush x:Key="SidebarMenuContentBackground" Color="#FFFFFF" />
@@ -64,9 +61,6 @@
             <SolidColorBrush x:Key="InternalErrorTextColor" Color="Red" />
             <!-- NotFoundErrorPage -->
             <SolidColorBrush x:Key="NotFoundErrorTextColor" Color="Red" />
-            <!-- NavigationControl -->
-            <SolidColorBrush x:Key="NavigationControlNavigationBarBackground" Color="#171717" />
-            <SolidColorBrush x:Key="NavigationControlNavigationBarTextColor" Color="#FFFFFF" />
             <!-- SidebarMenuItem -->
             <SolidColorBrush x:Key="SidebarMenuSelectionPipeFill" Color="CornflowerBlue" />
             <!-- SidebarMenu -->

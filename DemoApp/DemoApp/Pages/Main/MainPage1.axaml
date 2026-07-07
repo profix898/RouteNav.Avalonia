@@ -4,47 +4,60 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
-               Title="Page 1" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="720"
+               Title="Dialogs &amp; Errors" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainPage1">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
 
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on MainPage1.</TextBlock>
-        <routing:RouteButton RoutePath="/main/page2">To MainPage2</routing:RouteButton>
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Dialogs &amp; error pages" />
+                <TextBlock Classes="PageSubtitle"
+                           Text="RouteNav shows dialogs as separate windows (desktop) or as overlays/embedded (mobile, browser). Any page can also be shown as a dialog." />
+            </StackPanel>
 
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Dialog Integration</TextBlock>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenDlgCommand">Open Dialog</Button>
-                    <TextBlock Text=" (content dialog)" VerticalAlignment="Center" />
+            <!-- Dialogs -->
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Dialog integration" />
+
+                    <Grid ColumnDefinitions="230,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgCommand" Content="Content dialog" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Text="A Dialog shown in Small / Medium / Large / Custom sizes." />
+
+                        <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenMsgDlgCommand" Content="Message &amp; error dialog" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Text="MessageDialog.Create(...) and Error.ShowDialog(message, exception)." />
+
+                        <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgEmbeddedCommand" Content="Embedded dialog" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Text="The same dialogs rendered embedded into this page instead of a window." />
+
+                        <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageCommand" Content="Page as dialog" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Text="A regular Page converted on the fly with .ToDialog() — sized via DialogSizeHint." />
+
+                        <Button Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageOverlayCommand" Content="Page as overlay dialog" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" VerticalAlignment="Center" Margin="12,0,0,0"
+                                   Text="The same page-as-dialog, forced to render as a content overlay." />
+                    </Grid>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenMsgDlgCommand">Open Message Dialog</Button>
-                    <TextBlock Text=" (message dialog + error dialog)" VerticalAlignment="Center" />
+            </Border>
+
+            <!-- Error pages -->
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Built-in error pages" />
+                    <TextBlock Classes="Hint" Text="Navigate to an unmapped or error route to see RouteNav's default error pages (customizable via the Error helper)." />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <routing:RouteButton RoutePath="/main/error404" Content="404 — Not Found" />
+                        <routing:RouteButton RoutePath="/main/error500" Content="500 — Internal Error" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenDlgEmbeddedCommand">Open Embedded Dialog</Button>
-                    <TextBlock Text=" (content dialog + message dialog) displayed embedded into parent page" VerticalAlignment="Center" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenDlgPageCommand">Open Page as Dialog</Button>
-                    <TextBlock Text=" (Test page as dialog in different sizes)" VerticalAlignment="Center" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OpenDlgPageOverlayCommand">Open Page as Overlay Dialog</Button>
-                    <TextBlock Text=" (Test page as dialog in different sizes) displayed in content overlay" VerticalAlignment="Center" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-      
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Default Error Pages</TextBlock>
-                <routing:RouteButton RoutePath="/main/error404">NotFoundPage</routing:RouteButton>
-                <routing:RouteButton RoutePath="/main/error500">InternalErrorPage</routing:RouteButton>
-            </StackPanel>
-        </Border>
-    </StackPanel>
+            </Border>
+
+            <routing:RouteButton RoutePath="/main/page2" Classes="Accent" Content="Next: Links &amp; direct nav →" />
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

@@ -2,6 +2,7 @@
 using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using RouteNav.Avalonia;
+using RouteNav.Avalonia.Internal;
 
 namespace DemoApp.Win;
 
@@ -25,7 +26,7 @@ internal class Program
                              Navigation.UIPlatform.WindowManager.WindowCustomizationEvent += (window, isDialogWindow) =>
                              {
                                  if (isDialogWindow)
-                                     window.SetDialogModalFrame();
+                                     window.SetDialogStyle();
                              };
                          })
                          .LogToTrace();

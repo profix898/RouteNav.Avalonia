@@ -3,11 +3,25 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 1" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="480"
+               Title="Reports" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuPage2">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the SidebarMenu stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 2.</TextBlock>
-    </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Reports" />
+                <TextBlock Classes="PageSubtitle" Text="Each drawer entry maps to a distinct route on the same stack." />
+            </StackPanel>
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Recent reports" />
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Q3 performance summary" /><TextBlock Grid.Column="1" Classes="Hint" Text="2 days ago" /></Grid>
+                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="User retention cohort" /><TextBlock Grid.Column="1" Classes="Hint" Text="5 days ago" /></Grid>
+                        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Infrastructure costs" /><TextBlock Grid.Column="1" Classes="Hint" Text="1 week ago" /></Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

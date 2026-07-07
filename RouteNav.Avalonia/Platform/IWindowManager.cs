@@ -26,5 +26,5 @@ public interface IWindowManager
 
     AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime);
 
-    ContentControl CreatePlatformView(Window window, ISingleViewApplicationLifetime singleViewLifetime);
+    ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime);
 }

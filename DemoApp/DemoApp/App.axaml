@@ -3,11 +3,12 @@
              xmlns:routeNavThemes="clr-namespace:RouteNav.Avalonia.Themes;assembly=RouteNav.Avalonia"
              xmlns:routeNavRouting="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
              x:Class="DemoApp.App"
-             RequestedThemeVariant="Light">
+             RequestedThemeVariant="Default">
 
     <Application.Styles>
         <FluentTheme />
         <routeNavThemes:RouteNavStyles />
+        <StyleInclude Source="/Styles/DemoStyles.axaml" />
 
         <Style Selector="routeNavRouting|RouteButton">
             <Setter Property="Margin" Value="5" />

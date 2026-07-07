@@ -1,0 +1,119 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia">
+
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Light -->
+                <ResourceDictionary x:Key="Default">
+                    <Color x:Key="DemoAccentColor">#6366F1</Color>
+                    <SolidColorBrush x:Key="DemoAccentBrush" Color="#6366F1" />
+                    <SolidColorBrush x:Key="DemoAccentSoftBrush" Color="#EEF0FE" />
+                    <SolidColorBrush x:Key="DemoAccentForeground" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="DemoPageBackground" Color="#F6F7FB" />
+                    <SolidColorBrush x:Key="DemoCardBackground" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="DemoCardBorderBrush" Color="#E5E7EB" />
+                    <SolidColorBrush x:Key="DemoMutedForeground" Color="#6B7280" />
+                    <SolidColorBrush x:Key="DemoHintBackground" Color="#EEF2FF" />
+                    <SolidColorBrush x:Key="DemoHintBorderBrush" Color="#C7D2FE" />
+                    <SolidColorBrush x:Key="DemoHintForeground" Color="#4338CA" />
+                </ResourceDictionary>
+                <!-- Dark -->
+                <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="DemoAccentColor">#818CF8</Color>
+                    <SolidColorBrush x:Key="DemoAccentBrush" Color="#818CF8" />
+                    <SolidColorBrush x:Key="DemoAccentSoftBrush" Color="#2B2A45" />
+                    <SolidColorBrush x:Key="DemoAccentForeground" Color="#1E1B4B" />
+                    <SolidColorBrush x:Key="DemoPageBackground" Color="#1B1B1F" />
+                    <SolidColorBrush x:Key="DemoCardBackground" Color="#2A2A30" />
+                    <SolidColorBrush x:Key="DemoCardBorderBrush" Color="#3A3A42" />
+                    <SolidColorBrush x:Key="DemoMutedForeground" Color="#9CA3AF" />
+                    <SolidColorBrush x:Key="DemoHintBackground" Color="#26264A" />
+                    <SolidColorBrush x:Key="DemoHintBorderBrush" Color="#4F46E5" />
+                    <SolidColorBrush x:Key="DemoHintForeground" Color="#C7D2FE" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <!-- Typography -->
+    <Style Selector="TextBlock.PageTitle">
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="TextBlock.PageSubtitle">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource DemoMutedForeground}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Margin" Value="0,3,0,0" />
+    </Style>
+    <Style Selector="TextBlock.SectionTitle">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+    </Style>
+    <Style Selector="TextBlock.Hint">
+        <Setter Property="Foreground" Value="{DynamicResource DemoMutedForeground}" />
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.Mono">
+        <Setter Property="FontFamily" Value="Cascadia Code,Consolas,Menlo,monospace" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- Cards -->
+    <Style Selector="Border.Card">
+        <Setter Property="Background" Value="{DynamicResource DemoCardBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DemoCardBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="18" />
+        <Setter Property="BoxShadow" Value="0 1 3 0 #12000000" />
+    </Style>
+    <Style Selector="Border.HintCard">
+        <Setter Property="Background" Value="{DynamicResource DemoHintBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DemoHintBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+    <Style Selector="Border.HintCard TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DemoHintForeground}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- Badge / pill -->
+    <Style Selector="Border.Badge">
+        <Setter Property="Background" Value="{DynamicResource DemoAccentSoftBrush}" />
+        <Setter Property="CornerRadius" Value="7" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+    <Style Selector="Border.Badge > TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DemoAccentBrush}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <!-- Route buttons: consistent width + left aligned -->
+    <Style Selector="routing|RouteButton">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="MinWidth" Value="160" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+    <!-- Accent (primary) buttons -->
+    <Style Selector="Button.Accent">
+        <Setter Property="Background" Value="{DynamicResource DemoAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DemoAccentForeground}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.Accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource DemoAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DemoAccentForeground}" />
+        <Setter Property="Opacity" Value="0.88" />
+    </Style>
+
+</Styles>

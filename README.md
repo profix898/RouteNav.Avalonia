@@ -4,13 +4,40 @@ RouteNav.Avalonia
 
 **RouteNav.Avalonia** provides URI routing navigation for **[Avalonia](https://avaloniaui.net/)**. It supports a code-first, modular/extensible navigation approach with page (and dialog) primitives.
 
+### Features
+
+- **URI-based navigation** from a central `Navigation` facade — `Navigation.PushAsync(uri, target)`.
+- **Four navigation layouts**: single page, navigation stack (back button), tabbed, and sidebar/drawer — the latter built on Avalonia 12's native `DrawerPage`.
+- **Modal, message and error dialogs**, shown as windows (desktop) or overlays/embedded (mobile, browser); any `Page` can be shown as a dialog.
+- **Cross-stack navigation** with explicit targets (`Self`, `Parent`, `Dialog`, `DialogOverlay`, `Window`).
+- **Dependency-injection** page registration (or register pages by any means you like).
+- **Multi-window** (desktop) and **single-view** (mobile/browser) support behind one `Window` abstraction.
+- **Routing controls**: `RouteButton`, `RouteMenuItem`, `RouteCommand`, `HyperlinkButton`, `HyperlinkLabel`.
+
 ### Concept
 In most applications the navigation system is *operated* from within, i.e. clicking a button or menu item triggers the UI to rearrange. It is usually the task of the button/menu handler to perform the desired UI changes. This approach is also used in most MVVM frameworks.
 
 **RouteNav.Avalonia** on the other hand inverts that approach (inside-out). All navigation is handled via a central `Navigation` class. URI-based Navigation is invoked by calling `Navigation.PushAsync(Uri, NavigationTarget)`. The trigger source can again be a control (button, menu item, etc.), but it can also be an external event (e.g. URI activation).
-The UI update happens implicitly based on the association of the (named) `NavigationStack` with a `NavigationContainer` (i.e. a window or navigation layout). Currently, there are four layouts available: `ContentPageStack` (single page), `NavigationPageStack` (mobile-like, navigation bar with back button), `TabbedPageStack` (TabControl), `SidebarMenuPageStack` (Hamburger menu, split pane).
+The UI update happens implicitly based on the association of the (named) `NavigationStack` with a `NavigationContainer` (i.e. a window or navigation layout). Currently, there are four layouts available: `ContentPageStack` (single page), `NavigationPageStack` (mobile-like, navigation bar with back button), `TabbedPageStack` (TabControl), `SidebarMenuPageStack` (hamburger/drawer menu, built on Avalonia's `DrawerPage`).
 
 **RouteNav.Avalonia** also supports navigation with modal dialogs (and message dialogs).
+
+### Requirements
+
+- **Avalonia** 12.x
+- **.NET** 10
+
+RouteNav's navigation layouts build on Avalonia 12's native page-navigation primitives where possible and stay theme-compatible with them. For example, the sidebar/drawer layout builds on Avalonia's `DrawerPage`, so the standard Fluent theming applies and can be overridden the usual way.
+
+Upgrading from the Avalonia 11 build? See the [migration guide](MIGRATION.md).
+
+### Installation
+
+Install the package from [NuGet](https://www.nuget.org/packages/RouteNav.Avalonia):
+
+```
+dotnet add package RouteNav.Avalonia
+```
 
 ### Usage
 
@@ -153,6 +180,8 @@ sidebarMenuStack.AddMenuItem("/otherStack/pageX", "External Page"); // Links to 
 
 ### Documentation
 There is currently only limited documentation (incl. API docs) available. Please refer to the *DemoApp* for preliminary instructions and usage examples. For starters, the navigation structure of the *DemoApp* is defined in ``App.axaml.cs``.
+
+Upgrading from the Avalonia 11 build of RouteNav.Avalonia? See [MIGRATION.md](MIGRATION.md) for the breaking changes and step-by-step guidance.
 
 ### License
 RouteNav.Avalonia is licensed under the terms of the MIT license (<http://opensource.org/licenses/MIT>, see LICENSE.txt).

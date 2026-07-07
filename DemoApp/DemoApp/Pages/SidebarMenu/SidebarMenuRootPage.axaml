@@ -4,19 +4,45 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Root Page" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
+               Title="Home" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.SidebarMenu.SidebarMenuRootPage">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the SidebarMenu stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Root Page.</TextBlock>
-      
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Main stack</TextBlock>
-                <routing:RouteButton RoutePath="/main" Target="Parent">To Main Root</routing:RouteButton>
-                <routing:RouteButton RoutePath="/main/page2" Target="Parent">To Main Page 2</routing:RouteButton>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <routing:RouteButton RoutePath="/main" Target="Parent" Content="← Main" MinWidth="0" Padding="10,4" HorizontalAlignment="Left" />
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Sidebar / Drawer navigation" />
+                <TextBlock Classes="PageSubtitle"
+                           Text="This stack (SidebarMenuPageStack) is composed on Avalonia 12's native DrawerPage. Open the menu (☰) to switch pages." />
             </StackPanel>
-        </Border>
-    </StackPanel>
+            <Border Classes="HintCard">
+                <StackPanel Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Menu items can cross stacks" />
+                    <TextBlock Text="The drawer includes a link to a page on the Tabbed stack, and menu items can also target external URIs — without leaving the current stack." />
+                </StackPanel>
+            </Border>
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Drawer display mode" />
+                    <TextBlock Classes="Hint"
+                               Text="Switch the native DrawerPage's display mode at runtime. Auto adapts to the window width; try resizing the window." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Auto" Tag="Auto" Click="OnDisplayMode" />
+                        <Button Content="Inline" Tag="Inline" Click="OnDisplayMode" />
+                        <Button Content="Overlay" Tag="Overlay" Click="OnDisplayMode" />
+                        <Button Content="Compact" Tag="CompactOverlay" Click="OnDisplayMode" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Jump to the Main stack" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <routing:RouteButton RoutePath="/main" Target="Parent" Content="Main home" />
+                        <routing:RouteButton RoutePath="/main/page2" Target="Parent" Content="Main · Links" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

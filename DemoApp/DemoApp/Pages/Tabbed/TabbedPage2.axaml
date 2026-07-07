@@ -3,11 +3,25 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 2" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="420"
+               Title="Details" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Tabbed.TabbedPage2">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the Tabbed stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 2.</TextBlock>
-    </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Details" />
+                <TextBlock Classes="PageSubtitle" Text="Every registered page on the stack becomes a tab automatically." />
+            </StackPanel>
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="SectionTitle" Text="Specification" />
+                    <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Classes="Hint" Text="Container" /><TextBlock Grid.Row="0" Grid.Column="1" Text="TabbedPageContainer" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Classes="Hint" Text="Control" /><TextBlock Grid.Row="1" Grid.Column="1" Text="TabControl (Fluent themed)" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Classes="Hint" Text="Header source" /><TextBlock Grid.Row="2" Grid.Column="1" Text="Page.Title" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

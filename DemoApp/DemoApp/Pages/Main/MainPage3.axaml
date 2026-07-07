@@ -3,21 +3,53 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 3" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="520"
+               Title="Any Content" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainPage3">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 3.</TextBlock>
-      
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="10">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Some content to fill the page for illustration ...</TextBlock>
-                <ProgressBar Height="5" Value="50" />
-                <CheckBox IsChecked="true">CheckBox</CheckBox>
-                <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
-                <TimePicker />
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="A page is just content" />
+                <TextBlock Classes="PageSubtitle"
+                           Text="A RouteNav Page can host any Avalonia control tree — build it in XAML or code, with or without a view model." />
             </StackPanel>
-        </Border>
-    </StackPanel>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Received route parameters" />
+                    <TextBlock Classes="Hint"
+                               Text="These values were read from this page's PageQuery dictionary. Navigate here from the hub's 'Route parameters' card to change them." />
+                    <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="name" Classes="Mono" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="ParamName" Classes="Mono" Text="(none)" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="count" Classes="Mono" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="ParamCount" Classes="Mono" Text="(none)" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="routeUri" Classes="Mono" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ParamRaw" Classes="Mono" Text="(none)" TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="14">
+                    <TextBlock Classes="SectionTitle" Text="Example form" />
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Progress" Classes="Hint" />
+                        <ProgressBar Height="6" Value="60" />
+                    </StackPanel>
+                    <CheckBox IsChecked="True" Content="Enable notifications" />
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Quantity" Classes="Hint" />
+                        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Reminder" Classes="Hint" />
+                        <TimePicker HorizontalAlignment="Left" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

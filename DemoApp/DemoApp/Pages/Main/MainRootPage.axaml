@@ -4,37 +4,157 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="RootPage Title" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="720"
+               Title="Home" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainRootPage">
-    <StackPanel Spacing="5" HorizontalAlignment="Left">
-        <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-      
-        <Border Background="#EEEEEE" Margin="0,10" Padding="10" MaxWidth="800">
-            <TextBlock Margin="0,0,0,10" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed">The main stack showcases most of the features of RouteNav.Avalonia. It's probably a good idea to start on pages 1+2 of the main stack to explore what RouteNav.Avalonia offers. The sidebar menu and tabbed stacks show alternative navigation layouts using a hamburger menu and tabbed interface, respectively.</TextBlock>
-        </Border>
-      
-        <routing:RouteButton RoutePath="/main/page1">To Main Page1</routing:RouteButton>
-        <routing:RouteButton RoutePath="/main/page2">To Main Page2</routing:RouteButton>
-        <routing:RouteButton RoutePath="/main/page3">To Main Page3</routing:RouteButton>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900" HorizontalAlignment="Stretch">
 
-        <Border Background="#EEEEEE" Margin="0,10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">SidebarMenu stack</TextBlock>
-                <routing:RouteButton RoutePath="/sidebar/" Target="Window">To Sidebar Root</routing:RouteButton>
-                <routing:RouteButton RoutePath="/sidebar/page1" Target="Window">To Sidebar Page1</routing:RouteButton>
-                <routing:RouteButton RoutePath="/sidebar/page2" Target="Window">To Sidebar Page2</routing:RouteButton>
-                <routing:RouteButton RoutePath="/sidebar/page3" Target="Window">To Sidebar Page3</routing:RouteButton>
+            <!-- Hero -->
+            <StackPanel Spacing="6">
+                <TextBlock Classes="PageTitle" Text="RouteNav.Avalonia" />
+                <TextBlock Classes="PageSubtitle" MaxWidth="640" HorizontalAlignment="Left"
+                           Text="URI-based navigation for Avalonia — a code-first, modular navigation system with page and dialog primitives." />
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+                    <Border Classes="Badge"><TextBlock Text="Avalonia 12" /></Border>
+                    <Border Classes="Badge"><TextBlock Text=".NET 10" /></Border>
+                    <Border Classes="Badge"><TextBlock Text="MIT" /></Border>
+                </StackPanel>
             </StackPanel>
-        </Border>
-        <Border Background="#EEEEEE" Margin="0,10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock Margin="0,0,0,10" FontWeight="Bold">Tabbed stack</TextBlock>
-                <routing:RouteButton RoutePath="/tabbed/" Target="Window">To Tabbed Root</routing:RouteButton>
-                <routing:RouteButton RoutePath="/tabbed/page1" Target="Window">To Tabbed Page1</routing:RouteButton>
-                <routing:RouteButton RoutePath="/tabbed/page2" Target="Window">To Tabbed Page2</routing:RouteButton>
-                <routing:RouteButton RoutePath="/tabbed/page3" Target="Window">To Tabbed Page3</routing:RouteButton>
-            </StackPanel>
-        </Border>
-    </StackPanel>
+
+            <!-- Theme toggle -->
+            <Border Classes="Card">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="Appearance" VerticalAlignment="Center" FontWeight="SemiBold" />
+                    <TextBlock Classes="Hint" VerticalAlignment="Center"
+                               Text="RouteNav's controls and this demo adapt to the theme variant." />
+                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                        <Button Content="Light" Click="OnThemeLight" />
+                        <Button Content="Dark" Click="OnThemeDark" />
+                        <Button Content="System" Click="OnThemeSystem" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Intro hint -->
+            <Border Classes="HintCard">
+                <StackPanel Spacing="4">
+                    <TextBlock FontWeight="SemiBold" Text="Where to start" />
+                    <TextBlock Text="This is the Main stack — a NavigationPageStack with a navigation bar and back button. Pages 1 and 2 showcase most of RouteNav's features (dialogs, links, direct navigation). The two cards below open alternative navigation layouts in a new window." />
+                </StackPanel>
+            </Border>
+
+            <!-- Main stack pages -->
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Explore the Main stack" />
+                    <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <routing:RouteButton Grid.Row="0" Grid.Column="0" RoutePath="/main/page1" Content="Dialogs &amp; errors" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Modal / embedded / overlay dialogs, message &amp; error dialogs, page-as-dialog, and built-in error pages." />
+                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/page2" Content="Links &amp; direct nav" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Hyperlink controls (internal routes and external URIs) plus direct page/dialog pushing without a route." />
+                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/page3" Content="Any content" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="A page can host any Avalonia control — pages are just content." />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Router playground -->
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Try the router" />
+                    <TextBlock Classes="Hint"
+                               Text="RouteNav navigates by URI. Type a route and press Go — this calls Navigation.PushAsync(uri)." />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="RouteInput" Text="/main/page2" Width="320" Watermark="/stack/path?query" />
+                        <Button Classes="Accent" Content="Go" Click="OnRouteGo" />
+                    </StackPanel>
+                    <TextBlock Classes="Hint"
+                               Text="Try /main/page1, /main/page3, /sidebar/page1 or /tabbed/page2 — or an unknown path like /main/nope to see the built-in 404 page." />
+                </StackPanel>
+            </Border>
+
+            <!-- Route parameters -->
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Route parameters" />
+                    <TextBlock Classes="Hint"
+                               Text="Query-string parameters are parsed into the target page's PageQuery dictionary and read back there." />
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="name" Classes="Mono" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NameInput" Text="Ada" Width="220" HorizontalAlignment="Left" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="count" Classes="Mono" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="CountInput" Text="3" Width="220" HorizontalAlignment="Left" />
+                    </Grid>
+                    <Button Classes="Accent" Content="Send to Page 3 →" Click="OnSendParams" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <!-- Feature map -->
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Feature map" />
+                    <TextBlock Classes="Hint" Text="Where each RouteNav feature is demonstrated in this app." />
+                    <Grid ColumnDefinitions="260,*" RowSpacing="7"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="URI routing / deep links" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" Text="Try the router (above)" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Route parameters (PageQuery)" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" Text="Route parameters (above) → Page 3" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Dialogs (modal / embedded / overlay)" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" Text="Main · Dialogs &amp; errors (page 1)" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Message &amp; built-in error pages" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" Text="Main · Dialogs &amp; errors (page 1)" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Hyperlink controls &amp; direct push" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" Text="Main · Links &amp; direct nav (page 2)" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Navigation targets (Self / Parent / Window)" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Classes="Hint" Text="RouteButtons throughout" />
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Cross-stack navigation" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Classes="Hint" Text="Sidebar &amp; Tabbed root pages" />
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Sidebar / DrawerPage layout" />
+                        <TextBlock Grid.Row="7" Grid.Column="1" Classes="Hint" Text="Sidebar demo (below)" />
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Tabbed layout" />
+                        <TextBlock Grid.Row="8" Grid.Column="1" Classes="Hint" Text="Tabbed demo (below)" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Alternative layouts -->
+            <TextBlock Classes="SectionTitle" Margin="2,4,0,0" Text="Alternative navigation layouts" />
+            <WrapPanel Orientation="Horizontal">
+                <Border Classes="Card" Width="410" Margin="0,0,16,16">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock FontSize="22" Text="&#x2630;" VerticalAlignment="Center" />
+                            <StackPanel>
+                                <TextBlock Classes="SectionTitle" Margin="0" Text="Sidebar / Drawer" />
+                                <TextBlock Classes="Hint" Text="SidebarMenuPageStack" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Classes="Hint" Text="A hamburger/drawer menu built on Avalonia 12's native DrawerPage. The menu can also link to other stacks and external URIs." />
+                        <TextBlock Classes="Hint" Text="Opens in a new window on desktop; on mobile/browser (single-view) it replaces the current view instead." />
+                        <routing:RouteButton RoutePath="/sidebar/" Target="Window" Classes="Accent" Content="Open Sidebar demo" />
+                    </StackPanel>
+                </Border>
+                <Border Classes="Card" Width="410" Margin="0,0,16,16">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock FontSize="22" Text="&#x25A4;" VerticalAlignment="Center" />
+                            <StackPanel>
+                                <TextBlock Classes="SectionTitle" Margin="0" Text="Tabbed" />
+                                <TextBlock Classes="Hint" Text="TabbedPageStack" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Classes="Hint" Text="A tabbed interface whose tabs are populated automatically from the pages registered on the stack." />
+                        <TextBlock Classes="Hint" Text="Opens in a new window on desktop; on mobile/browser (single-view) it replaces the current view instead." />
+                        <routing:RouteButton RoutePath="/tabbed/" Target="Window" Classes="Accent" Content="Open Tabbed demo" />
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

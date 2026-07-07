@@ -4,14 +4,12 @@
                  Title="Demo Dialog Title"
                  x:Class="DemoApp.TestDialog">
 
-    <StackPanel Spacing="10" Margin="15,10">
-        <TextBlock TextWrapping="Wrap">
-            <Run Text="Note: This is a " /><Run FontWeight="Bold" Text="'Dialog'" /><Run Text="." />
-        </TextBlock>
-        <TextBlock Margin="0,0,0,10" FontWeight="Bold">Any content can go here ...</TextBlock>
-        <ProgressBar Height="5" Value="50" />
-        <CheckBox IsChecked="true">CheckBox</CheckBox>
-        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" />
-        <TimePicker />
+    <StackPanel Spacing="12" Margin="18,16">
+        <Border Classes="Badge" HorizontalAlignment="Left"><TextBlock Text="Dialog" /></Border>
+        <TextBlock Classes="Hint" Text="This is a Dialog. On desktop it opens as a window; on mobile/browser it renders as an overlay." />
+        <ProgressBar Height="6" Value="50" />
+        <CheckBox IsChecked="True" Content="Remember my choice" />
+        <NumericUpDown Minimum="0" Maximum="100" Increment="10" Value="25" Width="180" HorizontalAlignment="Left" />
+        <TimePicker HorizontalAlignment="Left" />
     </StackPanel>
 </avalonia:Dialog>

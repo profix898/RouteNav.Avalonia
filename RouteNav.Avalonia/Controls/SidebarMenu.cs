@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Metadata;
 using RouteNav.Avalonia.Internal;
 using RouteNav.Avalonia.Platform;
@@ -15,9 +13,16 @@ using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Controls;
 
-[TemplatePart("PART_SidebarMenuPane", typeof(SplitView))]
+/// <summary>
+/// A routing-aware sidebar/drawer menu. It <b>composes</b> Avalonia 12's native
+/// <see cref="global::Avalonia.Controls.DrawerPage"/> internally (hosted in its template), so the
+/// native V12 drawer theming applies automatically and can be overridden the same way as any other
+/// V12 control (via the <c>DrawerPage</c> control theme or the Fluent drawer resource keys).
+/// The control itself exposes only RouteNav's menu/routing concepts, keeping the API free of the
+/// framework's own page-navigation members.
+/// </summary>
+[TemplatePart("PART_Drawer", typeof(global::Avalonia.Controls.DrawerPage))]
 [TemplatePart("PART_MenuItemList", typeof(ListBox))]
-[TemplatePart("PART_NavigationContent", typeof(ContentPresenter))]
 public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 {
     #region DisplayModeEnum
@@ -25,81 +30,63 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
     public enum DisplayModeEnum
     {
         /// <summary>
-        /// Inline (width &lt; InlineThresholdWidth) or Overlay (width &gt; InlineThresholdWidth)
+        /// Inline (width &gt;= <see cref="InlineThresholdWidth"/>) or Overlay (width &lt; <see cref="InlineThresholdWidth"/>).
         /// </summary>
         Auto,
         /// <summary>
-        /// Menu is displayed next to content
+        /// Menu is permanently displayed next to the content.
         /// </summary>
         Inline,
         /// <summary>
-        /// Menu is displayed on overlay above content
+        /// Menu is displayed as an overlay above the content.
         /// </summary>
         Overlay,
         /// <summary>
-        /// Menu is displayed on overlay above content,
-        /// a small part is still visible when collapsed
+        /// Menu is displayed as an overlay above the content; a compact rail stays visible when collapsed.
         /// </summary>
         CompactOverlay
     }
-    
+
     #endregion
 
-    private SplitView? splitView;
-    private ListBox? listBox;
-    private ContentPresenter? contentPresenter;
-
-    public static readonly StyledProperty<IBrush?> SidebarBackgroundProperty = SplitView.PaneBackgroundProperty.AddOwner<SidebarMenu>();
+    private global::Avalonia.Controls.DrawerPage? drawer;
+    private ListBox? menuList;
+    private bool suppressSelectionChanged;
 
     public static readonly StyledProperty<object?> SidebarHeaderProperty = AvaloniaProperty.Register<SidebarMenu, object?>(nameof(SidebarHeader));
 
     public static readonly StyledProperty<object?> SidebarFooterProperty = AvaloniaProperty.Register<SidebarMenu, object?>(nameof(SidebarFooter));
-    
-    public static readonly StyledProperty<IBrush?> ContentBackgroundProperty = AvaloniaProperty.Register<SidebarMenu, IBrush?>(nameof(ContentBackground));
 
-    public static readonly StyledProperty<DisplayModeEnum> DisplayModeProperty = AvaloniaProperty.Register<SidebarMenu, DisplayModeEnum>(nameof(InlineThresholdWidth), DisplayModeEnum.Auto);
+    public static readonly StyledProperty<DisplayModeEnum> DisplayModeProperty = AvaloniaProperty.Register<SidebarMenu, DisplayModeEnum>(nameof(DisplayMode), DisplayModeEnum.Auto);
 
     public static readonly StyledProperty<int> InlineThresholdWidthProperty = AvaloniaProperty.Register<SidebarMenu, int>(nameof(InlineThresholdWidth), 1005);
 
     public static readonly StyledProperty<Thickness> SafeAreaPaddingProperty = AvaloniaProperty.Register<SidebarMenu, Thickness>(nameof(SafeAreaPadding));
-
-    public static readonly StyledProperty<HorizontalAlignment> HorizontalContentAlignmentProperty = ContentControl.HorizontalContentAlignmentProperty.AddOwner<SidebarMenu>();
-
-    public static readonly StyledProperty<VerticalAlignment> VerticalContentAlignmentProperty = ContentControl.VerticalContentAlignmentProperty.AddOwner<SidebarMenu>();
 
     public static readonly DirectProperty<SidebarMenu, IEnumerable<SidebarMenuItem>> MenuItemsSourceProperty =
         AvaloniaProperty.RegisterDirect<SidebarMenu, IEnumerable<SidebarMenuItem>>(nameof(MenuItemsSource), s => s.MenuItems, (s, items) =>
         {
             s.MenuItems.Clear();
             s.MenuItems.AddRange(items);
+            s.RefreshMenuItems();
         });
 
     public static readonly RoutedEvent<RoutedEventArgs> SelectedMenuItemChangedEvent = RoutedEvent.Register<SidebarMenu, RoutedEventArgs>(nameof(SelectedMenuItemChanged), RoutingStrategies.Bubble);
 
     public static readonly StyledProperty<Page?> PageProperty = AvaloniaProperty.Register<SidebarMenu, Page?>(nameof(Page));
 
-    public IBrush? SidebarBackground
-    {
-        get { return GetValue(SidebarBackgroundProperty); }
-        set { SetValue(SidebarBackgroundProperty, value); }
-    }
-
+    /// <summary>Content displayed at the top of the drawer pane (forwarded to <c>DrawerPage.DrawerHeader</c>).</summary>
     public object? SidebarHeader
     {
         get { return GetValue(SidebarHeaderProperty); }
         set { SetValue(SidebarHeaderProperty, value); }
     }
 
+    /// <summary>Content displayed at the bottom of the drawer pane (forwarded to <c>DrawerPage.DrawerFooter</c>).</summary>
     public object? SidebarFooter
     {
         get { return GetValue(SidebarFooterProperty); }
         set { SetValue(SidebarFooterProperty, value); }
-    }
-
-    public IBrush? ContentBackground
-    {
-        get { return GetValue(ContentBackgroundProperty); }
-        set { SetValue(ContentBackgroundProperty, value); }
     }
 
     public DisplayModeEnum DisplayMode
@@ -108,6 +95,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
         set { SetValue(DisplayModeProperty, value); }
     }
 
+    /// <summary>Width threshold below which <see cref="DisplayModeEnum.Auto"/> switches from inline to overlay.</summary>
     public int InlineThresholdWidth
     {
         get { return GetValue(InlineThresholdWidthProperty); }
@@ -123,18 +111,6 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
     }
 
     #endregion
-
-    public HorizontalAlignment HorizontalContentAlignment
-    {
-        get { return GetValue(HorizontalContentAlignmentProperty); }
-        set { SetValue(HorizontalContentAlignmentProperty, value); }
-    }
-
-    public VerticalAlignment VerticalContentAlignment
-    {
-        get { return GetValue(VerticalContentAlignmentProperty); }
-        set { SetValue(VerticalContentAlignmentProperty, value); }
-    }
 
     [Content]
     public List<SidebarMenuItem> MenuItems { get; } = new List<SidebarMenuItem>();
@@ -153,6 +129,7 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 
     public SidebarMenuItem? SelectedMenuItem { get; private set; }
 
+    /// <summary>The page shown in the detail area (forwarded to <c>DrawerPage.Content</c> via the template).</summary>
     public Page? Page
     {
         get { return GetValue(PageProperty); }
@@ -165,84 +142,70 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
     {
         base.OnApplyTemplate(e);
 
-        splitView = e.NameScope.Find<SplitView>("PART_SidebarMenuPane");
+        drawer = e.NameScope.Find<global::Avalonia.Controls.DrawerPage>("PART_Drawer");
 
-        if (listBox != null)
-            listBox.SelectionChanged -= ListBox_OnSelectionChanged;
-        listBox = e.NameScope.Find<ListBox>("PART_MenuItemList");
-        if (listBox != null)
+        if (menuList != null)
+            menuList.SelectionChanged -= MenuList_OnSelectionChanged;
+        menuList = e.NameScope.Find<ListBox>("PART_MenuItemList");
+        if (menuList != null)
         {
-            listBox.SelectionMode = NavigationStack != null ? SelectionMode.AlwaysSelected : SelectionMode.Single;
-            listBox.SelectedIndex = 0; // Initial selection
-            listBox.SelectionChanged += ListBox_OnSelectionChanged;
+            menuList.ItemsSource = MenuItems.ToList();
+            menuList.SelectionChanged += MenuList_OnSelectionChanged;
         }
 
-        contentPresenter = e.NameScope.Find<ContentPresenter>("PART_NavigationContent");
+        ApplyDisplayMode();
+        UpdateContentSafeAreaPadding();
+        SyncSelectionToCurrentPage();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == BoundsProperty && splitView != null)
-        {
-            var (_, newBounds) = change.GetOldAndNewValue<Rect>();
-            EnsureSplitViewDisplayMode(newBounds);
-        }
-        else if ((change.Property == DisplayModeProperty || change.Property == InlineThresholdWidthProperty) && splitView != null)
-            EnsureSplitViewDisplayMode(Bounds);
-        else if (change.Property == PageProperty && contentPresenter != null)
-        {
-            contentPresenter.Content = Page;
-
-            // Validate (and potentially fix) listbox selection
-            if (Page != null && NavigationStack != null && listBox != null)
-            {
-                if (Page.PageQuery.TryGetValue("routeUri", out var routeUriString))
-                {
-                    var routeUri = new Uri(routeUriString);
-                    var idx = MenuItems.FindIndex(item => NavigationStack.EqualsRoutePath(NavigationStack.BuildRoute(item.RouteUri), routeUri));
-                    if (listBox.SelectedIndex != idx)
-                        listBox.SelectedIndex = idx;
-                }
-                else
-                    listBox.SelectedIndex = -1;
-            }
-        }
+        if (change.Property == PageProperty)
+            SyncSelectionToCurrentPage();
+        else if (change.Property == DisplayModeProperty || change.Property == InlineThresholdWidthProperty)
+            ApplyDisplayMode();
         else if (change.Property == SafeAreaPaddingProperty || change.Property == PaddingProperty)
             UpdateContentSafeAreaPadding();
     }
 
-    private void EnsureSplitViewDisplayMode(Rect bounds)
+    private void RefreshMenuItems()
     {
-        if (splitView == null)
+        if (menuList == null)
+            return;
+
+        menuList.ItemsSource = MenuItems.ToList();
+        SyncSelectionToCurrentPage();
+    }
+
+    private void ApplyDisplayMode()
+    {
+        if (drawer == null)
             return;
 
         switch (DisplayMode)
         {
             case DisplayModeEnum.Auto:
-                if (bounds.Width < InlineThresholdWidth)
-                {
-                    splitView.DisplayMode = SplitViewDisplayMode.Overlay;
-                    splitView.IsPaneOpen = false;
-                }
-                else
-                {
-                    splitView.DisplayMode = SplitViewDisplayMode.Inline;
-                    splitView.IsPaneOpen = true;
-                }
+                // Inline (side-by-side) when wide; automatically collapses to an overlay below the threshold.
+                drawer.DrawerBehavior = global::Avalonia.Controls.DrawerBehavior.Auto;
+                drawer.DrawerLayoutBehavior = global::Avalonia.Controls.DrawerLayoutBehavior.Split;
+                drawer.DrawerBreakpointLength = InlineThresholdWidth;
                 break;
             case DisplayModeEnum.Inline:
-                splitView.DisplayMode = SplitViewDisplayMode.Inline;
-                splitView.IsPaneOpen = true;
+                drawer.DrawerBehavior = global::Avalonia.Controls.DrawerBehavior.Locked;
+                drawer.DrawerLayoutBehavior = global::Avalonia.Controls.DrawerLayoutBehavior.Split;
+                drawer.DrawerBreakpointLength = 0;
                 break;
             case DisplayModeEnum.Overlay:
-                splitView.DisplayMode = SplitViewDisplayMode.Overlay;
-                splitView.IsPaneOpen = false;
+                drawer.DrawerBehavior = global::Avalonia.Controls.DrawerBehavior.Auto;
+                drawer.DrawerLayoutBehavior = global::Avalonia.Controls.DrawerLayoutBehavior.Overlay;
+                drawer.DrawerBreakpointLength = 0;
                 break;
             case DisplayModeEnum.CompactOverlay:
-                splitView.DisplayMode = SplitViewDisplayMode.CompactOverlay;
-                splitView.IsPaneOpen = false;
+                drawer.DrawerBehavior = global::Avalonia.Controls.DrawerBehavior.Auto;
+                drawer.DrawerLayoutBehavior = global::Avalonia.Controls.DrawerLayoutBehavior.CompactOverlay;
+                drawer.DrawerBreakpointLength = 0;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -251,26 +214,50 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
 
     private void UpdateContentSafeAreaPadding()
     {
-        var remainingSafeArea = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
-
-        if (contentPresenter != null && contentPresenter.Content is ISafeAreaAware safeAreaAwareChild)
-            safeAreaAwareChild.SafeAreaPadding = remainingSafeArea;
-        else if (splitView != null)
-            splitView.Padding = splitView.Padding.ApplySafeAreaPadding(remainingSafeArea);
+        if (drawer != null)
+            drawer.SafeAreaPadding = Padding.GetRemainingSafeAreaPadding(SafeAreaPadding);
     }
 
-    private void ListBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void SyncSelectionToCurrentPage()
     {
-        if (splitView != null && (splitView.DisplayMode == SplitViewDisplayMode.Overlay || splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay))
-            splitView.SetCurrentValue(SplitView.IsPaneOpenProperty, false);
+        if (menuList == null || Page == null || NavigationStack == null || MenuItems.Count == 0)
+            return;
 
-        if (listBox != null && listBox.SelectedIndex >= 0)
-            SelectedMenuItem = MenuItems[listBox.SelectedIndex];
-        else
+        suppressSelectionChanged = true;
+        try
         {
-            SelectedMenuItem = null;
-            Page = null; // Clear page
+            if (Page.PageQuery.TryGetValue("routeUri", out var routeUriString))
+            {
+                var routeUri = new Uri(routeUriString);
+                var idx = MenuItems.FindIndex(item => NavigationStack.EqualsRoutePath(NavigationStack.BuildRoute(item.RouteUri), routeUri));
+                if (menuList.SelectedIndex != idx)
+                    menuList.SelectedIndex = idx;
+            }
+            else
+                menuList.SelectedIndex = -1;
         }
+        finally
+        {
+            suppressSelectionChanged = false;
+        }
+    }
+
+    private void MenuList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        // Close the drawer after a selection when it is shown as an overlay/flyout pane.
+        if (drawer is { IsOpen: true }
+            && drawer.DrawerBehavior != global::Avalonia.Controls.DrawerBehavior.Locked
+            && (drawer.DrawerLayoutBehavior == global::Avalonia.Controls.DrawerLayoutBehavior.Overlay
+                || drawer.DrawerLayoutBehavior == global::Avalonia.Controls.DrawerLayoutBehavior.CompactOverlay))
+            drawer.SetCurrentValue(global::Avalonia.Controls.DrawerPage.IsOpenProperty, false);
+
+        if (menuList != null && menuList.SelectedIndex >= 0 && menuList.SelectedIndex < MenuItems.Count)
+            SelectedMenuItem = MenuItems[menuList.SelectedIndex];
+        else
+            SelectedMenuItem = null;
+
+        if (suppressSelectionChanged)
+            return;
 
         RaiseEvent(new RoutedEventArgs(SelectedMenuItemChangedEvent));
     }

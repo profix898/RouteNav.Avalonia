@@ -5,36 +5,51 @@
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
                xmlns:routeCtrl="clr-namespace:RouteNav.Avalonia.Controls;assembly=RouteNav.Avalonia"
                xmlns:routing="clr-namespace:RouteNav.Avalonia.Routing;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
-               Title="Page 2" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="620"
+               Title="Links &amp; Navigation" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Main.MainPage2">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the Main stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 2.</TextBlock>
-        <routing:RouteButton RoutePath="/main/page3">To Page3</routing:RouteButton>
-          
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Orientation="Horizontal" Spacing="100">
-                <StackPanel Spacing="5">
-                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">HyperlinkButton (Avalonia 11.1+)</TextBlock>
-                    <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkButton>
-                    <routeCtrl:HyperlinkButton RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkButton>
-                </StackPanel>
-                <StackPanel Spacing="5">
-                    <TextBlock Margin="0,0,0,10" FontWeight="Bold">Hyperlink</TextBlock>
-                    <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External Link</routeCtrl:HyperlinkLabel>
-                    <routeCtrl:HyperlinkLabel RoutePath="/main/page3">Internal Link (Page 3)</routeCtrl:HyperlinkLabel>
-                </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Links &amp; navigation" />
+                <TextBlock Classes="PageSubtitle"
+                           Text="Trigger routing from hyperlink controls, or push pages and dialogs directly onto a stack without going through a route URI." />
             </StackPanel>
-        </Border>
-      
-        <Border Background="#EEEEEE" Margin="0, 10" Padding="10">
-            <StackPanel Spacing="5">
-                <TextBlock FontWeight="Bold">Direct navigation for page (IPageNavigation) / dialog (IDialogNavigation)</TextBlock>
-                <TextBlock Margin="0,0,0,10">Note: This does not go through a route (Uri), but pushes pages/dialog directly to the stack.</TextBlock>
-                <Button Click="PushPageCommand">Push page (directly)</Button>
-                <Button Click="PushDialogCommand">Push dialog (directly)</Button>
-            </StackPanel>
-        </Border>
-    </StackPanel>
+
+            <!-- Hyperlinks -->
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Hyperlink controls" />
+                    <TextBlock Classes="Hint" Text="Internal routes navigate the stack; external URIs are handed to the platform launcher (browser, mail, …)." />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+                        <StackPanel Grid.Column="0" Spacing="6">
+                            <Border Classes="Badge"><TextBlock Text="HyperlinkButton" /></Border>
+                            <routeCtrl:HyperlinkButton NavigateUri="https://www.avaloniaui.net/" Content="External link (avaloniaui.net)" />
+                            <routeCtrl:HyperlinkButton RoutePath="/main/page3" Content="Internal link (Page 3)" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="6">
+                            <Border Classes="Badge"><TextBlock Text="HyperlinkLabel" /></Border>
+                            <routeCtrl:HyperlinkLabel NavigateUri="https://www.avaloniaui.net/">External link (avaloniaui.net)</routeCtrl:HyperlinkLabel>
+                            <routeCtrl:HyperlinkLabel RoutePath="/main/page3">Internal link (Page 3)</routeCtrl:HyperlinkLabel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Direct navigation -->
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Direct navigation (no route)" />
+                    <TextBlock Classes="Hint" Text="Push a page (IPageNavigation) or dialog (IDialogNavigation) straight onto the stack — useful for dynamically created content that has no registered route." />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Click="PushPageCommand" Content="Push a page" />
+                        <Button Click="PushDialogCommand" Content="Push a dialog" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <routing:RouteButton RoutePath="/main/page3" Classes="Accent" Content="Next: Any content →" />
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>

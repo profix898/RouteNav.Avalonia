@@ -3,11 +3,25 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:routeNav="clr-namespace:RouteNav.Avalonia;assembly=RouteNav.Avalonia"
-               mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-               Title="Page 3" Padding="8,5"
+               mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="420"
+               Title="Activity" Background="{DynamicResource DemoPageBackground}"
                x:Class="DemoApp.Pages.Tabbed.TabbedPage3">
-    <StackPanel Spacing="5">
-        <TextBlock FontWeight="Bold">Welcome on the Tabbed stack!</TextBlock>
-        <TextBlock Margin="0,0,0,10">-> We are on Page 3.</TextBlock>
-    </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Margin="24,20" MaxWidth="900">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="PageTitle" Text="Activity" />
+                <TextBlock Classes="PageSubtitle" Text="A simple timeline to round out the tabbed example." />
+            </StackPanel>
+            <Border Classes="Card">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="SectionTitle" Text="Timeline" />
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="09:12" /></Border><TextBlock Text="Deployment completed successfully." /></Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="08:40" /></Border><TextBlock Text="Nightly build passed all checks." /></Grid>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"><Border Classes="Badge" VerticalAlignment="Top"><TextBlock Text="07:55" /></Border><TextBlock Text="New pull request opened." /></Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </routeNav:Page>
