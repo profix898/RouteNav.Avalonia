@@ -107,7 +107,12 @@ public class AvaloniaWindowManager : IWindowManager
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
     {
         var platformWindow = new AvaloniaWindow { Title = window.Title, Icon = window.Icon };
-        window.ClonePropertiesTo(platformWindow);
+
+        // Host the template window: it joins the visual/logical tree, so window-level XAML
+        // (Background/Foreground bindings, styles, resources) resolves natively against the
+        // application resource chain and keeps following theme/density changes.
+        platformWindow.Tag = window;
+        platformWindow.Content = window;
 
         WindowCustomizationEvent?.Invoke(platformWindow);
         window.RegisterPlatform(desktopLifetime, platformWindow);
@@ -118,8 +123,12 @@ public class AvaloniaWindowManager : IWindowManager
     /// <inheritdoc />
     public virtual ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime)
     {
-        var platformControl = new UserControl();
-        window.ClonePropertiesTo(platformControl);
+        var platformControl = new UserControl
+        {
+            // Host the template window: it joins the visual/logical tree of the host view, so
+            // window-level XAML resolves natively against the application resource chain.
+            Tag = window, Content = window
+        };
 
         window.RegisterPlatform(appLifetime, platformControl);
 

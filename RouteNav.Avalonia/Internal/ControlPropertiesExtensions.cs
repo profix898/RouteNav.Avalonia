@@ -1,4 +1,5 @@
 ﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.Styling;
@@ -21,20 +22,45 @@ internal static class ControlPropertiesExtensions
 
     public static void ClonePropertiesTo(this TemplatedControl controlSource, TemplatedControl controlTarget)
     {
-        // TemplatedControl
-        controlTarget.Background = controlSource.Background;
-        controlTarget.BorderBrush = controlSource.BorderBrush;
-        controlTarget.BorderThickness = controlSource.BorderThickness;
-        controlTarget.CornerRadius = controlSource.CornerRadius;
-        controlTarget.FontFamily = controlSource.FontFamily;
-        controlTarget.FontSize = controlSource.FontSize;
-        controlTarget.FontStyle = controlSource.FontStyle;
-        controlTarget.FontWeight = controlSource.FontWeight;
-        controlTarget.FontStretch = controlSource.FontStretch;
-        controlTarget.Foreground = controlSource.Foreground;
-        controlTarget.Padding = controlSource.Padding;
+        // TemplatedControl — mirrored appearance properties keep bindings alive: secondary windows
+        // and dialog windows mirror the main template window's declared appearance, and shared
+        // DynamicResource bindings make them follow light/dark theme and density switches live.
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.BackgroundProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.BorderBrushProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.BorderThicknessProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.CornerRadiusProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.FontFamilyProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.FontSizeProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.FontStyleProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.FontWeightProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.FontStretchProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.ForegroundProperty);
+        CloneTemplatedProperty(controlSource, controlTarget, TemplatedControl.PaddingProperty);
 
         ((Control) controlSource).ClonePropertiesTo(controlTarget);
+    }
+
+    /// <summary>
+    /// Mirrors one templated-control property with live-theming semantics: bindings (e.g.
+    /// DynamicResource for light/dark theming) are shared by reference — each host evaluates them
+    /// against its own position in the resource chain, so the clone keeps following theme and
+    /// density changes. Literal values are copied; unset properties are skipped so the target's
+    /// ControlTheme setters remain effective.
+    /// </summary>
+    private static void CloneTemplatedProperty(AvaloniaObject controlSource, AvaloniaObject controlTarget, AvaloniaProperty property)
+    {
+        if (controlSource[!property] is { } binding)
+        {
+            controlTarget.Bind(property, binding);
+            return;
+        }
+
+        if (controlSource.IsSet(property))
+        {
+            var value = controlSource.GetValue(property);
+            if (value is not null)
+                controlTarget.SetValue(property, value);
+        }
     }
 
     public static void ClonePropertiesTo(this Control controlSource, Control controlTarget)
