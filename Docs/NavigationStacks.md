@@ -15,7 +15,10 @@ Uri BaseUri { get; }
 LazyValue<NavigationContainer> ContainerPage { get; }
 LazyValue<Page> RootPage { get; }
 IPageResolver? PageResolver { get; set; }
+WindowFactory? WindowFactory { get; set; }
 ```
+
+`WindowFactory` is optional. When set, it creates fresh window shells for this stack's secondary and dialog windows; otherwise RouteNav uses the application-wide factory supplied to `SetMainWindow`.
 
 Page registration:
 

@@ -24,6 +24,9 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
     /// <summary>Gets a value indicating whether this stack is an event stack.</summary>
     bool IsEventStack { get; }
 
+    /// <summary>Gets or sets the factory used to create windows for this stack. When unset, the platform default is used.</summary>
+    WindowFactory? WindowFactory { get; set; }
+
     /// <summary>Occurs when the navigation stack is entered.</summary>
     event Action Entered;
 

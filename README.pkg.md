@@ -28,6 +28,12 @@ stack.AddPage<RootPage>(String.Empty);
 stack.AddPage<Page1>("page1");
 ```
 
+Provide a factory for fresh window shells during application startup:
+
+```csharp
+ApplicationLifetime.SetMainWindow(context => new MainWindow());
+```
+
 Navigate by route:
 
 ```csharp

@@ -79,6 +79,9 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     public bool IsEventStack => false;
 
     /// <inheritdoc />
+    public WindowFactory? WindowFactory { get; set; }
+
+    /// <inheritdoc />
     public event Action? Entered;
 
     /// <inheritdoc />

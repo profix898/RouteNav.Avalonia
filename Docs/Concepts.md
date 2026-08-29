@@ -121,10 +121,10 @@ RouteNav provides a `RouteNav.Avalonia.Window` abstraction so the same navigatio
 Set it during application startup:
 
 ```csharp
-ApplicationLifetime.SetMainWindow(new MainWindow());
+ApplicationLifetime.SetMainWindow(context => new MainWindow());
 ```
 
-The RouteNav window acts as a template for creating platform windows/views and carries content alignment, title, icon and style-relevant properties.
+The factory creates a fresh RouteNav window for each platform window/view. RouteNav hosts the returned instance directly; it does not copy appearance properties. This keeps its XAML resources, styles and bindings attached to the normal Avalonia tree. Set `INavigationStack.WindowFactory` when a stack needs a different window type.
 
 ## Dialogs
 

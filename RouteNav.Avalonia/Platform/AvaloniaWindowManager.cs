@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Internal;
@@ -56,41 +55,17 @@ public class AvaloniaWindowManager : IWindowManager
         // Variant A: Desktop (multi-window) platform -> open dialog window
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceOverlayDialogs)
         {
-            var ownerWindow = parentWindow?.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
+            var ownerRouteWindow = parentWindow ?? Application.Current!.GetMainWindow();
+            var ownerWindow = ownerRouteWindow.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
             if (ownerWindow == null)
                 throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
-            dialog.SetSize(parentWindow);
+            dialog.SetSize(ownerRouteWindow);
 
-            var platformWindow = new AvaloniaWindow
-            {
-                Title = dialog.Title, Icon = parentWindow?.Icon, CanResize = false
-            };
+            var activeStack = Navigation.UIPlatform.GetActiveStackFromWindow(ownerRouteWindow);
+            var dialogWindow = Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Dialog, activeStack, ownerRouteWindow, dialog, dialog.Title, ownerRouteWindow.Icon));
+            var platformWindow = CreatePlatformWindow(dialogWindow, desktopLifetime, true);
 
-            // Dialog windows participate in the template window system: apply the parent window's look,
-            // styles and resources before the dialog-specific content and sizing is applied.
-            var templateWindow = parentWindow ?? Application.Current?.GetMainWindow();
-            if (templateWindow != null)
-            {
-                ((TemplatedControl) templateWindow).ClonePropertiesTo(platformWindow);
-
-                // The Tag identifies the RouteNav window that owns a platform window. Dialog windows are
-                // not owned by a RouteNav window, so the clone's Tag (pointing at the template) is cleared.
-                platformWindow.Tag = null;
-            }
-
-            platformWindow.Content = dialog;
-            platformWindow.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            platformWindow.VerticalContentAlignment = VerticalAlignment.Stretch;
-            platformWindow.Width = dialog.Width;
-            platformWindow.Height = dialog.Height;
-            platformWindow.MinWidth = dialog.Width;
-            platformWindow.MinHeight = dialog.Height;
-
-            // Customize to show platform dialog (border style, etc.)
-            platformWindow.SetDialogStyle();
-
-            WindowCustomizationEvent?.Invoke(platformWindow, true);
             dialog.RegisterPlatform(platformWindow);
             dialogTask = dialog.Open();
 
@@ -104,12 +79,29 @@ public class AvaloniaWindowManager : IWindowManager
     }
 
     /// <inheritdoc />
-    public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime)
+    public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime, bool isDialogWindow = false)
     {
-        var platformWindow = new AvaloniaWindow { Title = window.Title, Icon = window.Icon };
-        window.ClonePropertiesTo(platformWindow);
+        var platformWindow = new AvaloniaWindow
+        {
+            Title = window.Title, Icon = window.Icon, Tag = window, Content = window
+        };
 
-        WindowCustomizationEvent?.Invoke(platformWindow);
+        // Host the RouteNav window: it joins the visual/logical tree, so window-level XAML
+        // (Background/Foreground bindings, styles, resources) resolves natively against the
+        // application resource chain and keeps following theme/density changes.
+        if (isDialogWindow && window.Content is Dialog dialog)
+        {
+            platformWindow.CanResize = false;
+            platformWindow.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            platformWindow.VerticalContentAlignment = VerticalAlignment.Stretch;
+            platformWindow.Width = dialog.Width;
+            platformWindow.Height = dialog.Height;
+            platformWindow.MinWidth = dialog.Width;
+            platformWindow.MinHeight = dialog.Height;
+            platformWindow.SetDialogStyle();
+        }
+
+        WindowCustomizationEvent?.Invoke(platformWindow, isDialogWindow);
         window.RegisterPlatform(desktopLifetime, platformWindow);
 
         return platformWindow;
@@ -118,8 +110,12 @@ public class AvaloniaWindowManager : IWindowManager
     /// <inheritdoc />
     public virtual ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime)
     {
-        var platformControl = new UserControl();
-        window.ClonePropertiesTo(platformControl);
+        var platformControl = new UserControl
+        {
+            // Host the RouteNav window: it joins the visual/logical tree of the host view, so
+            // window-level XAML resolves natively against the application resource chain.
+            Tag = window, Content = window
+        };
 
         window.RegisterPlatform(appLifetime, platformControl);
 

@@ -13,6 +13,15 @@ public interface IUIPlatform
     /// <summary>Gets the window manager used to create and open platform windows and dialogs.</summary>
     public IWindowManager WindowManager { get; }
 
+    /// <summary>Gets or sets the application-wide fallback factory used to create fresh window shells.</summary>
+    WindowFactory? DefaultWindowFactory { get; set; }
+
+    /// <summary>Creates a fresh window, preferring the associated stack's factory over the default factory.</summary>
+    Window CreateWindow(WindowCreationContext context);
+
+    /// <summary>Transfers an active stack from one window instance to a replacement window instance.</summary>
+    bool ReplaceActiveWindow(Window previousWindow, Window newWindow);
+
     /// <summary>Gets or sets the launcher used to open external URIs and files.</summary>
     public ILauncher Launcher { get; set; }
 

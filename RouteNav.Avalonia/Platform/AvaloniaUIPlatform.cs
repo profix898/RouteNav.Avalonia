@@ -51,7 +51,51 @@ public class AvaloniaUIPlatform : IUIPlatform
     public IWindowManager WindowManager { get; }
 
     /// <inheritdoc />
+    public WindowFactory? DefaultWindowFactory { get; set; }
+
+    /// <inheritdoc />
     public ILauncher Launcher { get; set; }
+
+    /// <inheritdoc />
+    public Window CreateWindow(WindowCreationContext context)
+    {
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
+
+        var factory = context.Stack?.WindowFactory ?? DefaultWindowFactory
+                      ?? throw new NavigationException("No window factory is configured.");
+        var window = factory(context)
+                     ?? throw new NavigationException("The window factory returned null.");
+
+        if (window.Parent != null || window.PlatformControl != null)
+            throw new NavigationException("The window factory must return a fresh, unattached window instance.");
+
+        if (context.Content != null)
+            window.Content = context.Content;
+        if (context.Title != null)
+            window.Title = context.Title;
+        if (context.Icon != null)
+            window.Icon = context.Icon;
+
+        return window;
+    }
+
+    /// <inheritdoc />
+    public bool ReplaceActiveWindow(Window previousWindow, Window newWindow)
+    {
+        if (previousWindow == null)
+            throw new ArgumentNullException(nameof(previousWindow));
+        if (newWindow == null)
+            throw new ArgumentNullException(nameof(newWindow));
+
+        if (!activeStacks.Remove(previousWindow, out var stack))
+            return false;
+
+        previousWindow.Content = null;
+        activeStacks.Add(newWindow, stack);
+        newWindow.SetContent(stack.ContainerPage.Value);
+        return true;
+    }
 
     #region Pages
 
@@ -223,7 +267,7 @@ public class AvaloniaUIPlatform : IUIPlatform
             var window = GetActiveWindowFromStack(stack);
             if (window == null)
             {
-                window = Window.Create(stack.ContainerPage.Value, stack.Title);
+                window = CreateWindow(new WindowCreationContext(WindowKind.Navigation, stack, content: stack.ContainerPage.Value, title: stack.Title));
                 window.Closed += (_, _) =>
                 {
                     activeStacks.Remove(window);

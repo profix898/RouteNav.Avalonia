@@ -2,7 +2,7 @@
 
 This guide covers upgrading an application that uses **RouteNav.Avalonia** from the Avalonia 11 build of the library to the Avalonia 12 build.
 
-The good news first: **RouteNav's core routing API is unchanged.** `Navigation.PushAsync(...)`, the navigation stacks (`ContentPageStack`, `NavigationPageStack`, `TabbedPageStack`, `SidebarMenuPageStack`), the `Page`/`Dialog` primitives, `RouteButton`, `HyperlinkButton`, `HyperlinkLabel`, `MessageDialog`, DI page registration and `Navigation.BaseRouteUri` all behave exactly as before. Most of the work in this migration is upgrading the underlying Avalonia dependency; RouteNav-specific breaking changes are limited to theming resource keys, a few `SidebarMenu` properties, and dev-tools wiring.
+The good news first: **RouteNav's core routing API is unchanged.** `Navigation.PushAsync(...)`, the navigation stacks (`ContentPageStack`, `NavigationPageStack`, `TabbedPageStack`, `SidebarMenuPageStack`), the `Page`/`Dialog` primitives, `RouteButton`, `HyperlinkButton`, `HyperlinkLabel`, `MessageDialog`, DI page registration and `Navigation.BaseRouteUri` all behave exactly as before. The main RouteNav-specific breaking changes are the window factory API, theming resource keys, a few `SidebarMenu` properties, and dev-tools wiring.
 
 > RouteNav's Avalonia 12 build follows Avalonia's own breaking changes. Read the official [Avalonia 12 breaking changes](https://docs.avaloniaui.net/docs/avalonia12-breaking-changes) alongside this guide — anything you use directly from Avalonia still applies.
 
@@ -15,6 +15,7 @@ The good news first: **RouteNav's core routing API is unchanged.** `Navigation.P
 | Target framework | `net8.0` / `net9.0` | `net10.0` (required for Android/iOS on Avalonia 12) |
 | Avalonia | `11.3.x` | `12.0.x` |
 | Dev tools | `Avalonia.Diagnostics` + per‑window `AttachDevTools()` | `AvaloniaUI.DiagnosticsSupport` + app‑level `AttachDeveloperTools()` |
+| Window setup | Pass one `Window` instance | Pass a factory that creates a fresh `Window` per host |
 | Nav bar theming | `NavigationControlNavigationBar*` keys | Avalonia's `NavigationBarBackground` / `NavigationBarForeground` |
 | Sidebar/drawer | custom `SplitView`‑based control | composes Avalonia's native `DrawerPage` |
 
@@ -70,11 +71,28 @@ Application code:
 +     this.AttachDeveloperTools();
 + #endif
 
-      ApplicationLifetime.SetMainWindow(new MainWindow());
+      ApplicationLifetime.SetMainWindow(_ => new MainWindow());
   }
 ```
 
 Remove any `window.AttachDevTools()` calls — that API no longer exists.
+
+### Window factory API
+
+`SetMainWindow` now accepts a `WindowFactory`, not a window instance:
+
+```diff
+- ApplicationLifetime.SetMainWindow(new MainWindow());
++ ApplicationLifetime.SetMainWindow(context => new MainWindow());
+```
+
+The factory is the application default for main windows, secondary stack windows and dialog windows. It must return a new, unattached RouteNav window every time. RouteNav hosts that instance directly, so XAML resources and dynamic bindings resolve normally; the former property-cloning machinery has been removed.
+
+Use a stack-specific factory when a stack needs its own shell:
+
+```csharp
+sidebarStack.WindowFactory = context => new SidebarWindow();
+```
 
 ---
 
@@ -165,6 +183,13 @@ If you implement a custom `IWindowManager`, the `CreatePlatformView` signature w
 ```diff
 - ContentControl CreatePlatformView(Window window, ISingleViewApplicationLifetime singleViewLifetime);
 + ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime);
+```
+
+`CreatePlatformWindow` also receives the dialog role so custom managers can preserve the built-in customization contract:
+
+```diff
+- Avalonia.Controls.Window CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime lifetime);
++ Avalonia.Controls.Window CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime lifetime, bool isDialogWindow = false);
 ```
 
 Most apps use the built-in `AvaloniaWindowManager` and are unaffected.

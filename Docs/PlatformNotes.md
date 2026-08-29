@@ -13,10 +13,12 @@ RouteNav's `Window` is a platform-neutral abstraction. It may be hosted by:
 Set the main RouteNav window during application startup:
 
 ```csharp
-ApplicationLifetime.SetMainWindow(new MainWindow());
+ApplicationLifetime.SetMainWindow(context => new MainWindow());
 ```
 
 RouteNav tracks the main window independently of the Avalonia lifetime so `Application.Current.GetMainWindow()` and dialog/window ownership work across desktop, single-view and activity lifetimes.
+
+`SetMainWindow` installs the application-wide default `WindowFactory`. Each call must create a fresh, unattached RouteNav window; Android activity factories may invoke it more than once. A navigation stack can override the default through `INavigationStack.WindowFactory`. RouteNav hosts these windows directly rather than cloning properties or bindings.
 
 ## Desktop
 
@@ -102,7 +104,8 @@ bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindo
 
 Avalonia.Controls.Window CreatePlatformWindow(
     Window window,
-    IClassicDesktopStyleApplicationLifetime desktopLifetime);
+    IClassicDesktopStyleApplicationLifetime desktopLifetime,
+    bool isDialogWindow = false);
 
 ContentControl CreatePlatformView(
     Window window,

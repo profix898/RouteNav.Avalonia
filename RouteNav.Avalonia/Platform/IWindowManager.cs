@@ -32,7 +32,7 @@ public interface IWindowManager
     bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null);
 
     /// <summary>Creates the backing platform window for the desktop lifetime.</summary>
-    AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime);
+    AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime, bool isDialogWindow = false);
 
     /// <summary>Creates the backing platform view (single-view / activity lifetimes).</summary>
     ContentControl CreatePlatformView(Window window, IApplicationLifetime appLifetime);

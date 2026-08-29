@@ -48,6 +48,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     /// <inheritdoc />
     public bool IsEventStack => true;
 
+    /// <inheritdoc />
+    public WindowFactory? WindowFactory { get; set; }
+
     /// <summary>Event 'Entered' not supported for event stack.</summary>
     public event Action? Entered;
 

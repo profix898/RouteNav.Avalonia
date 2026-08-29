@@ -64,11 +64,21 @@ public override void OnFrameworkInitializationCompleted()
     this.AttachDeveloperTools();
 #endif
 
-    ApplicationLifetime.SetMainWindow(new MainWindow());
+    ApplicationLifetime.SetMainWindow(context => new MainWindow());
 }
 ```
 
 On desktop, this creates an Avalonia `Window`. On mobile/browser, it creates the appropriate top-level view. On Avalonia 12 Android, RouteNav wires the activity lifetime through `IActivityApplicationLifetime.MainViewFactory`.
+
+The factory must return a fresh, unattached window every time. RouteNav hosts that instance directly, so resources and bindings declared on `MainWindow` resolve through the real visual/logical tree. The `WindowCreationContext` passed to the factory identifies main, navigation and dialog windows.
+
+To use a different shell for a particular stack:
+
+```csharp
+sidebarStack.WindowFactory = context => new SidebarWindow();
+```
+
+The stack factory takes precedence over the default supplied to `SetMainWindow` and is also used for that stack's dialog windows.
 
 ## 5. Define Pages
 

@@ -24,61 +24,85 @@ public static class AppUtility
 
     /// <summary>Sets the RouteNav main window on the given application lifetime, dispatching to the matching lifetime type.</summary>
     /// <param name="lifetime">The application lifetime (desktop, activity or single-view).</param>
-    /// <param name="newMainWindow">The main window abstraction to host.</param>
+    /// <param name="windowFactory">Factory that creates a fresh main window abstraction whenever the platform needs one.</param>
     /// <param name="initMainRoute">When <c>true</c>, immediately enters the main navigation stack.</param>
-    public static void SetMainWindow(this IApplicationLifetime? lifetime, Window newMainWindow, bool initMainRoute = true)
+    public static void SetMainWindow(this IApplicationLifetime? lifetime, WindowFactory windowFactory, bool initMainRoute = true)
     {
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
-            desktopLifetime.SetMainWindow(newMainWindow, initMainRoute);
+            desktopLifetime.SetMainWindow(windowFactory, initMainRoute);
 
         // Note: Avalonia 12's Android lifetime implements both IActivityApplicationLifetime and
         // ISingleViewApplicationLifetime. Prefer the factory-based activity path (avoids the
         // "MainView is not fully supported on Android" warning and supports multiple activities).
         else if (lifetime is IActivityApplicationLifetime activityLifetime)
-            activityLifetime.SetMainWindow(newMainWindow, initMainRoute);
+            activityLifetime.SetMainWindow(windowFactory, initMainRoute);
         else if (lifetime is ISingleViewApplicationLifetime singleViewLifetime)
-            singleViewLifetime.SetMainWindow(newMainWindow, initMainRoute);
+            singleViewLifetime.SetMainWindow(windowFactory, initMainRoute);
         else if (!Design.IsDesignMode)
             throw new NotSupportedException($"IApplicationLifetime of type '{lifetime?.GetType()}' not supported.");
     }
 
     /// <summary>Sets the RouteNav main window on a desktop lifetime.</summary>
-    public static void SetMainWindow(this IClassicDesktopStyleApplicationLifetime desktopLifetime, Window newMainWindow, bool initMainRoute = true)
+    public static void SetMainWindow(this IClassicDesktopStyleApplicationLifetime desktopLifetime, WindowFactory windowFactory, bool initMainRoute = true)
     {
-        (desktopLifetime.MainWindow?.Tag as Window ?? mainWindow)?.OnClosed();
+        Navigation.UIPlatform.DefaultWindowFactory = windowFactory ?? throw new ArgumentNullException(nameof(windowFactory));
+
+        var previousWindow = desktopLifetime.MainWindow?.Tag as Window ?? mainWindow;
+        var newMainWindow = CreateMainWindow();
+        previousWindow?.OnClosed();
         mainWindow = newMainWindow;
 
         var windowManager = Navigation.UIPlatform.WindowManager;
         desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(newMainWindow, desktopLifetime);
 
-        if (initMainRoute)
+        var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+        if (initMainRoute && !transferredStack)
             EnterMainStack();
     }
 
     /// <summary>Sets the RouteNav main window on an activity lifetime (Avalonia 12 Android) via its main-view factory.</summary>
-    public static void SetMainWindow(this IActivityApplicationLifetime activityLifetime, Window newMainWindow, bool initMainRoute = true)
+    public static void SetMainWindow(this IActivityApplicationLifetime activityLifetime, WindowFactory windowFactory, bool initMainRoute = true)
     {
-        mainWindow?.OnClosed();
-        mainWindow = newMainWindow;
+        Navigation.UIPlatform.DefaultWindowFactory = windowFactory ?? throw new ArgumentNullException(nameof(windowFactory));
 
         var windowManager = Navigation.UIPlatform.WindowManager;
-        activityLifetime.MainViewFactory = () => windowManager.CreatePlatformView(newMainWindow, activityLifetime);
+        activityLifetime.MainViewFactory = () =>
+        {
+            var previousWindow = mainWindow;
+            var newMainWindow = CreateMainWindow();
+            previousWindow?.OnClosed();
+            mainWindow = newMainWindow;
 
-        if (initMainRoute)
-            EnterMainStack();
+            var platformView = windowManager.CreatePlatformView(newMainWindow, activityLifetime);
+            var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+            if (initMainRoute && !transferredStack)
+                EnterMainStack();
+
+            return platformView;
+        };
     }
 
     /// <summary>Sets the RouteNav main window on a single-view lifetime (mobile/browser).</summary>
-    public static void SetMainWindow(this ISingleViewApplicationLifetime singleViewLifetime, Window newMainWindow, bool initMainRoute = true)
+    public static void SetMainWindow(this ISingleViewApplicationLifetime singleViewLifetime, WindowFactory windowFactory, bool initMainRoute = true)
     {
-        (singleViewLifetime.MainView?.Tag as Window ?? mainWindow)?.OnClosed();
+        Navigation.UIPlatform.DefaultWindowFactory = windowFactory ?? throw new ArgumentNullException(nameof(windowFactory));
+
+        var previousWindow = singleViewLifetime.MainView?.Tag as Window ?? mainWindow;
+        var newMainWindow = CreateMainWindow();
+        previousWindow?.OnClosed();
         mainWindow = newMainWindow;
 
         var windowManager = Navigation.UIPlatform.WindowManager;
         singleViewLifetime.MainView = windowManager.CreatePlatformView(newMainWindow, singleViewLifetime);
 
-        if (initMainRoute)
+        var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+        if (initMainRoute && !transferredStack)
             EnterMainStack();
+    }
+
+    private static Window CreateMainWindow()
+    {
+        return Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Main, Navigation.UIPlatform.GetMainStack()));
     }
 
     private static void EnterMainStack()

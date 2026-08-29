@@ -2,8 +2,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
-using RouteNav.Avalonia.Internal;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia;
@@ -79,12 +77,22 @@ public class Window : ContentControl
 
     #endregion
 
-    /// <summary>Sets the content of the backing platform control.</summary>
+    /// <summary>
+    /// Sets the content of the navigation surface. When the RouteNav window itself is hosted as
+    /// the platform control's content (desktop/single-view hosting), the content is set on the
+    /// RouteNav window so its window-level XAML (DynamicResource backgrounds, styles, resources)
+    /// keeps resolving against the application resource chain.
+    /// </summary>
     /// <exception cref="NavigationException">Thrown when there is no backing platform control.</exception>
     public void SetContent(Control content)
     {
         if (PlatformControl != null)
-            PlatformControl.Content = content;
+        {
+            if (ReferenceEquals(PlatformControl.Content, this))
+                Content = content;
+            else
+                PlatformControl.Content = content;
+        }
         else
             throw new NavigationException("Main window/view does not have a backing platform control.");
     }
@@ -124,26 +132,6 @@ public class Window : ContentControl
         }
         else
             OnOpened();
-    }
-
-    #endregion
-
-    #region Factory
-
-    internal static Window Create(object content, string? title = null, WindowIcon? icon = null, Window? templateWindow = null)
-    {
-        templateWindow ??= Application.Current!.GetMainWindow();
-
-        var platformWindow = new Window
-        {
-            Title = title ?? templateWindow.Title, Icon = icon ?? templateWindow.Icon,
-
-            // ContentControl
-            Content = content, HorizontalContentAlignment = templateWindow.HorizontalContentAlignment, VerticalContentAlignment = templateWindow.VerticalContentAlignment
-        };
-        ((TemplatedControl) templateWindow).ClonePropertiesTo(platformWindow);
-
-        return platformWindow;
     }
 
     #endregion

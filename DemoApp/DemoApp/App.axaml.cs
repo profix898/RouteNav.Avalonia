@@ -72,6 +72,6 @@ public class App : Application
 #endif
 
         // Set main window (window abstraction for desktop + mobile)
-        ApplicationLifetime.SetMainWindow(new MainWindow());
+        ApplicationLifetime.SetMainWindow(_ => new MainWindow());
     }
 }

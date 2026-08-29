@@ -67,11 +67,19 @@ The library provides `Page` and `Dialog` primitives, which enable construction o
 
 #### Window abstraction
 
-**RouteNav.Avalonia** abstracts the window concept. In Avalonia, only the desktop platforms use a classic `Window`, while on mobile platforms a view is used as the `TopLevel`. **RouteNav.Avalonia** uses the abstracted window solely as a template for creating new top level windows or views (applying the colors, styles, etc. specified therein). The window template is simply set as follows (in `OnFrameworkInitializationCompleted` of the `Application`):
+**RouteNav.Avalonia** abstracts the window concept. In Avalonia, only desktop platforms use a classic `Window`, while mobile platforms use a view as the `TopLevel`. Supply a factory in `OnFrameworkInitializationCompleted`; RouteNav calls it for every main, secondary and dialog host, then places that fresh window directly in the platform window or view. Window-level XAML, resources and dynamic bindings therefore resolve normally without property cloning.
 
 ```CSharp
-ApplicationLifetime.SetMainWindow(new MyWindow());
+ApplicationLifetime.SetMainWindow(context => new MyWindow());
 ```
+
+The default factory applies to every stack. A stack can select its own shell when it opens in a window or hosts a dialog:
+
+```CSharp
+sidebarStack.WindowFactory = context => new SidebarWindow();
+```
+
+Factories must return a new, unattached `RouteNav.Avalonia.Window` instance on every call. `WindowCreationContext.Kind`, `Stack`, `Owner`, `Content`, `Title` and `Icon` describe the request; RouteNav installs the supplied content, title and icon after construction.
 
 #### BaseUri
 
