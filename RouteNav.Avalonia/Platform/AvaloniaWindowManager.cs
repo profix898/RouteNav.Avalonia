@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Internal;
@@ -63,12 +64,28 @@ public class AvaloniaWindowManager : IWindowManager
 
             var platformWindow = new AvaloniaWindow
             {
-                Title = dialog.Title, Icon = parentWindow?.Icon,
-
-                // ContentControl
-                Content = dialog, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch, Width = dialog.Width,
-                Height = dialog.Height, MinWidth = dialog.Width, MinHeight = dialog.Height, CanResize = false
+                Title = dialog.Title, Icon = parentWindow?.Icon, CanResize = false
             };
+
+            // Dialog windows participate in the template window system: apply the parent window's look,
+            // styles and resources before the dialog-specific content and sizing is applied.
+            var templateWindow = parentWindow ?? Application.Current?.GetMainWindow();
+            if (templateWindow != null)
+            {
+                ((TemplatedControl) templateWindow).ClonePropertiesTo(platformWindow);
+
+                // The Tag identifies the RouteNav window that owns a platform window. Dialog windows are
+                // not owned by a RouteNav window, so the clone's Tag (pointing at the template) is cleared.
+                platformWindow.Tag = null;
+            }
+
+            platformWindow.Content = dialog;
+            platformWindow.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            platformWindow.VerticalContentAlignment = VerticalAlignment.Stretch;
+            platformWindow.Width = dialog.Width;
+            platformWindow.Height = dialog.Height;
+            platformWindow.MinWidth = dialog.Width;
+            platformWindow.MinHeight = dialog.Height;
 
             // Customize to show platform dialog (border style, etc.)
             platformWindow.SetDialogStyle();
