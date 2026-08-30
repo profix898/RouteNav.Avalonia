@@ -10,11 +10,47 @@ namespace RouteNav.Avalonia;
 /// <summary>Static facade for RouteNav stack activation, route navigation and pop operations.</summary>
 public static class Navigation
 {
-    /// <summary>The reserved name of the main navigation stack.</summary>
-    public const string MainStackName = "main";
+    /// <summary>The default name of the main navigation stack.</summary>
+    public const string DefaultMainStackName = "main";
+
+    #region Options
+
+    private static string mainStackName = DefaultMainStackName;
+    private static WindowOptions windows = new();
+    private static DialogOptions dialogs = new();
+
+    /// <summary>
+    /// Gets or sets the name of the main navigation stack (the stack entered at application startup and
+    /// the fallback target when a route has no stack name). Set this at application startup, before any
+    /// navigation stacks are registered or activated.
+    /// </summary>
+    public static string MainStackName
+    {
+        get => mainStackName;
+        set
+            => mainStackName = !String.IsNullOrEmpty(value)
+                ? value
+                : throw new ArgumentException("The main stack name cannot be null or empty.", nameof(value));
+    }
 
     /// <summary>Gets or sets the base URI that all stack and page routes are resolved against.</summary>
     public static Uri BaseRouteUri { get; set; } = new Uri("https://avalonia.local/");
+
+    /// <summary>Gets or sets the window-manager options (single-window mode, overlay dialogs, window activation).</summary>
+    public static WindowOptions Windows
+    {
+        get => windows;
+        set => windows = value ?? throw new ArgumentNullException(nameof(value), "Window options cannot be null.");
+    }
+
+    /// <summary>Gets or sets the dialog options (sizing defaults and overlay animation).</summary>
+    public static DialogOptions Dialogs
+    {
+        get => dialogs;
+        set => dialogs = value ?? throw new ArgumentNullException(nameof(value), "Dialog options cannot be null.");
+    }
+
+    #endregion
 
     #region UIPlatform
 
@@ -179,6 +215,9 @@ public static class Navigation
         if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
             activeStack = UIPlatform.ActivateStack(stackName);
 
+        // Bring the window hosting the target stack to the foreground (if navigation targets another window)
+        UIPlatform.BringStackWindowToFront(activeStack);
+
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
         {
@@ -205,6 +244,9 @@ public static class Navigation
         // Ensure that we can always return to the main stack
         if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
             activeStack = UIPlatform.ActivateStack(stackName);
+
+        // Bring the window hosting the target stack to the foreground (if navigation targets another window)
+        UIPlatform.BringStackWindowToFront(activeStack);
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))
@@ -233,6 +275,9 @@ public static class Navigation
         // Ensure that we can always return to the main stack
         if (activeStack.IsMainStack && UIPlatform.GetActiveStack(MainStackName) == null)
             activeStack = UIPlatform.ActivateStack(stackName);
+
+        // Bring the window hosting the target stack to the foreground (if navigation targets another window)
+        UIPlatform.BringStackWindowToFront(activeStack);
 
         // Check whether routeUri resolved to a valid stack
         if (!activeStack.BaseUri.IsBaseOf(routeUri))

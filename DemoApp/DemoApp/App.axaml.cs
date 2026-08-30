@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Markup.Xaml;
+using DemoApp.Pages;
 using DemoApp.Pages.Main;
 using DemoApp.Pages.SidebarMenu;
 using DemoApp.Pages.Tabbed;
@@ -43,8 +44,14 @@ public class App : Application
         mainStack.AddPage<NotFoundPage>("error404");
         mainStack.AddPage<InternalErrorPage>("error500");
 
+        // Plain test page (used as dialog/overlay demo content on the targets page)
+        mainStack.AddPage<TestPage>("test");
+
         /* SidebarMenu stack */
         var sidebarMenuStack = new SidebarMenuPageStack("sidebar", "DemoApp - Sidebar");
+
+        // Use a custom window shell (with a toolbar) whenever this stack opens in a window
+        sidebarMenuStack.WindowFactory = _ => new SidebarWindow();
         Navigation.UIPlatform.AddStack(sidebarMenuStack);
 
         // SidebarMenu manages a 'SidebarMenuItem' collection, use .AddMenuItem() to add items

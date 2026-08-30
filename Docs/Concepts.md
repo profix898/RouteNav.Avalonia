@@ -112,7 +112,7 @@ Target behavior:
 - `DialogOverlay` forces overlay dialog display.
 - `Window` opens in a new window where supported, otherwise falls back to stack replacement.
 
-Platform support can affect the result. On mobile/browser, new windows are not available, so `Window` falls back to replacing the active stack. Dialogs are shown as overlays when native dialog windows are not available or when `ForceOverlayDialogs` is enabled.
+Platform support can affect the result. On mobile/browser, new windows are not available, so `Window` falls back to replacing the active stack. Dialogs are shown as overlays when native dialog windows are not available or when `Navigation.Windows.ForceOverlayDialogs` is enabled.
 
 ## Window Abstraction
 
@@ -124,7 +124,7 @@ Set it during application startup:
 ApplicationLifetime.SetMainWindow(context => new MainWindow());
 ```
 
-The factory creates a fresh RouteNav window for each platform window/view. RouteNav hosts the returned instance directly; it does not copy appearance properties. This keeps its XAML resources, styles and bindings attached to the normal Avalonia tree. Set `INavigationStack.WindowFactory` when a stack needs a different window type.
+The factory creates a fresh RouteNav window for each platform window/view. RouteNav hosts the returned instance directly; it does not copy appearance properties. This keeps its XAML resources, styles and bindings attached to the normal Avalonia tree. Set `INavigationStack.WindowFactory` when a stack needs a different window type; dialog windows always use the application-wide default factory. Declarative OS-window chrome (sizes, resizability, transparency, decorations) declared on the shell is mirrored onto the platform window, and custom shells can place application chrome around the navigation surface by overriding `SetContentCore`.
 
 ## Dialogs
 

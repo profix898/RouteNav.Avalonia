@@ -18,7 +18,11 @@ ApplicationLifetime.SetMainWindow(context => new MainWindow());
 
 RouteNav tracks the main window independently of the Avalonia lifetime so `Application.Current.GetMainWindow()` and dialog/window ownership work across desktop, single-view and activity lifetimes.
 
-`SetMainWindow` installs the application-wide default `WindowFactory`. Each call must create a fresh, unattached RouteNav window; Android activity factories may invoke it more than once. A navigation stack can override the default through `INavigationStack.WindowFactory`. RouteNav hosts these windows directly rather than cloning properties or bindings.
+`SetMainWindow` replaces the built-in default `WindowFactory` (which supplies a plain RouteNav `Window` shell). Each call must create a fresh, unattached RouteNav window; Android activity factories may invoke it more than once. A navigation stack can override the default for its own windows through `INavigationStack.WindowFactory`; dialog windows always use the application-wide default so custom stack chrome does not wrap dialog content. RouteNav hosts these windows directly rather than cloning properties or bindings.
+
+Declarative OS-window chrome declared on the window shell (`Width`/`Height`, min/max sizes, `CanResize`, `CanMinimize`, `CanMaximize`, `ShowInTaskbar`, `ShowActivated`, `Topmost`, `WindowState`, `WindowStartupLocation`, `WindowDecorations`, `ExtendClientAreaToDecorationsHint`, `TransparencyLevelHint`, `TransparencyBackgroundFallback`) is mirrored onto the platform window. The `WindowCustomizationEvent` remains the escape hatch for everything else.
+
+Shells with custom application chrome (toolbar, menu) around the navigation surface override `SetContentCore` and route the stack content into a dedicated content host — see the demo app's `SidebarWindow` for an example.
 
 ## Desktop
 
@@ -32,19 +36,31 @@ await Navigation.PushAsync(uri, NavigationTarget.Window);
 
 `NavigationTarget.Dialog` opens a native dialog window unless overlay dialogs are forced.
 
+When a navigation targets a stack hosted in a different window, RouteNav brings that window to the foreground (`Navigation.Windows.BringTargetWindowToFront`, default `true`).
+
+## Window Lifecycle
+
+Closing the main window unhosts the main navigation stack while preserving its state (current page and history). Navigating to a route of the unhosted main stack re-opens the main window (a fresh shell is created through the window factory) and shows the pushed route. When a stack switch re-opens the main window (e.g. popping the last page of a secondary stack), the vacated source window is closed. Closing a secondary window resets its stack; navigating to it again activates it in the current window.
+
+`RouteNav.Avalonia.Window` exposes `IsClosed`, and `Dialog` exposes `IsClosed` for lifecycle checks.
+
+Apps that want different close semantics can opt in themselves: `ShutdownMode.OnMainWindowClose` shuts the application down when the main window closes, and the window's cancelable `Closing` event can prevent closing (or hide the window instead) — e.g. while secondary windows are open.
+
+Global options live directly on the `Navigation` facade: `Navigation.MainStackName` (default `main`; set at startup before stacks are registered), `Navigation.BaseRouteUri`, `Navigation.Windows` (`WindowOptions`) and `Navigation.Dialogs` (`DialogOptions`).
+
 Force single-window mode:
 
 ```csharp
-Navigation.UIPlatform.WindowManager.ForceSingleWindow = true;
+Navigation.Windows.ForceSingleWindow = true;
 ```
 
 Force overlay dialogs:
 
 ```csharp
-Navigation.UIPlatform.WindowManager.ForceOverlayDialogs = true;
+Navigation.Windows.ForceOverlayDialogs = true;
 ```
 
-These flags are init-only on the built-in `AvaloniaWindowManager`, so set them when constructing a custom manager/platform.
+Global options are grouped on the `Navigation` facade: `Navigation.MainStackName` and `Navigation.BaseRouteUri` for routing, `Navigation.Windows` (`WindowOptions`: `ForceSingleWindow`, `ForceOverlayDialogs`, `BringTargetWindowToFront`) and `Navigation.Dialogs` (`DialogOptions`: sizing defaults, overlay close animation).
 
 ## Mobile and Browser
 
@@ -96,8 +112,6 @@ Key members:
 
 ```csharp
 bool SupportsMultiWindow { get; }
-bool ForceSingleWindow { get; init; }
-bool ForceOverlayDialogs { get; init; }
 
 bool OpenWindow(Window window, Window? parentWindow = null);
 bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null);
@@ -116,7 +130,7 @@ Avalonia 12 note: `CreatePlatformView` accepts `IApplicationLifetime`, not only 
 
 ## Window Customization
 
-The built-in manager exposes `WindowCustomizationEvent` for created platform windows:
+Before the event fires, RouteNav mirrors declarative chrome from the window shell onto the platform window (sizes, `CanResize`, transparency hints, decorations, state — see above). The built-in manager then exposes `WindowCustomizationEvent` for created platform windows:
 
 ```csharp
 windowManager.WindowCustomizationEvent += (window, isDialog) =>
@@ -125,7 +139,7 @@ windowManager.WindowCustomizationEvent += (window, isDialog) =>
 };
 ```
 
-This is useful for platform-specific styling, owner behavior or window flags.
+This is useful for platform-specific styling, owner behavior or window flags not covered by the shell mirror.
 
 ## Dev Tools
 

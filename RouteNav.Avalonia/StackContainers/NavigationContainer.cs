@@ -75,7 +75,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         if (dialog.IsOpen)
         {
             if (!Navigation.UIPlatform.WindowManager.SupportsMultiWindow
-                || Navigation.UIPlatform.WindowManager.ForceOverlayDialogs || forceOverlay)
+                || Navigation.Windows.ForceOverlayDialogs || forceOverlay)
             {
                 // Remove dialog size (so that background fills host container)
                 dialog.Width = dialog.Height = Double.NaN;
@@ -109,7 +109,7 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
         }
 
         if (Navigation.UIPlatform.WindowManager.SupportsMultiWindow
-            && !Navigation.UIPlatform.WindowManager.ForceOverlayDialogs && !forceOverlay)
+            && !Navigation.Windows.ForceOverlayDialogs && !forceOverlay)
         {
             // Open new dialog in window
             var parentWindow = Navigation.UIPlatform.GetActiveWindowFromStack(NavigationStack);

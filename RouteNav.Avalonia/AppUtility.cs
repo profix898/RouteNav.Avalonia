@@ -49,13 +49,15 @@ public static class AppUtility
 
         var previousWindow = desktopLifetime.MainWindow?.Tag as Window ?? mainWindow;
         var newMainWindow = CreateMainWindow();
-        previousWindow?.OnClosed();
         mainWindow = newMainWindow;
 
         var windowManager = Navigation.UIPlatform.WindowManager;
         desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(newMainWindow, desktopLifetime);
 
+        // Transfer the active stack before the previous window is marked closed (the Closed handler
+        // unhosts its stack)
         var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+        previousWindow?.OnClosed();
         if (initMainRoute && !transferredStack)
             EnterMainStack();
     }
@@ -70,11 +72,14 @@ public static class AppUtility
         {
             var previousWindow = mainWindow;
             var newMainWindow = CreateMainWindow();
-            previousWindow?.OnClosed();
             mainWindow = newMainWindow;
 
             var platformView = windowManager.CreatePlatformView(newMainWindow, activityLifetime);
+
+            // Transfer the active stack before the previous window is marked closed (the Closed handler
+            // unhosts its stack)
             var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+            previousWindow?.OnClosed();
             if (initMainRoute && !transferredStack)
                 EnterMainStack();
 
@@ -89,20 +94,28 @@ public static class AppUtility
 
         var previousWindow = singleViewLifetime.MainView?.Tag as Window ?? mainWindow;
         var newMainWindow = CreateMainWindow();
-        previousWindow?.OnClosed();
         mainWindow = newMainWindow;
 
         var windowManager = Navigation.UIPlatform.WindowManager;
         singleViewLifetime.MainView = windowManager.CreatePlatformView(newMainWindow, singleViewLifetime);
 
+        // Transfer the active stack before the previous window is marked closed (the Closed handler
+        // unhosts its stack)
         var transferredStack = previousWindow != null && Navigation.UIPlatform.ReplaceActiveWindow(previousWindow, newMainWindow);
+        previousWindow?.OnClosed();
         if (initMainRoute && !transferredStack)
             EnterMainStack();
     }
 
+    /// <summary>Replaces the tracked main window instance (used when a closed main window is re-opened).</summary>
+    internal static void ReplaceMainWindow(Window newMainWindow)
+    {
+        mainWindow = newMainWindow;
+    }
+
     private static Window CreateMainWindow()
     {
-        return Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Main, Navigation.UIPlatform.GetMainStack()));
+        return Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Window, Navigation.UIPlatform.GetMainStack()));
     }
 
     private static void EnterMainStack()
@@ -161,6 +174,7 @@ public static class AppUtility
         if (appLifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime && desktopLifetime.MainWindow != null)
         {
             return desktopLifetime.Windows.FirstOrDefault(wnd => wnd.IsActive)
+                   ?? mainWindow?.PlatformControl as AvaloniaWindow
                    ?? desktopLifetime.MainWindow
                    ?? throw new ApplicationException("Application does not specify a MainWindow.");
         }

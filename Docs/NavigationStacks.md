@@ -18,7 +18,7 @@ IPageResolver? PageResolver { get; set; }
 WindowFactory? WindowFactory { get; set; }
 ```
 
-`WindowFactory` is optional. When set, it creates fresh window shells for this stack's secondary and dialog windows; otherwise RouteNav uses the application-wide factory supplied to `SetMainWindow`.
+`WindowFactory` is optional. When set, it creates fresh window shells for this stack's own windows; otherwise RouteNav uses the application-wide factory supplied to `SetMainWindow`. Dialog windows always use the application-wide default factory.
 
 Page registration:
 

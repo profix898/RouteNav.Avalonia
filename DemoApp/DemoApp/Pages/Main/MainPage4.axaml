@@ -20,23 +20,30 @@
                     <TextBlock Classes="SectionTitle" Text="Try target modes" />
                     <TextBlock Classes="Hint"
                                Text="Each button routes to an existing page, but asks RouteNav to present it differently." />
-                    <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                    <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                         <routing:RouteButton Grid.Row="0" Grid.Column="0" RoutePath="/main/content"
                                              Content="Self: Content page" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
                                    Text="Pushes onto this NavigationPageStack." />
-                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/dialogs" Target="Dialog"
-                                             Content="Dialog: Dialog demos" />
+                        <routing:RouteButton Grid.Row="1" Grid.Column="0" RoutePath="/main/test" Target="Dialog"
+                                             Content="Dialog: Test page" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
-                                   Text="Wraps the target page in a modal dialog." />
-                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/dialogs"
-                                             Target="DialogOverlay" Content="Overlay: Dialog demos" />
+                                   Text="Wraps the target page (test page) in a modal dialog." />
+                        <routing:RouteButton Grid.Row="2" Grid.Column="0" RoutePath="/main/test"
+                                             Target="DialogOverlay" Content="Overlay: Test page" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
-                                   Text="Forces the dialog to render inside the current top-level overlay." />
+                                   Text="Forces the test page to render inside the current top-level overlay." />
                         <routing:RouteButton Grid.Row="3" Grid.Column="0" RoutePath="/tabbed/" Target="Window"
                                              Content="Window: Tabbed stack" />
                         <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
                                    Text="Opens a separate window on desktop, with single-view fallback on mobile/browser." />
+                        <routing:RouteButton Grid.Row="4" Grid.Column="0" RoutePath="/sidebar/" Target="Window"
+                                             Content="Window: Sidebar stack" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Opens a custom window shell (normal window frame with its own toolbar)." />
+                        <Button Grid.Row="5" Grid.Column="0" Content="Close: This window" Click="OnCloseWindow" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Text="Closes this window. Navigating to a route of a closed window re-opens it (e.g. 'Main · Dialogs' from another window)." />
                     </Grid>
                 </StackPanel>
             </Border>

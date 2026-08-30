@@ -23,6 +23,9 @@ public sealed class WindowCreationContext
     /// <summary>Gets the navigation stack associated with the window, if any.</summary>
     public INavigationStack? Stack { get; }
 
+    /// <summary>Gets a value indicating whether the window hosts the main navigation stack.</summary>
+    public bool IsMainWindow => Stack?.IsMainStack ?? false;
+
     /// <summary>Gets the owning RouteNav window, if any.</summary>
     public Window? Owner { get; }
 
@@ -39,11 +42,8 @@ public sealed class WindowCreationContext
 /// <summary>Identifies the role of a RouteNav window.</summary>
 public enum WindowKind
 {
-    /// <summary>The application's main navigation window or view.</summary>
-    Main,
-
-    /// <summary>A secondary window hosting a navigation stack.</summary>
-    Navigation,
+    /// <summary>A window hosting a navigation stack (main or secondary). Stack-specific shells are selected via <see cref="Stacks.INavigationStack.WindowFactory" />, stack-specific behavior via <see cref="WindowCreationContext.IsMainWindow" />.</summary>
+    Window,
 
     /// <summary>A modal window hosting a dialog.</summary>
     Dialog

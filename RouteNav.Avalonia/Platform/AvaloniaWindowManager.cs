@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -21,26 +20,20 @@ public class AvaloniaWindowManager : IWindowManager
     public virtual bool SupportsMultiWindow => ApplicationLifetime is IClassicDesktopStyleApplicationLifetime;
 
     /// <inheritdoc />
-    public bool ForceSingleWindow { get; init; }
-
-    /// <inheritdoc />
-    public bool ForceOverlayDialogs { get; init; }
-
-    /// <inheritdoc />
     public event IWindowManager.WindowCustomizationHandler WindowCustomizationEvent;
 
     /// <inheritdoc />
     public virtual bool OpenWindow(Window window, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceSingleWindow)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !Navigation.Windows.ForceSingleWindow)
         {
             var platformWindow = CreatePlatformWindow(window, desktopLifetime);
-            var ownerWindow = parentWindow?.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
-            if (ownerWindow == null)
-                platformWindow.Show();
-            else
-                platformWindow.Show(ownerWindow);
+
+            // Show navigation windows unowned: Windows keeps owned windows permanently above their
+            // owner, so an owned secondary window could never be raised below/above the main window
+            // during cross-window navigation. Dialog windows keep their modal owner (ShowDialog).
+            platformWindow.Show();
 
             return true;
         }
@@ -53,9 +46,16 @@ public class AvaloniaWindowManager : IWindowManager
     public virtual bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null)
     {
         // Variant A: Desktop (multi-window) platform -> open dialog window
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !ForceOverlayDialogs)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime && !Navigation.Windows.ForceOverlayDialogs)
         {
             var ownerRouteWindow = parentWindow ?? Application.Current!.GetMainWindow();
+            if (ownerRouteWindow.IsClosed)
+            {
+                // The owner window was closed and has not been re-opened -> fall back to overlay display
+                dialogTask = Task.FromResult<object?>(null);
+                return false;
+            }
+
             var ownerWindow = ownerRouteWindow.PlatformControl as AvaloniaWindow ?? desktopLifetime.MainWindow;
             if (ownerWindow == null)
                 throw new NavigationException("No main window/view available. Application not fully initialized yet.");
@@ -63,7 +63,8 @@ public class AvaloniaWindowManager : IWindowManager
             dialog.SetSize(ownerRouteWindow);
 
             var activeStack = Navigation.UIPlatform.GetActiveStackFromWindow(ownerRouteWindow);
-            var dialogWindow = Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Dialog, activeStack, ownerRouteWindow, dialog, dialog.Title, ownerRouteWindow.Icon));
+            var dialogWindow =
+                Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Dialog, activeStack, ownerRouteWindow, dialog, dialog.Title, ownerRouteWindow.Icon));
             var platformWindow = CreatePlatformWindow(dialogWindow, desktopLifetime, true);
 
             dialog.RegisterPlatform(platformWindow);
@@ -74,21 +75,19 @@ public class AvaloniaWindowManager : IWindowManager
         }
 
         // Variant B: Mobile/Browser (single window/view) platform + fallback -> open dialog in overlay
-        dialogTask = Task.FromCanceled<object?>(CancellationToken.None);
+        dialogTask = Task.FromResult<object?>(null);
         return false;
     }
 
     /// <inheritdoc />
     public virtual AvaloniaWindow CreatePlatformWindow(Window window, IClassicDesktopStyleApplicationLifetime desktopLifetime, bool isDialogWindow = false)
     {
-        var platformWindow = new AvaloniaWindow
-        {
-            Title = window.Title, Icon = window.Icon, Tag = window, Content = window
-        };
+        var platformWindow = new AvaloniaWindow { Title = window.Title, Icon = window.Icon, Tag = window, Content = window };
 
-        // Host the RouteNav window: it joins the visual/logical tree, so window-level XAML
-        // (Background/Foreground bindings, styles, resources) resolves natively against the
-        // application resource chain and keeps following theme/density changes.
+        // Mirror declarative window chrome (XAML-declared on the window shell) onto the platform
+        // window. Runs before the customization event so event handlers can override everything.
+        ApplyWindowChrome(window, platformWindow);
+
         if (isDialogWindow && window.Content is Dialog dialog)
         {
             platformWindow.CanResize = false;
@@ -105,6 +104,52 @@ public class AvaloniaWindowManager : IWindowManager
         window.RegisterPlatform(desktopLifetime, platformWindow);
 
         return platformWindow;
+    }
+
+    /// <summary>
+    /// Mirrors declarative window chrome from the window shell onto the platform window: size
+    /// properties describe the OS window (layout sizes of the hosted shell are consumed), all
+    /// other chrome properties are applied unless the shell leaves them at their defaults.
+    /// </summary>
+    private static void ApplyWindowChrome(Window window, AvaloniaWindow platformWindow)
+    {
+        platformWindow.CanResize = window.CanResize;
+        platformWindow.CanMinimize = window.CanMinimize;
+        platformWindow.CanMaximize = window.CanMaximize;
+        platformWindow.ShowInTaskbar = window.ShowInTaskbar;
+        platformWindow.ShowActivated = window.ShowActivated;
+        platformWindow.Topmost = window.Topmost;
+        platformWindow.WindowState = window.WindowState;
+        platformWindow.WindowStartupLocation = window.WindowStartupLocation;
+        platformWindow.WindowDecorations = window.WindowDecorations;
+        platformWindow.ExtendClientAreaToDecorationsHint = window.ExtendClientAreaToDecorationsHint;
+
+        if (window.IsSet(Window.TransparencyLevelHintProperty))
+            platformWindow.TransparencyLevelHint = window.TransparencyLevelHint;
+        if (window.IsSet(Window.TransparencyBackgroundFallbackProperty))
+            platformWindow.TransparencyBackgroundFallback = window.TransparencyBackgroundFallback;
+
+        // Layout sizes declared on the shell describe the OS window, not the hosted shell:
+        // width/height are transferred and cleared (the shell then fills the client area),
+        // min/max sizes are mirrored and kept.
+        if (window.IsSet(Layoutable.WidthProperty))
+        {
+            platformWindow.Width = window.Width;
+            window.ClearValue(Layoutable.WidthProperty);
+        }
+        if (window.IsSet(Layoutable.HeightProperty))
+        {
+            platformWindow.Height = window.Height;
+            window.ClearValue(Layoutable.HeightProperty);
+        }
+        if (window.IsSet(Layoutable.MinWidthProperty))
+            platformWindow.MinWidth = window.MinWidth;
+        if (window.IsSet(Layoutable.MinHeightProperty))
+            platformWindow.MinHeight = window.MinHeight;
+        if (window.IsSet(Layoutable.MaxWidthProperty))
+            platformWindow.MaxWidth = window.MaxWidth;
+        if (window.IsSet(Layoutable.MaxHeightProperty))
+            platformWindow.MaxHeight = window.MaxHeight;
     }
 
     /// <inheritdoc />

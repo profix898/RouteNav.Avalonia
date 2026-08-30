@@ -16,19 +16,13 @@ public interface IWindowManager
     /// <summary>Gets a flag indicating whether the platform supports multiple windows (usually true for desktop platforms).</summary>
     bool SupportsMultiWindow { get; }
 
-    /// <summary>Gets or sets a flag indicating whether the application should enforce single window mode (even if the platform support multiple windows).</summary>
-    bool ForceSingleWindow { get; init; }
-
-    /// <summary>Gets or sets a flag indicating whether dialogs should be forced to overlay on top of the current view (even if the platform supports dialog windows).</summary>
-    bool ForceOverlayDialogs { get; init; }
-
     /// <summary>Raised for each platform window created, allowing callers to customize it.</summary>
     event WindowCustomizationHandler WindowCustomizationEvent;
 
-    /// <summary>Opens the given window (optionally owned by <paramref name="parentWindow" />). Returns <c>false</c> if unsupported.</summary>
+    /// <summary>Opens the given window. The built-in manager shows navigation windows unowned (so they can be raised independently during cross-window navigation); custom managers may use <paramref name="parentWindow" />. Returns <c>false</c> if unsupported.</summary>
     bool OpenWindow(Window window, Window? parentWindow = null);
 
-    /// <summary>Opens the given dialog as a window. Returns <c>false</c> (and no task) if dialog windows are unsupported.</summary>
+    /// <summary>Opens the given dialog as a window. Returns <c>false</c> if dialog windows are unsupported (the assigned result task should be ignored by the caller).</summary>
     bool OpenDialog(Dialog dialog, out Task<object?> dialogTask, Window? parentWindow = null);
 
     /// <summary>Creates the backing platform window for the desktop lifetime.</summary>

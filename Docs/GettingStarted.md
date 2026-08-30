@@ -70,7 +70,7 @@ public override void OnFrameworkInitializationCompleted()
 
 On desktop, this creates an Avalonia `Window`. On mobile/browser, it creates the appropriate top-level view. On Avalonia 12 Android, RouteNav wires the activity lifetime through `IActivityApplicationLifetime.MainViewFactory`.
 
-The factory must return a fresh, unattached window every time. RouteNav hosts that instance directly, so resources and bindings declared on `MainWindow` resolve through the real visual/logical tree. The `WindowCreationContext` passed to the factory identifies main, navigation and dialog windows.
+The factory must return a fresh, unattached window every time. RouteNav hosts that instance directly, so resources and bindings declared on `MainWindow` resolve through the real visual/logical tree. The `WindowCreationContext` passed to the factory identifies window vs. dialog roles (and exposes the target stack).
 
 To use a different shell for a particular stack:
 
@@ -78,7 +78,7 @@ To use a different shell for a particular stack:
 sidebarStack.WindowFactory = context => new SidebarWindow();
 ```
 
-The stack factory takes precedence over the default supplied to `SetMainWindow` and is also used for that stack's dialog windows.
+The stack factory takes precedence over the default supplied to `SetMainWindow` and applies to that stack's own windows. Dialog windows always use the application-wide default factory, so custom stack chrome never wraps dialog content.
 
 ## 5. Define Pages
 

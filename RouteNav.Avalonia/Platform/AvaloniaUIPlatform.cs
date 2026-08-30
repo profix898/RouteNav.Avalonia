@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using RouteNav.Avalonia.Errors;
 using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.Stacks;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace RouteNav.Avalonia.Platform;
 
@@ -51,7 +53,7 @@ public class AvaloniaUIPlatform : IUIPlatform
     public IWindowManager WindowManager { get; }
 
     /// <inheritdoc />
-    public WindowFactory? DefaultWindowFactory { get; set; }
+    public WindowFactory? DefaultWindowFactory { get; set; } = _ => new Window();
 
     /// <inheritdoc />
     public ILauncher Launcher { get; set; }
@@ -62,7 +64,11 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (context == null)
             throw new ArgumentNullException(nameof(context));
 
-        var factory = context.Stack?.WindowFactory ?? DefaultWindowFactory
+        // Dialog windows always use the application-wide default factory: custom stack window
+        // chrome (toolbars, menus) must not wrap dialog content.
+        var factory = (context.Kind == WindowKind.Dialog
+                          ? DefaultWindowFactory
+                          : context.Stack?.WindowFactory ?? DefaultWindowFactory)
                       ?? throw new NavigationException("No window factory is configured.");
         var window = factory(context)
                      ?? throw new NavigationException("The window factory returned null.");
@@ -70,7 +76,12 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (window.Parent != null || window.PlatformControl != null)
             throw new NavigationException("The window factory must return a fresh, unattached window instance.");
 
-        if (context.Content != null)
+        // Lifecycle: when a window closes it no longer hosts its navigation stack
+        window.Closed += (_, _) => activeStacks.Remove(window);
+
+        if (context.Content is Control contentControl)
+            window.SetInitialContent(contentControl);
+        else if (context.Content != null)
             window.Content = context.Content;
         if (context.Title != null)
             window.Title = context.Title;
@@ -212,6 +223,29 @@ public class AvaloniaUIPlatform : IUIPlatform
         return null;
     }
 
+    /// <inheritdoc />
+    public void BringStackWindowToFront(INavigationStack? stack)
+    {
+        if (stack == null)
+            return;
+
+        var window = GetActiveWindowFromStack(stack);
+        if (window != null)
+        {
+            // Bring the window hosting the stack to the foreground
+            if (!Navigation.Windows.BringTargetWindowToFront)
+                return;
+
+            if (window.PlatformControl is AvaloniaWindow platformWindow && !platformWindow.IsActive)
+                window.Activate();
+        }
+        else if (stack.IsMainStack && Application.Current?.GetMainWindow() is { IsClosed: true } closedWindow)
+        {
+            // The main stack is unhosted because its window was closed -> re-open the main window
+            ReopenMainWindow(closedWindow, stack);
+        }
+    }
+
     #endregion
 
     #region Targets
@@ -229,9 +263,25 @@ public class AvaloniaUIPlatform : IUIPlatform
             var sourceWindow = sourceStack != null ? GetActiveWindowFromStack(sourceStack) : null;
             if (window == null)
             {
+                // The main stack is unhosted because its window was closed -> re-open the main window
+                if (stack.IsMainStack && Application.Current?.GetMainWindow() is { IsClosed: true } closedWindow)
+                {
+                    ReopenMainWindow(closedWindow, stack);
+
+                    // The source window hosted the (switched-away) stack and is no longer needed
+                    if (sourceWindow != null)
+                    {
+                        activeStacks.Remove(sourceWindow);
+                        sourceWindow.Close();
+                        sourceStack?.Reset();
+                    }
+
+                    return stack ?? GetMainStack();
+                }
+
                 // Display in window associated with sourceStack or fall back to main/first application window
                 sourceWindow ??= Application.Current?.GetMainWindow();
-                if (sourceWindow == null)
+                if (sourceWindow == null || sourceWindow.IsClosed)
                     throw new NavigationException("No main window/view available. Application not fully initialized yet.");
 
                 // Associate initial/main window with stack
@@ -249,6 +299,10 @@ public class AvaloniaUIPlatform : IUIPlatform
                 activeStacks.Remove(sourceWindow);
                 sourceWindow.Close();
                 sourceStack?.Reset();
+
+                // Bring the window hosting the target stack to the foreground
+                if (Navigation.Windows.BringTargetWindowToFront)
+                    window.Activate();
             }
         }
 
@@ -267,12 +321,15 @@ public class AvaloniaUIPlatform : IUIPlatform
             var window = GetActiveWindowFromStack(stack);
             if (window == null)
             {
-                window = CreateWindow(new WindowCreationContext(WindowKind.Navigation, stack, content: stack.ContainerPage.Value, title: stack.Title));
-                window.Closed += (_, _) =>
+                // The main stack is unhosted because its window was closed -> re-open the main window
+                if (stack.IsMainStack && Application.Current?.GetMainWindow() is { IsClosed: true } closedWindow)
                 {
-                    activeStacks.Remove(window);
-                    stack.Reset();
-                };
+                    ReopenMainWindow(closedWindow, stack);
+                    return stack ?? GetMainStack();
+                }
+
+                window = CreateWindow(new WindowCreationContext(WindowKind.Window, stack, content: stack.ContainerPage.Value, title: stack.Title));
+                window.Closed += (_, _) => stack.Reset();
 
                 // Open in (new) window
                 if (!WindowManager.OpenWindow(window))
@@ -280,9 +337,32 @@ public class AvaloniaUIPlatform : IUIPlatform
 
                 activeStacks.Add(window, stack);
             }
+            else
+            {
+                // Stack is already open in a window -> bring that window to the foreground
+                if (Navigation.Windows.BringTargetWindowToFront)
+                    window.Activate();
+            }
         }
 
         return stack ?? GetMainStack();
+    }
+
+    /// <summary>
+    /// Re-opens the main window for the (unhosted) main navigation stack, preserving the stack's
+    /// current state. The fresh shell is created through the configured window factory.
+    /// </summary>
+    private void ReopenMainWindow(Window closedWindow, INavigationStack stack)
+    {
+        // Detach the stack container from the closed window's shell before re-parenting it
+        closedWindow.Content = null;
+
+        var window = CreateWindow(new WindowCreationContext(WindowKind.Window, stack, content: stack.ContainerPage.Value));
+        if (!WindowManager.OpenWindow(window))
+            throw new NavigationException("Failed to re-open the main window.");
+
+        activeStacks[window] = stack;
+        AppUtility.ReplaceMainWindow(window);
     }
 
     #endregion

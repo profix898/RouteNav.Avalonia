@@ -171,7 +171,11 @@ Opens the target stack in a new window where supported.
 await Navigation.PushAsync(uri, NavigationTarget.Window);
 ```
 
-On mobile/browser, this falls back to stack replacement because those platforms do not support multiple windows.
+On mobile/browser, this falls back to stack replacement because those platforms do not support multiple windows. If the target stack is already open in a window, that window is brought to the foreground instead.
+
+## Cross-Window Navigation
+
+When a navigation targets a stack that is hosted in a different window (e.g. a cross-stack link from a secondary window to the main stack), RouteNav brings the target window to the foreground and then pushes the route there. This behavior can be disabled via `Navigation.Windows.BringTargetWindowToFront = false`.
 
 ## Route Resolution
 

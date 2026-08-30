@@ -61,7 +61,7 @@ Upon navigating to a route, e.g. `/stackName/page1` (which in this example maps 
 
 The library provides `Page` and `Dialog` primitives, which enable construction of pages / dialogs via *XAML* or code. `Page`s constitute the main building blocks for content in **RouteNav.Avalonia**. Pages can also be converted for display in dialogs on the fly. In contrast, `Dialog`s are always shown in dialog windows (on desktop platforms), as overlays or embedded into a page.
 
-**Note:** On multi-window desktop platforms, you can force single-window behavior via `Navigation.UIPlatform.WindowManager.ForceSingleWindow` and/or force overlay dialogs via `Navigation.UIPlatform.WindowManager.ForceOverlayDialogs`. On mobile (Android/iOS) and Browser platforms, requesting a new window falls back to replacing the current `NavigationStack`, and dialogs are displayed as overlays.
+**Note:** On multi-window desktop platforms, you can force single-window behavior via `Navigation.Windows.ForceSingleWindow` and/or force overlay dialogs via `Navigation.Windows.ForceOverlayDialogs`. On mobile (Android/iOS) and Browser platforms, requesting a new window falls back to replacing the current `NavigationStack`, and dialogs are displayed as overlays.
 
 ### Details & Advanced Usage
 
@@ -73,13 +73,22 @@ The library provides `Page` and `Dialog` primitives, which enable construction o
 ApplicationLifetime.SetMainWindow(context => new MyWindow());
 ```
 
-The default factory applies to every stack. A stack can select its own shell when it opens in a window or hosts a dialog:
+Until `SetMainWindow` is called, a built-in default factory supplies a plain `RouteNav.Avalonia.Window` shell. Per-stack factories select a different shell whenever that stack opens in a new window:
 
 ```CSharp
 sidebarStack.WindowFactory = context => new SidebarWindow();
 ```
 
-Factories must return a new, unattached `RouteNav.Avalonia.Window` instance on every call. `WindowCreationContext.Kind`, `Stack`, `Owner`, `Content`, `Title` and `Icon` describe the request; RouteNav installs the supplied content, title and icon after construction.
+Factories must return a new, unattached `RouteNav.Avalonia.Window` instance on every call. `WindowCreationContext.Kind`, `Stack`, `Owner`, `Content`, `Title` and `Icon` describe the request; RouteNav installs the supplied content, title and icon after construction. Dialog windows always use the application-wide default factory, so custom stack chrome never wraps dialog content.
+
+RouteNav mirrors declarative OS-window chrome from the window shell onto the platform window: `Width`/`Height` and `MinWidth`/`MinHeight`/`MaxWidth`/`MaxHeight`, `CanResize`, `CanMinimize`, `CanMaximize`, `ShowInTaskbar`, `ShowActivated`, `Topmost`, `WindowState`, `WindowStartupLocation`, `WindowDecorations`, `ExtendClientAreaToDecorationsHint`, `TransparencyLevelHint` and `TransparencyBackgroundFallback`. Anything beyond that can be customized through `IWindowManager.WindowCustomizationEvent`. Custom shells that need application chrome *around* the navigation surface override `SetContentCore` to route the stack content into a dedicated content host:
+
+```CSharp
+public partial class SidebarWindow : Window
+{
+    protected override void SetContentCore(Control content) => ContentHost.Content = content;
+}
+```
 
 #### BaseUri
 

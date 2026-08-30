@@ -210,10 +210,11 @@ public class Dialog : ContentControl
     /// <summary>Closes the dialog, completing its result task with <paramref name="result" />.</summary>
     public virtual void Close(object? result = null)
     {
-        if (taskCompletionSource == null)
+        if (taskCompletionSource == null || IsClosed)
             return;
 
         Result = result;
+        IsClosed = true;
         taskCompletionSource.TrySetResult(result);
 
         if (PlatformWindow == null) // Shown in overlay display
@@ -224,8 +225,12 @@ public class Dialog : ContentControl
             PseudoClasses.Set(SharedPseudoClasses.Hidden, true);
             PseudoClasses.Set(SharedPseudoClasses.Open, false);
 
-            // Animation delay
-            Task.Delay(180).ContinueWith(_ => Closed?.Invoke(this, EventArgs.Empty));
+            // Animation delay (raise Closed on the UI thread after the close animation has finished)
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await Task.Delay(Navigation.Dialogs.OverlayCloseAnimationDuration);
+                Closed?.Invoke(this, EventArgs.Empty);
+            });
         }
         else
             PlatformWindow.Close(result);
@@ -249,6 +254,9 @@ public class Dialog : ContentControl
     /// <summary>Gets the result the dialog was closed with, if any.</summary>
     public object? Result { get; private set; }
 
+    /// <summary>Gets a value indicating whether the dialog was closed.</summary>
+    public bool IsClosed { get; private set; }
+
     #endregion
 
     #region Platform
@@ -265,6 +273,8 @@ public class Dialog : ContentControl
         platformWindow.Opened += (_, _) => Opened?.Invoke(this, EventArgs.Empty);
         platformWindow.Closed += (_, _) =>
         {
+            IsClosed = true;
+
             if (taskCompletionSource == null)
                 return; // Dialog was never opened
 

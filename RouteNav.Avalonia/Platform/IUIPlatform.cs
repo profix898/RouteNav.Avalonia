@@ -13,7 +13,7 @@ public interface IUIPlatform
     /// <summary>Gets the window manager used to create and open platform windows and dialogs.</summary>
     public IWindowManager WindowManager { get; }
 
-    /// <summary>Gets or sets the application-wide fallback factory used to create fresh window shells.</summary>
+    /// <summary>Gets or sets the application-wide fallback factory used to create fresh window shells (defaults to a plain RouteNav <c>Window</c> shell; replaced by <c>SetMainWindow</c>).</summary>
     WindowFactory? DefaultWindowFactory { get; set; }
 
     /// <summary>Creates a fresh window, preferring the associated stack's factory over the default factory.</summary>
@@ -61,6 +61,9 @@ public interface IUIPlatform
 
     /// <summary>Gets the window that hosts the given active stack, or <c>null</c> if it is not hosted.</summary>
     Window? GetActiveWindowFromStack(INavigationStack? navigationStack);
+
+    /// <summary>Brings the window hosting the given stack to the foreground, if any. Unhosted main stacks re-open the main window instead.</summary>
+    void BringStackWindowToFront(INavigationStack? stack);
 
     #endregion
 

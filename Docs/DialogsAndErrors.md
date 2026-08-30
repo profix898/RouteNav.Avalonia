@@ -48,13 +48,13 @@ The dialog title is taken from `Page.Title`. The initial size is controlled by `
 - `Large`
 - `Custom`
 
-Defaults are configured through `DialogSizeUtility`:
+Defaults are configured through `Navigation.Dialogs` (`DialogOptions`):
 
 ```csharp
-DialogSizeUtility.SmallScale = new Size(0.3, 0.3);
-DialogSizeUtility.MediumScale = new Size(0.5, 0.5);
-DialogSizeUtility.LargeScale = new Size(0.8, 0.8);
-DialogSizeUtility.FallbackSize = new Size(400, 300);
+Navigation.Dialogs.SmallScale = new Size(0.3, 0.3);
+Navigation.Dialogs.MediumScale = new Size(0.5, 0.5);
+Navigation.Dialogs.LargeScale = new Size(0.8, 0.8);
+Navigation.Dialogs.FallbackSize = new Size(400, 300);
 ```
 
 `SmallScale`, `MediumScale` and `LargeScale` are relative to the parent size. Min/max sizes cap the calculated result.
@@ -177,7 +177,7 @@ Error.ErrorFactory = new MyErrorViewFactory();
 Overlay dialogs are hosted by `DialogOverlayHost` in the current `TopLevel` overlay layer. RouteNav uses overlays when:
 
 - The platform does not support multiple windows.
-- `Navigation.UIPlatform.WindowManager.ForceOverlayDialogs` is true.
+- `Navigation.Windows.ForceOverlayDialogs` is true.
 - The navigation target is `DialogOverlay`.
 - A dialog is already being shown as an overlay and needs to be updated.
 

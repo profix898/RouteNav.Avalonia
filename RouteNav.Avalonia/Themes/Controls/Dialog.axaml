@@ -19,7 +19,7 @@
         <Setter Property="TitleBarBackground" Value="{DynamicResource DialogTitleBarBackground}" />
         <Setter Property="TitleBarTextColor" Value="{DynamicResource DialogTitleBarTextColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DialogBorderColor}" />
-        <Setter Property="Background" Value="#F3F3F3" />
+        <Setter Property="Background" Value="{DynamicResource DialogBackground}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border x:Name="DialogBackground"
@@ -36,7 +36,8 @@
                         Margin="20,10,20,10"
                         BoxShadow="0 8 32 0 #66000000">
                     <Border ClipToBounds="True" CornerRadius="{TemplateBinding CornerRadius}">
-                        <Grid x:Name="DialogContainer" ClipToBounds="True" Background="#FFFFFF"
+                        <Grid x:Name="DialogContainer" ClipToBounds="True"
+                              Background="{DynamicResource DialogContentBackground}"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               RowDefinitions="Auto,*">
                             <Panel Grid.Row="0" x:Name="DialogTitleBar"

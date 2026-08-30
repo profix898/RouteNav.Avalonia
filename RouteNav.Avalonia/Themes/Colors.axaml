@@ -7,6 +7,8 @@
             <!-- Dialog -->
             <SolidColorBrush x:Key="DialogBorderColor" Color="#61656A" />
             <SolidColorBrush x:Key="DialogOverlayBackground" Color="#40000000" />
+            <SolidColorBrush x:Key="DialogBackground" Color="#F3F3F3" />
+            <SolidColorBrush x:Key="DialogContentBackground" Color="#FFFFFF" />
             <SolidColorBrush x:Key="DialogTitleBarBackground" Color="#F2F2F2" />
             <SolidColorBrush x:Key="DialogTitleBarTextColor" Color="#000000" />
             <!-- MessageDialog -->
@@ -56,17 +58,19 @@
             <!-- Dialog -->
             <SolidColorBrush x:Key="DialogBorderColor" Color="#61656A" />
             <SolidColorBrush x:Key="DialogOverlayBackground" Color="#40000000" />
+            <SolidColorBrush x:Key="DialogBackground" Color="#272727" />
+            <SolidColorBrush x:Key="DialogContentBackground" Color="#1F1F1F" />
             <SolidColorBrush x:Key="DialogTitleBarBackground" Color="#171717" />
             <SolidColorBrush x:Key="DialogTitleBarTextColor" Color="#FFFFFF" />
             <!-- MessageDialog -->
             <SolidColorBrush x:Key="MessageDialogBorderColor" Color="#61656A" />
             <SolidColorBrush x:Key="MessageDialogTitleBarBackground" Color="#1F1F1F" />
             <SolidColorBrush x:Key="MessageDialogTitleBarTextColor" Color="#FFFFFF" />
-            <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBackground" Color="#1F1F1F" />
             <SolidColorBrush x:Key="MessageDialogButtonBarBorderColor" Color="#61656A" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackground" Color="#171717" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColor" Color="#FFFFFF" />
-            <SolidColorBrush x:Key="MessageDialogButtonBarBackgroundPointerOver" Color="#EEEEEE" />
+            <SolidColorBrush x:Key="MessageDialogButtonBarBorderColorPointerOver" Color="#61656A" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonBackgroundPointerOver" Color="#171717" />
             <SolidColorBrush x:Key="MessageDialogButtonBarButtonTextColorPointerOver" Color="#FFFFFF" />
             <!-- Page -->

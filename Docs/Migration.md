@@ -86,9 +86,9 @@ Remove any `window.AttachDevTools()` calls — that API no longer exists.
 + ApplicationLifetime.SetMainWindow(context => new MainWindow());
 ```
 
-The factory is the application default for main windows, secondary stack windows and dialog windows. It must return a new, unattached RouteNav window every time. RouteNav hosts that instance directly, so XAML resources and dynamic bindings resolve normally; the former property-cloning machinery has been removed.
+The factory is the application default for main, secondary stack and dialog windows. It must return a new, unattached RouteNav window every time. RouteNav hosts that instance directly, so XAML resources and dynamic bindings resolve normally; the former property-cloning machinery has been removed.
 
-Use a stack-specific factory when a stack needs its own shell:
+Use a stack-specific factory when a stack needs its own shell (applies to that stack's own windows; dialog windows always use the application default):
 
 ```csharp
 sidebarStack.WindowFactory = context => new SidebarWindow();

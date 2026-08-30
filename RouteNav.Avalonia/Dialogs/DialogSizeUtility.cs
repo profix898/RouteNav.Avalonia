@@ -6,43 +6,9 @@ using static System.Math;
 
 namespace RouteNav.Avalonia.Dialogs;
 
-/// <summary>Utility methods and defaults for sizing RouteNav dialogs.</summary>
+/// <summary>Utility methods for sizing RouteNav dialogs. Sizing defaults are configurable via <see cref="Navigation.Dialogs" />.</summary>
 public static class DialogSizeUtility
 {
-    #region DialigSizeDefaults
-
-    /// <summary>Gets or sets the default scale used for small dialogs relative to the parent.</summary>
-    public static Size SmallScale { get; set; } = new Size(0.3, 0.3);
-
-    /// <summary>Gets or sets the default minimum size for small dialogs.</summary>
-    public static Size SmallMinSize { get; set; } = new Size(200, 200);
-
-    /// <summary>Gets or sets the default maximum size for small dialogs.</summary>
-    public static Size SmallMaxSize { get; set; } = new Size(400, 400);
-
-    /// <summary>Gets or sets the default scale used for medium dialogs relative to the parent.</summary>
-    public static Size MediumScale { get; set; } = new Size(0.5, 0.5);
-
-    /// <summary>Gets or sets the default minimum size for medium dialogs.</summary>
-    public static Size MediumMinSize { get; set; } = new Size(350, 350);
-
-    /// <summary>Gets or sets the default maximum size for medium dialogs.</summary>
-    public static Size MediumMaxSize { get; set; } = new Size(700, 700);
-
-    /// <summary>Gets or sets the default scale used for large dialogs relative to the parent.</summary>
-    public static Size LargeScale { get; set; } = new Size(0.8, 0.8);
-
-    /// <summary>Gets or sets the default minimum size for large dialogs.</summary>
-    public static Size LargeMinSize { get; set; } = new Size(500, 500);
-
-    /// <summary>Gets or sets the default maximum size for large dialogs.</summary>
-    public static Size LargeMaxSize { get; set; } = new Size(1000, 1000);
-
-    /// <summary>Gets or sets the size used when no parent size is available.</summary>
-    public static Size FallbackSize { get; set; } = new Size(400, 300);
-
-    #endregion
-
     /// <summary>Binds a dialog's width and height to a size calculated from the parent.</summary>
     public static IDisposable SetSizeBinding(this Dialog dialog, Layoutable parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
@@ -64,16 +30,18 @@ public static class DialogSizeUtility
     /// <summary>Calculates the size for a dialog using the given parent and optional limits.</summary>
     public static Size GetSize(this Dialog dialog, Layoutable? parent, Size? minSize = null, Size? maxSize = null, DialogSize? dialogSize = null)
     {
+        var options = Navigation.Dialogs;
+
         if (parent == null)
-            return FallbackSize;
+            return options.FallbackSize;
 
         var baseSize = GetBaseSize(parent);
 
         return (dialogSize ?? dialog.DialogSize) switch
         {
-            DialogSize.Small => GetSize(baseSize, SmallScale, minSize ?? SmallMinSize, maxSize ?? SmallMaxSize),
-            DialogSize.Medium => GetSize(baseSize, MediumScale, minSize ?? MediumMinSize, maxSize ?? MediumMaxSize),
-            DialogSize.Large => GetSize(baseSize, LargeScale, minSize ?? LargeMinSize, maxSize ?? LargeMaxSize),
+            DialogSize.Small => GetSize(baseSize, options.SmallScale, minSize ?? options.SmallMinSize, maxSize ?? options.SmallMaxSize),
+            DialogSize.Medium => GetSize(baseSize, options.MediumScale, minSize ?? options.MediumMinSize, maxSize ?? options.MediumMaxSize),
+            DialogSize.Large => GetSize(baseSize, options.LargeScale, minSize ?? options.LargeMinSize, maxSize ?? options.LargeMaxSize),
             DialogSize.Custom => !Double.IsNaN(dialog.Width) && !Double.IsNaN(dialog.Height) ? new Size(dialog.Width, dialog.Height) : GetSize(baseSize, new Size(0.5, 0.5)),
             _ => throw new ArgumentOutOfRangeException(nameof(dialog.DialogSize), dialog.DialogSize, null)
         };
@@ -91,7 +59,7 @@ public static class DialogSizeUtility
 
         // For width/height is NaN use FallbackSize
         if (Double.IsNaN(baseSize.Width) || Double.IsNaN(baseSize.Height))
-            baseSize = FallbackSize;
+            baseSize = Navigation.Dialogs.FallbackSize;
 
         return baseSize;
     }
