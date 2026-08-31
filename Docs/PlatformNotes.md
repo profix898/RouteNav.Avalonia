@@ -38,6 +38,18 @@ await Navigation.PushAsync(uri, NavigationTarget.Window);
 
 When a navigation targets a stack hosted in a different window, RouteNav brings that window to the foreground (`Navigation.Windows.BringTargetWindowToFront`, default `true`).
 
+## Stack/Window Introspection
+
+The platform tracks which navigation stack is hosted in which window. `IUIPlatform.ActiveStacks` lists the stacks currently hosted in an open window (in hosting order); combine it with `GetActiveWindowFromStack(stack)` and `GetActiveStackFromWindow(window)` to map between stacks and windows:
+
+```csharp
+foreach (var stack in Navigation.UIPlatform.ActiveStacks)
+{
+    var window = Navigation.UIPlatform.GetActiveWindowFromStack(stack);
+    // e.g. for diagnostics, window-level UI or taskbar customization
+}
+```
+
 ## Window Lifecycle
 
 Closing the main window unhosts the main navigation stack while preserving its state (current page and history). Navigating to a route of the unhosted main stack re-opens the main window (a fresh shell is created through the window factory) and shows the pushed route. When a stack switch re-opens the main window (e.g. popping the last page of a secondary stack), the vacated source window is closed. Closing a secondary window resets its stack; navigating to it again activates it in the current window.

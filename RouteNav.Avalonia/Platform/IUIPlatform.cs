@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia.Platform.Storage;
 using RouteNav.Avalonia.Stacks;
 
@@ -61,6 +62,9 @@ public interface IUIPlatform
 
     /// <summary>Gets the window that hosts the given active stack, or <c>null</c> if it is not hosted.</summary>
     Window? GetActiveWindowFromStack(INavigationStack? navigationStack);
+
+    /// <summary>Gets the list of navigation stacks that are currently hosted in an open window (in hosting order).</summary>
+    IReadOnlyList<INavigationStack> ActiveStacks { get; }
 
     /// <summary>Brings the window hosting the given stack to the foreground, if any. Unhosted main stacks re-open the main window instead.</summary>
     void BringStackWindowToFront(INavigationStack? stack);

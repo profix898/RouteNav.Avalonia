@@ -224,6 +224,9 @@ public class AvaloniaUIPlatform : IUIPlatform
     }
 
     /// <inheritdoc />
+    public IReadOnlyList<INavigationStack> ActiveStacks => activeStacks.Values.ToArray();
+
+    /// <inheritdoc />
     public void BringStackWindowToFront(INavigationStack? stack)
     {
         if (stack == null)
