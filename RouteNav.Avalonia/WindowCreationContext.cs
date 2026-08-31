@@ -20,10 +20,10 @@ public sealed class WindowCreationContext
     /// <summary>Gets the role of the requested window.</summary>
     public WindowKind Kind { get; }
 
-    /// <summary>Gets the navigation stack associated with the window, if any.</summary>
+    /// <summary>Gets the navigation stack associated with the window, if any. May be <c>null</c> for stack-independent windows (e.g. pre-shell/splash windows created before any stack is registered).</summary>
     public INavigationStack? Stack { get; }
 
-    /// <summary>Gets a value indicating whether the window hosts the main navigation stack.</summary>
+    /// <summary>Gets a value indicating whether the window hosts the main navigation stack (stack-independent windows return <c>false</c>).</summary>
     public bool IsMainWindow => Stack?.IsMainStack ?? false;
 
     /// <summary>Gets the owning RouteNav window, if any.</summary>

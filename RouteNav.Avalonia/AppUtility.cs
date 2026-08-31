@@ -25,7 +25,7 @@ public static class AppUtility
     /// <summary>Sets the RouteNav main window on the given application lifetime, dispatching to the matching lifetime type.</summary>
     /// <param name="lifetime">The application lifetime (desktop, activity or single-view).</param>
     /// <param name="windowFactory">Factory that creates a fresh main window abstraction whenever the platform needs one.</param>
-    /// <param name="initMainRoute">When <c>true</c>, immediately enters the main navigation stack.</param>
+    /// <param name="initMainRoute">When <c>true</c>, immediately enters the main navigation stack. When <c>false</c>, the window can be hosted before any navigation stack exists (pre-shell/splash windows); it is bound when the main stack is registered and entered later.</param>
     public static void SetMainWindow(this IApplicationLifetime? lifetime, WindowFactory windowFactory, bool initMainRoute = true)
     {
         if (lifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
@@ -52,7 +52,9 @@ public static class AppUtility
         mainWindow = newMainWindow;
 
         var windowManager = Navigation.UIPlatform.WindowManager;
-        desktopLifetime.MainWindow = windowManager.CreatePlatformWindow(newMainWindow, desktopLifetime);
+        var replacingExisting = desktopLifetime.MainWindow != null;
+        var platformWindow = windowManager.CreatePlatformWindow(newMainWindow, desktopLifetime);
+        desktopLifetime.MainWindow = platformWindow;
 
         // Transfer the active stack before the previous window is marked closed (the Closed handler
         // unhosts its stack)
@@ -60,6 +62,11 @@ public static class AppUtility
         previousWindow?.OnClosed();
         if (initMainRoute && !transferredStack)
             EnterMainStack();
+
+        // At startup the lifetime shows MainWindow automatically; when replacing an existing main
+        // window (e.g. pre-shell -> real shell), the new platform window must be shown explicitly.
+        if (replacingExisting)
+            platformWindow.Show();
     }
 
     /// <summary>Sets the RouteNav main window on an activity lifetime (Avalonia 12 Android) via its main-view factory.</summary>
@@ -115,7 +122,7 @@ public static class AppUtility
 
     private static Window CreateMainWindow()
     {
-        return Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Window, Navigation.UIPlatform.GetMainStack()));
+        return Navigation.UIPlatform.CreateWindow(new WindowCreationContext(WindowKind.Window, Navigation.UIPlatform.GetStack(Navigation.MainStackName)));
     }
 
     private static void EnterMainStack()

@@ -56,6 +56,8 @@ Closing the main window unhosts the main navigation stack while preserving its s
 
 `RouteNav.Avalonia.Window` exposes `IsClosed`, and `Dialog` exposes `IsClosed` for lifecycle checks.
 
+**Pre-shell windows:** `SetMainWindow(..., initMainRoute: false)` can host a main window *before any navigation stack exists* (splash, first-run install or upgrade windows with stack-independent content). The window is lifecycle-tracked like any main window. When the real navigation stacks are registered later, calling `Navigation.EnterStack()` binds the main stack to the existing pre-shell window; calling `SetMainWindow` again replaces it with a fresh factory shell instead. In both cases, closing/transitioning away the previous platform window remains the app's responsibility.
+
 Apps that want different close semantics can opt in themselves: `ShutdownMode.OnMainWindowClose` shuts the application down when the main window closes, and the window's cancelable `Closing` event can prevent closing (or hide the window instead) — e.g. while secondary windows are open.
 
 Global options live directly on the `Navigation` facade: `Navigation.MainStackName` (default `main`; set at startup before stacks are registered), `Navigation.BaseRouteUri`, `Navigation.Windows` (`WindowOptions`) and `Navigation.Dialogs` (`DialogOptions`).
