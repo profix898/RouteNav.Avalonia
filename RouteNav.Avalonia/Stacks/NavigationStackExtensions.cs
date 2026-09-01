@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RouteNav.Avalonia.Controls;
@@ -37,6 +37,10 @@ public static class NavigationStackExtensions
     }
 
     /// <summary>Gets the stack-relative route path and query for the given route URI.</summary>
+    /// <remarks>
+    /// Absolute URIs that do not resolve to the given navigation stack return their absolute path (incl. leading '/'; query is dropped).
+    /// Query and fragment parts ('?...' / '#...') are returned via <paramref name="query" /> and are excluded from the path.
+    /// </remarks>
     public static string GetRoutePath(this INavigationStack stack, Uri routeUri, out string query)
     {
         query = String.Empty;
@@ -54,12 +58,14 @@ public static class NavigationStackExtensions
     }
 
     /// <summary>Gets a value indicating whether two route URIs resolve to the same route path on the stack.</summary>
+    /// <remarks>Compares route paths ordinal, ignoring query, fragment and trailing slashes; foreign URIs collapse host differences (app routes only).</remarks>
     public static bool EqualsRoutePath(this INavigationStack stack, Uri routeUriA, Uri routeUriB)
     {
         return stack.GetRoutePathSpan(routeUriA).SequenceEqual(stack.GetRoutePathSpan(routeUriB));
     }
 
     /// <summary>Gets the stack name from an absolute route URI, or <c>null</c> for a relative URI.</summary>
+    /// <remarks>Returns an empty string for host-root URIs (no stack segment) — treat as "no explicit stack target".</remarks>
     public static string? GetStackName(this Uri routeUri)
     {
         if (!routeUri.IsAbsoluteUri)
@@ -82,16 +88,20 @@ public static class NavigationStackExtensions
     }
 
     /// <summary>Gets a value indicating whether the route URI targets the given stack (relative URIs assume the same stack).</summary>
+    /// <remarks>Host-root URIs (no stack segment) target the main stack only.</remarks>
     public static bool IsRouteOnStack(this Uri routeUri, INavigationStack stack)
     {
         var stackName = routeUri.GetStackName();
         if (stackName == null)
             return true; // Relative route -> assume same stack
 
+        if (stackName.Length == 0)
+            return stack.IsMainStack; // Host-root route -> main stack
+
         return stackName.Equals(stack.Name, StringComparison.Ordinal);
     }
 
-    /// <summary>Splits a (trimmed) relative route span into path and query parts.</summary>
+    /// <summary>Splits a relative route span into path and query parts.</summary>
     private static string SplitRoutePath(ReadOnlySpan<char> route, out string query)
     {
         query = String.Empty;
@@ -107,16 +117,18 @@ public static class NavigationStackExtensions
             return String.Empty;
         }
 
-        var queryIndex = route.IndexOf('?');
-        if (queryIndex < 0)
-            return route.ToString();
+        var cutIndex = route.IndexOfAny('?', '#');
+        if (cutIndex < 0)
+            return route.TrimEnd('/').ToString();
 
-        query = route[queryIndex..].ToString();
-        return route[..queryIndex].ToString();
+        query = route[cutIndex..].ToString();
+        return route[..cutIndex].TrimEnd('/').ToString();
     }
 
-    /// <summary>Gets the stack-relative route path for the given route URI as span (without allocating).</summary>
-    /// <remarks>Routes that do not resolve to the given stack compare by their absolute path (incl. leading '/').</remarks>
+    /// <summary>Gets the stack-relative route path for the given route URI as span (without allocating a key string).</summary>
+    /// <remarks>
+    /// Routes that do not resolve to the given stack compare by their absolute path (incl. leading '/', without query/fragment).
+    /// </remarks>
     internal static ReadOnlySpan<char> GetRoutePathSpan(this INavigationStack stack, Uri routeUri)
     {
         if (routeUri.IsAbsoluteUri)
@@ -126,13 +138,15 @@ public static class NavigationStackExtensions
                 return routeUri.AbsolutePath; // Absolute Uri does not resolve to given navigation stack
 
             var path = absolute.AsSpan(stack.BaseUriString.Length).Trim('/');
-            var queryIndex = path.IndexOf('?');
-            return queryIndex < 0 ? path : path[..queryIndex];
+            var cutIndex = path.IndexOfAny('?', '#');
+            path = cutIndex < 0 ? path : path[..cutIndex];
+            return path.TrimEnd('/');
         }
 
         var relative = routeUri.OriginalString.Trim('/');
-        var queryEnd = relative.IndexOf('?');
-        return queryEnd < 0 ? relative : relative[..queryEnd];
+        var cut = relative.IndexOfAny('?', '#');
+        relative = cut < 0 ? relative : relative[..cut];
+        return relative.TrimEnd('/');
     }
 
     /// <summary>
@@ -197,8 +211,7 @@ public static class NavigationStackExtensions
         if (!routeButton.RouteUri.IsAbsoluteUri)
             routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), typeof(T1));
+        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri), typeof(T1));
     }
 
     /// <summary>Registers a page type at the route carried by the given <see cref="RouteButton" />.</summary>
@@ -207,8 +220,7 @@ public static class NavigationStackExtensions
         if (!routeButton.RouteUri.IsAbsoluteUri)
             routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), pageType);
+        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri), pageType);
     }
 
     /// <summary>Registers a page factory at the route carried by the given <see cref="RouteButton" />.</summary>
@@ -217,8 +229,7 @@ public static class NavigationStackExtensions
         if (!routeButton.RouteUri.IsAbsoluteUri)
             routeButton.RouteUri = stack.BuildRoute(routeButton.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeButton.RouteUri)), pageFactory);
+        stack.AddPage(stack.GetRoutePath(routeButton.RouteUri), pageFactory);
     }
 
     #endregion
@@ -232,8 +243,7 @@ public static class NavigationStackExtensions
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
             routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), typeof(T1));
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri), typeof(T1));
     }
 
     /// <summary>Registers a page type at the route carried by the given <see cref="RouteMenuItem" />.</summary>
@@ -242,8 +252,7 @@ public static class NavigationStackExtensions
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
             routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageType);
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri), pageType);
     }
 
     /// <summary>Registers a page factory at the route carried by the given <see cref="RouteMenuItem" />.</summary>
@@ -252,8 +261,7 @@ public static class NavigationStackExtensions
         if (!routeMenuItem.RouteUri.IsAbsoluteUri)
             routeMenuItem.RouteUri = stack.BuildRoute(routeMenuItem.RouteUri); // Change route to include stackName
 
-        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri)
-                      ?? throw new ArgumentException("Invalid route URI.", nameof(routeMenuItem.RouteUri)), pageFactory);
+        stack.AddPage(stack.GetRoutePath(routeMenuItem.RouteUri), pageFactory);
     }
 
     #endregion

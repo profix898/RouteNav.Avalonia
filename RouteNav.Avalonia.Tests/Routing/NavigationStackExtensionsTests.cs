@@ -5,6 +5,7 @@ using Xunit;
 namespace RouteNav.Avalonia.Tests.Routing;
 
 /// <summary>Characterization tests for route building/parsing extensions (pin current behavior).</summary>
+[Collection("Sequential")]
 public class NavigationStackExtensionsTests
 {
     private readonly ContentPageStack stack = new("sidebar", "Sidebar");

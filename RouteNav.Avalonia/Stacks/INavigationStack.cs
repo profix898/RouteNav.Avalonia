@@ -60,7 +60,7 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
     /// <remarks>The collection reflects current registrations; treat it as immutable. Ordering is unspecified but stable.</remarks>
     IReadOnlyList<RegisteredRoute> RegisteredRoutes { get; }
 
-    /// <summary>Checks if a stac is known to the current stack (or refers to an external stack).</summary>
+    /// <summary>Checks if a stack is known to the current stack (or refers to an external stack).</summary>
     /// <param name="stackName">Name of the requested stack.</param>
     /// <returns>The requested navigation stack, or null if not found.</returns>
     INavigationStack? RequestStack(string stackName);

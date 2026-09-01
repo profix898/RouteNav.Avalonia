@@ -257,7 +257,8 @@ public sealed class SidebarMenu : TemplatedControl, ISafeAreaAware
             if (Page.RouteUri != null)
             {
                 var routeUri = Page.RouteUri;
-                var idx = MenuItems.FindIndex(item => NavigationStack.EqualsRoutePath(NavigationStack.BuildRoute(item.RouteUri), routeUri));
+                var idx = MenuItems.FindIndex(item => item.RouteUri != null &&
+                                                      NavigationStack.EqualsRoutePath(NavigationStack.BuildRoute(item.RouteUri), routeUri));
                 if (menuList.SelectedIndex != idx)
                     menuList.SelectedIndex = idx;
             }

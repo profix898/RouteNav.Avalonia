@@ -9,6 +9,7 @@ using Xunit;
 namespace RouteNav.Avalonia.Tests.Routing;
 
 /// <summary>Tests for the read-only route registration view exposed by <see cref="INavigationStack.RegisteredRoutes" />.</summary>
+[Collection("Sequential")]
 public class RegisteredRouteTests
 {
     [Fact]

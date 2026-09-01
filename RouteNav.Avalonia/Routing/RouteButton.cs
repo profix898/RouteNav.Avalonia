@@ -51,6 +51,9 @@ public class RouteButton : Button, IRouteItem
     /// <summary>Navigates to <see cref="RouteUri" /> using <see cref="Target" />.</summary>
     public void NavigateToRoute()
     {
+        if (RouteUri == null)
+            return;
+
         Navigation.PushAsync(RouteUri, Target);
     }
 

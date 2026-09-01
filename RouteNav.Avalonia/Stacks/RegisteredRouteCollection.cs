@@ -36,7 +36,7 @@ internal sealed class RegisteredRouteCollection : IReadOnlyList<RegisteredRoute>
                     return route;
             }
 
-            throw new IndexOutOfRangeException(nameof(index));
+            throw new InvalidOperationException();
         }
     }
 

@@ -44,7 +44,7 @@ public class TabbedPageContainer : NavigationContainer
     public override void UpdatePage(Page page)
     {
         if (TabControl != null)
-            TabControl.SelectedItem = FindTabItem(TabControl, page);
+            TabControl.SelectedItem = FindTabItem(TabControl, page, NavigationStack);
     }
 
     /// <inheritdoc />
@@ -101,7 +101,7 @@ public class TabbedPageContainer : NavigationContainer
         return null;
     }
 
-    internal static TabItem? FindTabItem(TabControl tabControl, Page page)
+    internal static TabItem? FindTabItem(TabControl tabControl, Page page, INavigationStack? navigationStack = null)
     {
         foreach (var item in tabControl.Items)
         {
@@ -111,11 +111,30 @@ public class TabbedPageContainer : NavigationContainer
             if (tabItem.Content is not Page tabPage)
                 continue;
 
-            if (tabPage.Equals(page))
+            if (IsSameTabPage(navigationStack, tabPage, page))
                 return tabItem;
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Checks whether the given tab page and pushed page refer to the same route. Pages pushed via a
+    /// different form of the same route (relative vs. absolute, with/without query) have differing
+    /// PageQuery contents, so the comparison falls back to the stack-relative route path.
+    /// </summary>
+    private static bool IsSameTabPage(INavigationStack? navigationStack, Page tabPage, Page page)
+    {
+        if (ReferenceEquals(tabPage, page))
+            return true;
+
+        if (tabPage.GetType() != page.GetType())
+            return false;
+
+        if (navigationStack != null && tabPage.RouteUri != null && page.RouteUri != null)
+            return navigationStack.EqualsRoutePath(tabPage.RouteUri, page.RouteUri);
+
+        return tabPage.Equals(page);
     }
 
     #endregion

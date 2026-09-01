@@ -5,6 +5,7 @@ using Xunit;
 namespace RouteNav.Avalonia.Tests.Routing;
 
 /// <summary>Characterization tests for <see cref="Navigation.BuildRoute" /> (pin current behavior).</summary>
+[Collection("Sequential")]
 public class NavigationTests
 {
     [Fact]

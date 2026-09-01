@@ -60,11 +60,15 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (page != null)
             return page;
 
-        // Zero-allocation route path lookup (span-based dictionary key)
+        // Route path lookup without key allocation (span-based dictionary key)
         var lookup = pages.GetAlternateLookup<ReadOnlySpan<char>>();
-        return lookup.TryGetValue(this.GetRoutePathSpan(routeUri), out var registration)
-            ? registration.PageFactory?.Invoke(routeUri)
-            : null;
+        if (!lookup.TryGetValue(this.GetRoutePathSpan(routeUri), out var registration))
+            return null;
+
+        var resolvedPage = registration.PageFactory?.Invoke(routeUri);
+        resolvedPage?.RouteUri ??= routeUri; // Factory-created pages: record the route they were resolved for
+
+        return resolvedPage;
     }
 
     #region Implementation of INavigationStack
@@ -125,7 +129,7 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (!pageType.IsSubclassOf(typeof(Page)))
             throw new ArgumentException($"Type '{pageType.FullName}' is not a page.", nameof(pageType));
 
-        var pageKey = relativeRoute.Trim('/');
+        var pageKey = NormalizeRouteKey(relativeRoute);
         pages.Set(pageKey, new RegisteredRoute(pageKey, pageType,
             uri => Navigation.UIPlatform.GetPage(pageType, uri)
                    ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved.")));
@@ -134,8 +138,19 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     /// <inheritdoc />
     public virtual void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        var pageKey = relativeRoute.Trim('/');
+        var pageKey = NormalizeRouteKey(relativeRoute);
         pages.Set(pageKey, new RegisteredRoute(pageKey, null, pageFactory));
+    }
+
+    /// <summary>Normalizes a relative route into the registration key form (path only, no query/fragment, trimmed slashes).</summary>
+    private static string NormalizeRouteKey(string relativeRoute)
+    {
+        var route = relativeRoute.AsSpan();
+        var cutIndex = route.IndexOfAny('?', '#');
+        if (cutIndex >= 0)
+            route = route[..cutIndex];
+
+        return route.Trim('/').ToString();
     }
 
     /// <inheritdoc />

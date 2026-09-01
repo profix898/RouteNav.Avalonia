@@ -64,6 +64,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             foreach (var pageKvp in pages)
             {
                 var page = pageKvp.Value.PageFactory!(this.BuildRoute(pageKvp.Key));
+                page.RouteUri ??= this.BuildRoute(pageKvp.Key); // Enable route-path tab matching for factory-created tabs
                 var tabItem = new TabItem { Header = page.Title, Content = page };
                 tabItem.Classes.Add("RouteNavTabbedPageTab");
                 items.Add(tabItem);
@@ -75,7 +76,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             RootPage = new LazyValue<Page>(() => rootPage);
 
             tabbedPageContainer.TabControl.ItemsSource = items;
-            tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, CurrentPage ?? rootPage);
+            tabbedPageContainer.TabControl.SelectedItem = TabbedPageContainer.FindTabItem(tabbedPageContainer.TabControl, CurrentPage ?? rootPage, this);
             tabsInitialized = true;
         }
 

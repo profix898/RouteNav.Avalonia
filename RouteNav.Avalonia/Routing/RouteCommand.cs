@@ -38,6 +38,9 @@ public class RouteCommand : ICommand, IRouteItem
     /// <summary>Navigates to <see cref="RouteUri" /> using <see cref="Target" />.</summary>
     public void NavigateToRoute()
     {
+        if (RouteUri == null)
+            return;
+
         Navigation.PushAsync(RouteUri, Target);
     }
 

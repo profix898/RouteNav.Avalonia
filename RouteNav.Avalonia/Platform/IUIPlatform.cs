@@ -47,6 +47,9 @@ public interface IUIPlatform
     /// <summary>Gets a registered navigation stack by name, or <c>null</c> if none is registered.</summary>
     INavigationStack? GetStack(string stackName);
 
+    /// <summary>Gets all registered navigation stacks (regardless of active state), for introspection. Returns a snapshot.</summary>
+    IReadOnlyList<INavigationStack> RegisteredStacks { get; }
+
     #endregion
 
     #region ActiveStacks
@@ -63,7 +66,7 @@ public interface IUIPlatform
     /// <summary>Gets the window that hosts the given active stack, or <c>null</c> if it is not hosted.</summary>
     Window? GetActiveWindowFromStack(INavigationStack? navigationStack);
 
-    /// <summary>Gets the list of navigation stacks that are currently hosted in an open window (in hosting order).</summary>
+    /// <summary>Gets the list of navigation stacks that are currently hosted in an open window (in hosting order). Returns a snapshot.</summary>
     IReadOnlyList<INavigationStack> ActiveStacks { get; }
 
     /// <summary>Brings the window hosting the given stack to the foreground, if any. Unhosted main stacks re-open the main window instead.</summary>

@@ -96,7 +96,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     }
 
     /// <summary>Event stacks do not register pages -> always empty.</summary>
-    public IReadOnlyList<RegisteredRoute> RegisteredRoutes => Array.Empty<RegisteredRoute>();
+    public IReadOnlyList<RegisteredRoute> RegisteredRoutes => EmptyRoutes;
+
+    private static readonly IReadOnlyList<RegisteredRoute> EmptyRoutes = Array.Empty<RegisteredRoute>();
 
     /// <inheritdoc />
     public void Reset()

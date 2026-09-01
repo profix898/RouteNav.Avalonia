@@ -7,6 +7,7 @@ using Xunit;
 namespace RouteNav.Avalonia.Tests;
 
 /// <summary>Characterization tests for <see cref="UriExtensions" /> (pin current behavior).</summary>
+[Collection("Sequential")]
 public class UriExtensionsTests
 {
     #region ParseQueryString
@@ -118,6 +119,28 @@ public class UriExtensionsTests
 
         Assert.Single(query);
         Assert.Equal("1", query["a"]);
+    }
+
+    [Fact]
+    public void ParseQueryString_UnescapesKeys_AndMergesDuplicatesAfterUnescaping()
+    {
+        var uri = new Uri("https://avalonia.local/main/page?k%20ey=a&k%20ey=b");
+
+        var query = uri.ParseQueryString();
+
+        Assert.Single(query);
+        Assert.Equal("a,b", query["k ey"]);
+    }
+
+    [Fact]
+    public void ParseQueryString_ParameterWithoutName_YieldsEmptyKey()
+    {
+        var uri = new Uri("https://avalonia.local/main/page?=v");
+
+        var query = uri.ParseQueryString();
+
+        Assert.Single(query);
+        Assert.Equal("v", query[String.Empty]);
     }
 
     #endregion

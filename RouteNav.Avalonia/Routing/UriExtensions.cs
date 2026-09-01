@@ -30,7 +30,11 @@ public static class UriExtensions
     }
 
     /// <summary>Parses a URI query string into a key/value dictionary.</summary>
-    /// <remarks>Duplicate keys are joined into a single comma-separated value; values containing '=' keep the embedded value.</remarks>
+    /// <remarks>
+    /// Duplicate keys are joined into a single comma-separated value; values containing '=' keep the embedded value.
+    /// Keys are unescaped and matched ordinal (a raw key may map onto an existing key after unescaping); a parameter
+    /// without a name yields an empty-string key.
+    /// </remarks>
     public static Dictionary<string, string> ParseQueryString(this Uri uri)
     {
         if (!uri.IsAbsoluteUri)

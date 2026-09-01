@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
@@ -28,9 +29,15 @@ public static class Navigation
     {
         get => mainStackName;
         set
-            => mainStackName = !String.IsNullOrEmpty(value)
-                ? value
-                : throw new ArgumentException("The main stack name cannot be null or empty.", nameof(value));
+        {
+            if (String.IsNullOrEmpty(value))
+                throw new ArgumentException("The main stack name cannot be null or empty.", nameof(value));
+
+            if (uiPlatform is { RegisteredStacks.Count: > 0 })
+                throw new NavigationException("The main stack name cannot be changed after navigation stacks are registered.");
+
+            mainStackName = value;
+        }
     }
 
     /// <summary>Gets or sets the base URI that all stack and page routes are resolved against.</summary>
@@ -91,6 +98,12 @@ public static class Navigation
 
         return await activeStack.PushAsync(activeStack.BuildRoute(String.Empty));
     }
+
+    /// <summary>Gets all registered navigation stacks (regardless of active state), for introspection.</summary>
+    public static IReadOnlyList<INavigationStack> RegisteredStacks => UIPlatform.RegisteredStacks;
+
+    /// <summary>Gets the navigation stacks that are currently hosted in an open window (in hosting order).</summary>
+    public static IReadOnlyList<INavigationStack> ActiveStacks => UIPlatform.ActiveStacks;
 
     #endregion
 

@@ -45,6 +45,24 @@ stack.DialogNavigated += args => { /* args.From / args.To */ };
 stack.RouteNavigated += args => { /* args.From / args.To */ };
 ```
 
+## Inspecting Stacks and Routes
+
+RouteNav exposes its registration state for introspection (diagnostics, logging, developer tooling):
+
+```csharp
+// All stacks registered with the platform (any state), in registration order
+foreach (var stack in Navigation.RegisteredStacks)
+    Console.WriteLine($"{stack.Name}: {string.Join(", ", stack.RegisteredRoutes.Select(r => r.RoutePath))}");
+
+// Stacks currently hosted in an open window
+foreach (var stack in Navigation.ActiveStacks)
+    Console.WriteLine($"{stack.Name} is active");
+```
+
+- `Navigation.RegisteredStacks` / `IUIPlatform.RegisteredStacks` — all registered stacks (snapshot).
+- `Navigation.ActiveStacks` / `IUIPlatform.ActiveStacks` — stacks currently hosted in a window (snapshot).
+- `stack.RegisteredRoutes` — routes registered on a single stack (live view); see [Routing](Routing.md#inspecting-registered-routes).
+
 ## ContentPageStack
 
 `ContentPageStack` is the simplest stack. It shows one page at a time without navigation chrome or page history.

@@ -103,9 +103,12 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (!activeStacks.Remove(previousWindow, out var stack))
             return false;
 
+        if (activeStacks.ContainsKey(newWindow))
+            throw new NavigationException("The new window already hosts a navigation stack.");
+
         previousWindow.Content = null;
-        activeStackWindows[stack.Name] = newWindow;
         activeStacks.Add(newWindow, stack);
+        activeStackWindows[stack.Name] = newWindow;
         newWindow.SetContent(stack.ContainerPage.Value);
         return true;
     }
@@ -146,7 +149,7 @@ public class AvaloniaUIPlatform : IUIPlatform
             // Supply page with route URI and query parameters (if available)
             page.RouteUri = uri;
             page.PageQuery = uri.ParseQueryString();
-            page.PageQuery.Add("routeUri", uri.ToString());
+            page.PageQuery["routeUri"] = uri.ToString();
 
             return page;
         }
@@ -187,6 +190,9 @@ public class AvaloniaUIPlatform : IUIPlatform
         return navigationStacks.TryGetValue(stackName, out var stack) ? stack : null;
     }
 
+    /// <inheritdoc />
+    public IReadOnlyList<INavigationStack> RegisteredStacks => navigationStacks.Values.ToArray();
+
     #endregion
 
     #region ActiveStacks
@@ -209,8 +215,9 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (String.IsNullOrEmpty(stackName))
             return GetMainStack();
 
-        return activeStackWindows.TryGetValue(stackName, out var window)
-            ? activeStacks[window]
+        return activeStackWindows.TryGetValue(stackName, out var window) &&
+               activeStacks.TryGetValue(window, out var stack)
+            ? stack
             : null;
     }
 
