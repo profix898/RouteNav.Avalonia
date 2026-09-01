@@ -77,8 +77,9 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
             if (!Navigation.UIPlatform.WindowManager.SupportsMultiWindow
                 || Navigation.Windows.ForceOverlayDialogs || forceOverlay)
             {
-                // Remove dialog size (so that background fills host container)
-                dialog.Width = dialog.Height = Double.NaN;
+                // Reset system-derived sizes so the dialog re-derives its size for the overlay host
+                // (explicitly set and content-hug axes are kept)
+                dialog.ResetSystemSize();
 
                 // Update content of dialog host
                 GetDialogOverlayHost().SetContent(dialog);
@@ -117,8 +118,9 @@ public class NavigationContainer : ContentControl, ISafeAreaAware
                 return dialogTask;
         }
 
-        // Remove dialog size (so that background fills host container)
-        dialog.Width = dialog.Height = Double.NaN;
+        // Reset system-derived sizes so the dialog re-derives its size for the overlay host
+        // (explicitly set and content-hug axes are kept)
+        dialog.ResetSystemSize();
 
         // Update content of dialog host
         GetDialogOverlayHost().SetContent(dialog);

@@ -17,7 +17,7 @@ public static class ExceptionFormatter
         var stringBuilder = new StringBuilder();
         ToStringInternal(ex, stringBuilder);
 
-        return stringBuilder.ToString();
+        return stringBuilder.ToString().TrimEnd();
     }
 
     #region FormatExceptionMessage

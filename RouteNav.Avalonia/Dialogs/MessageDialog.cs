@@ -31,7 +31,9 @@ public class MessageDialog : Dialog
     /// <summary>Initializes a new instance of the <see cref="MessageDialog" /> class.</summary>
     public MessageDialog()
     {
-        DialogSize = DialogSize.Small;
+        // Fixed width, content-hugging height: the frame fits the message
+        DialogSize = DialogSize.Custom;
+        Width = 400;
         DefaultResult = MessageDialogResult.None;
 
         HorizontalContentAlignment = HorizontalAlignment.Center;
@@ -69,7 +71,7 @@ public class MessageDialog : Dialog
     /// <summary>Sets the dialog content to a plain text block with the given text.</summary>
     public string TextContent
     {
-        set { SetValue(ContentProperty, new TextBlock { Text = value }); }
+        set { SetValue(ContentProperty, new TextBlock { Text = value, TextWrapping = TextWrapping.Wrap }); }
     }
 
     /// <inheritdoc />
@@ -98,8 +100,15 @@ public class MessageDialog : Dialog
         if (dialogContentScrollViewer == null)
             return;
 
+        // Wrap mode and content-hugging dialogs host unconstrained content: the frame grows with it
+        if (DialogContentMode == DialogContentMode.Wrap || Double.IsNaN(Height))
+        {
+            dialogContentScrollViewer.MaxHeight = Double.PositiveInfinity;
+            return;
+        }
+
         var frameHeight = GetConstrainedHeight();
-        if (frameHeight <= 0 || Double.IsNaN(frameHeight) || Double.IsInfinity(frameHeight))
+        if (frameHeight <= 0 || Double.IsInfinity(frameHeight))
             return;
 
         var titleBarHeight = GetVisibleHeight(dialogTitleBarPanel);

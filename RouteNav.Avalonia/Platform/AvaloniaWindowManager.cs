@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -93,10 +94,27 @@ public class AvaloniaWindowManager : IWindowManager
             platformWindow.CanResize = false;
             platformWindow.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             platformWindow.VerticalContentAlignment = VerticalAlignment.Stretch;
-            platformWindow.Width = dialog.Width;
-            platformWindow.Height = dialog.Height;
-            platformWindow.MinWidth = dialog.Width;
-            platformWindow.MinHeight = dialog.Height;
+
+            // Explicit axes size the window; content-hug axes (NaN) size the window to its content
+            if (!Double.IsNaN(dialog.Width))
+            {
+                platformWindow.Width = dialog.Width;
+                platformWindow.MinWidth = dialog.Width;
+            }
+            if (!Double.IsNaN(dialog.Height))
+            {
+                platformWindow.Height = dialog.Height;
+                platformWindow.MinHeight = dialog.Height;
+            }
+
+            platformWindow.SizeToContent = (Double.IsNaN(dialog.Width), Double.IsNaN(dialog.Height)) switch
+            {
+                (true, true) => SizeToContent.WidthAndHeight,
+                (true, false) => SizeToContent.Width,
+                (false, true) => SizeToContent.Height,
+                _ => SizeToContent.Manual
+            };
+
             platformWindow.SetDialogStyle();
         }
 

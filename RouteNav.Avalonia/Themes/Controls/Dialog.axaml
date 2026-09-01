@@ -56,7 +56,6 @@
                                 </Button>
                             </Panel>
                             <ScrollViewer Grid.Row="1" x:Name="DialogContentScrollViewer"
-                                          MaxHeight="{TemplateBinding Height}"
                                           HorizontalScrollBarVisibility="Auto"
                                           VerticalScrollBarVisibility="Auto">
                                 <ContentPresenter x:Name="PART_ContentPresenter" Padding="0"
@@ -72,6 +71,14 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+
+        <!-- Content-hugging dialog (Custom size with unset axes) -->
+        <Style Selector="^:dialog-hug-width /template/ Border#DialogBackground">
+            <Setter Property="MinWidth" Value="0" />
+        </Style>
+        <Style Selector="^:dialog-hug-height /template/ Border#DialogBackground">
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
 
         <!-- Dialog window -->
         <Styles>
@@ -98,6 +105,12 @@
                 <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Style>
+            <Style Selector="routeNav|Dialog:dialog-embedded:dialog-hug-width Border#DialogBackground">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+            <Style Selector="routeNav|Dialog:dialog-embedded:dialog-hug-height Border#DialogBackground">
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Styles>
 

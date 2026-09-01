@@ -51,6 +51,7 @@ A page is a `ContentControl` with navigation-specific metadata:
 - `Title` - used by navigation bars, tab headers and dialog titles.
 - `PageQuery` - parsed query parameters from the route URI.
 - `DialogSizeHint` - default size hint when the page is shown as a dialog.
+- `SizeScaleHint` / `MinSizeHint` / `MaxSizeHint` - dialog scale and size limits, used when the page is shown as a dialog.
 - `SafeAreaPadding` - platform safe-area padding propagated from the container.
 
 RouteNav intentionally keeps `Page` separate from Avalonia 12's native `Avalonia.Controls.Page` to avoid conflicts with RouteNav's static `Navigation` facade and to preserve RouteNav's existing API model.

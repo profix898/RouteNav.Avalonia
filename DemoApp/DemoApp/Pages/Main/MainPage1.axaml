@@ -55,6 +55,39 @@
                 </StackPanel>
             </Border>
 
+            <!-- Dialog sizing -->
+            <Border Classes="Card">
+                <StackPanel Spacing="12">
+                    <TextBlock Classes="SectionTitle" Text="Dialog sizing" />
+
+                    <Grid ColumnDefinitions="230,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgSizingCommand"
+                                Content="Sizing showcase" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
+                                   Text="Fixed width with content-hugging height, scale + fixed axis mix, and Wrap content mode." />
+
+                        <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch"
+                                Click="OpenDlgSizingOverlayCommand" Content="Sized overlay dialog" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
+                                   Text="A Custom-sized dialog as overlay: the fixed width is kept, the height hugs the content." />
+
+                        <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch"
+                                Click="OpenDlgSizingEmbeddedCommand" Content="Sized embedded dialog" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
+                                   Text="The same sizing rules embedded into this page." />
+
+                        <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" Click="OpenDlgPageHintsCommand"
+                                Content="Page with size hints" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Classes="Hint" VerticalAlignment="Center"
+                                   Margin="12,0,0,0"
+                                   Text="A Page converted with .ToDialog() using SizeScaleHint / MinSizeHint / MaxSizeHint." />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
             <!-- Error pages -->
             <Border Classes="Card">
                 <StackPanel Spacing="10">

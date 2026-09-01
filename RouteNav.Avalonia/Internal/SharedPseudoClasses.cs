@@ -7,4 +7,7 @@ internal class SharedPseudoClasses
 
     public const string DialogWindow = ":dialog-window";
     public const string DialogEmbedded = ":dialog-embedded";
+
+    public const string DialogHugWidth = ":dialog-hug-width";
+    public const string DialogHugHeight = ":dialog-hug-height";
 }

@@ -27,6 +27,21 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     /// </summary>
     public static readonly StyledProperty<DialogSize?> DialogSizeHintProperty = AvaloniaProperty.Register<Page, DialogSize?>(nameof(DialogSizeHint), DialogSize.Large);
 
+    /// <summary>
+    /// Defines the <see cref="SizeScaleHint" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> SizeScaleHintProperty = AvaloniaProperty.Register<Page, Size?>(nameof(SizeScaleHint));
+
+    /// <summary>
+    /// Defines the <see cref="MinSizeHint" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> MinSizeHintProperty = AvaloniaProperty.Register<Page, Size?>(nameof(MinSizeHint));
+
+    /// <summary>
+    /// Defines the <see cref="MaxSizeHint" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> MaxSizeHintProperty = AvaloniaProperty.Register<Page, Size?>(nameof(MaxSizeHint));
+
     /// <summary>Gets the query parameters supplied to this page via its route URI.</summary>
     public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 
@@ -55,6 +70,33 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     {
         get { return GetValue(DialogSizeHintProperty); }
         set { SetValue(DialogSizeHintProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the scale used to derive unset dialog size axes from the parent, in case the page is displayed as dialog
+    /// </summary>
+    public Size? SizeScaleHint
+    {
+        get { return GetValue(SizeScaleHintProperty); }
+        set { SetValue(SizeScaleHintProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the minimum dialog size in case the page is displayed as dialog
+    /// </summary>
+    public Size? MinSizeHint
+    {
+        get { return GetValue(MinSizeHintProperty); }
+        set { SetValue(MinSizeHintProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum dialog size in case the page is displayed as dialog
+    /// </summary>
+    public Size? MaxSizeHint
+    {
+        get { return GetValue(MaxSizeHintProperty); }
+        set { SetValue(MaxSizeHintProperty, value); }
     }
 
     /// <inheritdoc />

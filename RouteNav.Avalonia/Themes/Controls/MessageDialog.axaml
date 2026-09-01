@@ -16,7 +16,8 @@
     <x:Double x:Key="MessageDialogMinHeight">200</x:Double>
     <x:Double x:Key="MessageDialogMaxWidth">700</x:Double>
     <x:Double x:Key="MessageDialogMaxHeight">500</x:Double>
-    <GridLength x:Key="MessageDialogButtonsBarHeight">60</GridLength>
+    <GridLength x:Key="MessageDialogButtonsBarHeight">48</GridLength>
+    <Thickness x:Key="MessageDialogContentPadding">18,16</Thickness>
 
     <ControlTheme x:Key="{x:Type dialogs:MessageDialog}" TargetType="dialogs:MessageDialog">
         <Setter Property="TitleBarBackground" Value="{DynamicResource MessageDialogTitleBarBackground}" />
@@ -82,10 +83,9 @@
                                 </Border>
                             </Panel>
                             <ScrollViewer Grid.Row="1" x:Name="DialogContentScrollViewer"
-                                          MaxHeight="{TemplateBinding Height}"
                                           HorizontalScrollBarVisibility="Auto"
                                           VerticalScrollBarVisibility="Auto">
-                                <ContentPresenter x:Name="PART_ContentPresenter" Padding="0"
+                                <ContentPresenter x:Name="PART_ContentPresenter" Padding="{StaticResource MessageDialogContentPadding}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                   Content="{TemplateBinding Content}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -98,13 +98,13 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Text wrapping -->
-        <Styles>
-            <Style Selector="dialogs|MessageDialog TextBlock">
-                <Setter Property="Padding" Value="15,10" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
-        </Styles>
+        <!-- Content-hugging dialog (Custom size with unset axes) -->
+        <Style Selector="^:dialog-hug-width /template/ Border#DialogBackground">
+            <Setter Property="MinWidth" Value="0" />
+        </Style>
+        <Style Selector="^:dialog-hug-height /template/ Border#DialogBackground">
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
 
         <!-- Dialog window -->
         <Styles>
@@ -131,6 +131,12 @@
                 <Setter Property="MaxWidth" Value="{x:Static system:Double.PositiveInfinity}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Style>
+            <Style Selector="dialogs|MessageDialog:dialog-embedded:dialog-hug-width Border#DialogBackground">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+            <Style Selector="dialogs|MessageDialog:dialog-embedded:dialog-hug-height Border#DialogBackground">
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Styles>
 

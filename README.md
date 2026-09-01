@@ -141,7 +141,7 @@ Generally, pages are registered in the `INavigationStack` with their route via `
 var dialog = new TestPage { DialogSizeHint = DialogSize.Small }.ToDialog(this);
 ```
 
-A `Dialog` contains a few additional properties to control the title bar and size of the dialog. For auto-conversion, the `DialogSizeHint` property of `Page` affects the resulting dialog size (which is typically proportionally derived from the size of the parent).
+A `Dialog` contains a few additional properties to control the title bar and size of the dialog. For auto-conversion, the `DialogSizeHint` property of `Page` affects the resulting dialog size. Dialog size is resolved per axis: explicitly set `Width`/`Height` values are always used, unset axes are derived from the size of the parent (`Small`/`Medium`/`Large` scale proportionally, `Custom` sizes the axis to the dialog content). A dialog with `Width = 520` (and no height) therefore keeps its width fixed while its height adjusts to the content. See [Dialogs and Errors](Docs/DialogsAndErrors.md) for the full sizing schema.
 
 #### Direct dialog usage
 

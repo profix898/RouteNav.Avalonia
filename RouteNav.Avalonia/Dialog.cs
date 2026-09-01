@@ -19,7 +19,8 @@ namespace RouteNav.Avalonia;
 /// A dialog surface that can be shown as a native window (desktop) or an in-app overlay/embedded control
 /// (mobile/browser), returning a result via <see cref="ShowDialog(Window?, bool)" />.
 /// </summary>
-[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded)]
+[PseudoClasses(SharedPseudoClasses.Hidden, SharedPseudoClasses.Open, SharedPseudoClasses.DialogWindow, SharedPseudoClasses.DialogEmbedded,
+               SharedPseudoClasses.DialogHugWidth, SharedPseudoClasses.DialogHugHeight)]
 public class Dialog : ContentControl
 {
     /// <summary>Completion source used by the active dialog result task.</summary>
@@ -54,6 +55,26 @@ public class Dialog : ContentControl
     /// </summary>
     public static readonly StyledProperty<DialogSize> DialogSizeProperty = AvaloniaProperty.Register<Dialog, DialogSize>(nameof(DialogSize), DialogSize.Medium);
 
+    /// <summary>
+    /// Defines the <see cref="DialogContentMode" /> property.
+    /// </summary>
+    public static readonly StyledProperty<DialogContentMode> DialogContentModeProperty = AvaloniaProperty.Register<Dialog, DialogContentMode>(nameof(DialogContentMode), DialogContentMode.Scroll);
+
+    /// <summary>
+    /// Defines the <see cref="SizeScale" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> SizeScaleProperty = AvaloniaProperty.Register<Dialog, Size?>(nameof(SizeScale));
+
+    /// <summary>
+    /// Defines the <see cref="MinSize" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> MinSizeProperty = AvaloniaProperty.Register<Dialog, Size?>(nameof(MinSize));
+
+    /// <summary>
+    /// Defines the <see cref="MaxSize" /> property.
+    /// </summary>
+    public static readonly StyledProperty<Size?> MaxSizeProperty = AvaloniaProperty.Register<Dialog, Size?>(nameof(MaxSize));
+
     /// <summary>Initializes a new instance of the <see cref="Dialog" /> class.</summary>
     public Dialog()
     {
@@ -65,6 +86,8 @@ public class Dialog : ContentControl
             PseudoClasses.Set(SharedPseudoClasses.Hidden, false);
             PseudoClasses.Set(SharedPseudoClasses.DialogEmbedded, true);
         }
+
+        UpdateHugPseudoClasses();
     }
 
     /// <summary>
@@ -103,6 +126,46 @@ public class Dialog : ContentControl
         set { SetValue(DialogSizeProperty, value); }
     }
 
+    /// <summary>
+    /// Gets or sets how the dialog hosts its content (<see cref="DialogContentMode.Scroll" /> constrains the
+    /// content to the dialog frame, <see cref="DialogContentMode.Wrap" /> lets the frame grow with the content)
+    /// </summary>
+    public DialogContentMode DialogContentMode
+    {
+        get { return GetValue(DialogContentModeProperty); }
+        set { SetValue(DialogContentModeProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the scale used to derive unset size axes from the parent, overriding the global
+    /// <see cref="DialogOptions" /> scale of the active <see cref="DialogSize" />
+    /// </summary>
+    public Size? SizeScale
+    {
+        get { return GetValue(SizeScaleProperty); }
+        set { SetValue(SizeScaleProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the minimum size of scale-derived size axes, overriding the global
+    /// <see cref="DialogOptions" /> minimum of the active <see cref="DialogSize" />
+    /// </summary>
+    public Size? MinSize
+    {
+        get { return GetValue(MinSizeProperty); }
+        set { SetValue(MinSizeProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum size of scale-derived size axes, overriding the global
+    /// <see cref="DialogOptions" /> maximum of the active <see cref="DialogSize" />
+    /// </summary>
+    public Size? MaxSize
+    {
+        get { return GetValue(MaxSizeProperty); }
+        set { SetValue(MaxSizeProperty, value); }
+    }
+
     /// <inheritdoc />
     protected override Type StyleKeyOverride => typeof(Dialog);
 
@@ -119,6 +182,7 @@ public class Dialog : ContentControl
 
         dialogTitleBarPanel = e.NameScope.Find<Panel>("DialogTitleBar");
         dialogContentScrollViewer = e.NameScope.Find<ScrollViewer>("DialogContentScrollViewer");
+        UpdateHugPseudoClasses();
         UpdateContentScrollViewerMaxHeight();
 
         // Correct page/dialog size (to account for page margins and title bar height)
@@ -131,8 +195,11 @@ public class Dialog : ContentControl
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == HeightProperty || change.Property == BoundsProperty)
+        if (change.Property == HeightProperty || change.Property == BoundsProperty || change.Property == DialogContentModeProperty)
             UpdateContentScrollViewerMaxHeight();
+
+        if (change.Property == WidthProperty || change.Property == HeightProperty || change.Property == DialogSizeProperty)
+            UpdateHugPseudoClasses();
     }
 
     /// <summary>Constrains the dialog body so oversized content can scroll inside the dialog frame.</summary>
@@ -141,8 +208,15 @@ public class Dialog : ContentControl
         if (dialogContentScrollViewer == null)
             return;
 
+        // Wrap mode and content-hugging dialogs host unconstrained content: the frame grows with it
+        if (DialogContentMode == DialogContentMode.Wrap || Double.IsNaN(Height))
+        {
+            dialogContentScrollViewer.MaxHeight = Double.PositiveInfinity;
+            return;
+        }
+
         var frameHeight = GetConstrainedHeight();
-        if (frameHeight <= 0 || Double.IsNaN(frameHeight) || Double.IsInfinity(frameHeight))
+        if (frameHeight <= 0 || Double.IsInfinity(frameHeight))
             return;
 
         var titleBarHeight = GetVisibleHeight(dialogTitleBarPanel);
@@ -163,6 +237,41 @@ public class Dialog : ContentControl
             _ => 0
         };
     }
+
+    /// <summary>Marks the width/height pseudo-classes for axes that hug the dialog content.</summary>
+    private void UpdateHugPseudoClasses()
+    {
+        var isCustom = DialogSize == Dialogs.DialogSize.Custom;
+
+        PseudoClasses.Set(SharedPseudoClasses.DialogHugWidth, isCustom && Double.IsNaN(Width));
+        PseudoClasses.Set(SharedPseudoClasses.DialogHugHeight, isCustom && Double.IsNaN(Height));
+    }
+
+    #region SystemSize
+
+    /// <summary>Gets or sets whether the width was last assigned by the dialog size system (safe to reset on re-host).</summary>
+    internal bool IsWidthSystemAssigned { get; set; }
+
+    /// <summary>Gets or sets whether the height was last assigned by the dialog size system (safe to reset on re-host).</summary>
+    internal bool IsHeightSystemAssigned { get; set; }
+
+    /// <summary>Resets size axes that were assigned by the dialog size system, keeping explicitly set and content-hug axes.</summary>
+    internal void ResetSystemSize()
+    {
+        if (IsWidthSystemAssigned)
+        {
+            Width = Double.NaN;
+            IsWidthSystemAssigned = false;
+        }
+
+        if (IsHeightSystemAssigned)
+        {
+            Height = Double.NaN;
+            IsHeightSystemAssigned = false;
+        }
+    }
+
+    #endregion
 
     /// <summary>Gets the rendered height for visible template chrome.</summary>
     protected static double GetVisibleHeight(Control? control)

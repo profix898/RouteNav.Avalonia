@@ -100,6 +100,7 @@ Pages can be defined in XAML or code. Each page has:
 - `Title` - used by navigation bars, tabs and dialogs.
 - `PageQuery` - query-string parameters parsed from the route URI.
 - `DialogSizeHint` - default size hint when shown as a dialog.
+- `SizeScaleHint` / `MinSizeHint` / `MaxSizeHint` - dialog scale and size limits for dialog display.
 - `SafeAreaPadding` - propagated from platform safe-area insets.
 
 ## 6. Register Pages
