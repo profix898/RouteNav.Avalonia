@@ -14,7 +14,11 @@ public static class NavigationStackExtensions
     /// <summary>Builds an absolute route URI on the stack from a relative route string.</summary>
     public static Uri BuildRoute(this INavigationStack stack, string relativeRoute)
     {
-        return new Uri(new Uri(stack.BaseUri.AbsoluteUri + "/"), relativeRoute);
+        // Root-relative route ('/stackName/path'): resolve against the host root (legacy semantics)
+        if (relativeRoute.StartsWith('/'))
+            return new Uri(new Uri(stack.BaseUri.AbsoluteUri + "/"), relativeRoute);
+
+        return new Uri(String.Concat(stack.BaseUriString, "/", relativeRoute));
     }
 
     /// <summary>Builds an absolute route URI on the stack from a relative route URI.</summary>
@@ -23,7 +27,7 @@ public static class NavigationStackExtensions
         if (relativeRoute.IsAbsoluteUri)
             return relativeRoute;
 
-        return new Uri(new Uri(stack.BaseUri.AbsoluteUri + "/"), relativeRoute);
+        return BuildRoute(stack, relativeRoute.OriginalString);
     }
 
     /// <summary>Gets the stack-relative route path for the given route URI.</summary>
@@ -37,41 +41,22 @@ public static class NavigationStackExtensions
     {
         query = String.Empty;
 
-        // AbsoluteUri -> RelativeUri
         if (routeUri.IsAbsoluteUri)
         {
-            if (!routeUri.AbsoluteUri.StartsWith(stack.BaseUri.AbsoluteUri))
+            var absolute = routeUri.AbsoluteUri;
+            if (!IsRouteOnStackBase(stack, absolute))
                 return routeUri.AbsolutePath; // Absolute Uri does not resolve to given navigation stack
 
-            routeUri = new Uri(routeUri.AbsoluteUri.Substring(stack.BaseUri.AbsoluteUri.Length).Trim('/'), UriKind.Relative);
+            return SplitRoutePath(absolute.AsSpan(stack.BaseUriString.Length), out query);
         }
 
-        // Empty Uri path/query
-        if (String.IsNullOrEmpty(routeUri.OriginalString))
-        {
-            query = String.Empty;
-            return String.Empty;
-        }
-
-        // Empty Uri path (only query part)
-        if (routeUri.OriginalString.StartsWith('?') || routeUri.OriginalString.StartsWith('#'))
-        {
-            query = routeUri.OriginalString;
-            return String.Empty;
-        }
-
-        // Uri path + query
-        var idx = routeUri.OriginalString.IndexOf('?');
-        var path = idx != -1 ? routeUri.OriginalString.Substring(0, idx) : routeUri.OriginalString;
-        query = idx != -1 ? routeUri.OriginalString.Substring(idx) : String.Empty;
-
-        return path;
+        return SplitRoutePath(routeUri.OriginalString, out query);
     }
 
     /// <summary>Gets a value indicating whether two route URIs resolve to the same route path on the stack.</summary>
     public static bool EqualsRoutePath(this INavigationStack stack, Uri routeUriA, Uri routeUriB)
     {
-        return stack.GetRoutePath(routeUriA).Equals(stack.GetRoutePath(routeUriB));
+        return stack.GetRoutePathSpan(routeUriA).SequenceEqual(stack.GetRoutePathSpan(routeUriB));
     }
 
     /// <summary>Gets the stack name from an absolute route URI, or <c>null</c> for a relative URI.</summary>
@@ -81,11 +66,19 @@ public static class NavigationStackExtensions
             return null;
 
         // Is absolute route (with stackName), if it contains at least two segments, i.e. '/stackName/path'
-        var segments = routeUri.Segments;
-        if (segments[0] == "/" && segments.Length > 1)
-            return segments[1].Trim('/');
+        var path = routeUri.AbsolutePath.AsSpan();
+        if (path.IsEmpty)
+            return String.Empty;
 
-        return segments[0].Trim('/');
+        if (path[0] != '/')
+        {
+            var segmentEnd = path.IndexOf('/');
+            return (segmentEnd < 0 ? path : path[..segmentEnd]).ToString();
+        }
+
+        var firstSegment = path[1..];
+        var end = firstSegment.IndexOf('/');
+        return (end < 0 ? firstSegment : firstSegment[..end]).ToString();
     }
 
     /// <summary>Gets a value indicating whether the route URI targets the given stack (relative URIs assume the same stack).</summary>
@@ -95,7 +88,68 @@ public static class NavigationStackExtensions
         if (stackName == null)
             return true; // Relative route -> assume same stack
 
-        return stackName.Equals(stack.Name, StringComparison.InvariantCulture);
+        return stackName.Equals(stack.Name, StringComparison.Ordinal);
+    }
+
+    /// <summary>Splits a (trimmed) relative route span into path and query parts.</summary>
+    private static string SplitRoutePath(ReadOnlySpan<char> route, out string query)
+    {
+        query = String.Empty;
+
+        route = route.Trim('/');
+        if (route.IsEmpty)
+            return String.Empty;
+
+        // Empty Uri path (only query/anchor part)
+        if (route[0] == '?' || route[0] == '#')
+        {
+            query = route.ToString();
+            return String.Empty;
+        }
+
+        var queryIndex = route.IndexOf('?');
+        if (queryIndex < 0)
+            return route.ToString();
+
+        query = route[queryIndex..].ToString();
+        return route[..queryIndex].ToString();
+    }
+
+    /// <summary>Gets the stack-relative route path for the given route URI as span (without allocating).</summary>
+    /// <remarks>Routes that do not resolve to the given stack compare by their absolute path (incl. leading '/').</remarks>
+    internal static ReadOnlySpan<char> GetRoutePathSpan(this INavigationStack stack, Uri routeUri)
+    {
+        if (routeUri.IsAbsoluteUri)
+        {
+            var absolute = routeUri.AbsoluteUri;
+            if (!IsRouteOnStackBase(stack, absolute))
+                return routeUri.AbsolutePath; // Absolute Uri does not resolve to given navigation stack
+
+            var path = absolute.AsSpan(stack.BaseUriString.Length).Trim('/');
+            var queryIndex = path.IndexOf('?');
+            return queryIndex < 0 ? path : path[..queryIndex];
+        }
+
+        var relative = routeUri.OriginalString.Trim('/');
+        var queryEnd = relative.IndexOf('?');
+        return queryEnd < 0 ? relative : relative[..queryEnd];
+    }
+
+    /// <summary>
+    /// Checks whether the given absolute route URI starts with the stack's base URI at a path segment boundary
+    /// (i.e. '…/sidebar' is a base of '…/sidebar/page' but not of '…/sidebarfoo').
+    /// </summary>
+    private static bool IsRouteOnStackBase(INavigationStack stack, string absoluteRoute)
+    {
+        var baseUriString = stack.BaseUriString;
+        if (!absoluteRoute.StartsWith(baseUriString, StringComparison.Ordinal))
+            return false;
+
+        if (absoluteRoute.Length == baseUriString.Length)
+            return true; // Route matches the stack base exactly
+
+        var next = absoluteRoute[baseUriString.Length];
+        return next is '/' or '?' or '#';
     }
 
     #endregion

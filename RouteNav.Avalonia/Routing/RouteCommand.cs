@@ -29,7 +29,7 @@ public class RouteCommand : ICommand, IRouteItem
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
-        set { RouteUri = value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative); }
+        set { RouteUri = value.ParseRoutePath(); }
     }
 
     /// <summary>Gets or sets where the target route is shown when the command executes.</summary>

@@ -45,6 +45,9 @@ public class Page : ContentControl, ISafeAreaAware, IEquatable<Page>
     /// <summary>Gets the query parameters supplied to this page via its route URI.</summary>
     public Dictionary<string, string> PageQuery { get; internal set; } = new Dictionary<string, string>();
 
+    /// <summary>Gets the route URI this page was resolved for, or <c>null</c> when the page was created without a route (e.g. via a page factory).</summary>
+    public Uri? RouteUri { get; internal set; }
+
     /// <summary>
     /// Gets or sets the title of the page
     /// </summary>

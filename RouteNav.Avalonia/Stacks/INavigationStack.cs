@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RouteNav.Avalonia.Dialogs;
 using RouteNav.Avalonia.Pages;
 using RouteNav.Avalonia.Routing;
@@ -17,6 +18,9 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
 
     /// <summary>Gets the base URI of the navigation stack (incl. the stack's route name).</summary>
     Uri BaseUri { get; }
+
+    /// <summary>Gets the base URI of the navigation stack as string (cached form of <see cref="BaseUri" />).</summary>
+    string BaseUriString { get; }
 
     /// <summary>Gets a value indicating whether this stack is the main stack for the application.</summary>
     bool IsMainStack { get; }
@@ -51,6 +55,10 @@ public interface INavigationStack : IPageNavigation, IDialogNavigation, IRouteNa
     /// <param name="relativeRoute">Relative route of the page.</param>
     /// <param name="pageFactory">Factory function for instantiating the page.</param>
     void AddPage(string relativeRoute, Func<Uri, Page> pageFactory);
+
+    /// <summary>Gets the routes registered on this stack (live, read-only view for inspection).</summary>
+    /// <remarks>The collection reflects current registrations; treat it as immutable. Ordering is unspecified but stable.</remarks>
+    IReadOnlyList<RegisteredRoute> RegisteredRoutes { get; }
 
     /// <summary>Checks if a stac is known to the current stack (or refers to an external stack).</summary>
     /// <param name="stackName">Name of the requested stack.</param>

@@ -23,6 +23,7 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
         Name = name;
         Title = "EventStack";
         BaseUri = new Uri(Navigation.BaseRouteUri, name);
+        BaseUriString = BaseUri.AbsoluteUri;
 
         if (eventHandler != null)
             RouteEvent += eventHandler;
@@ -41,6 +42,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
 
     /// <inheritdoc />
     public Uri BaseUri { get; }
+
+    /// <inheritdoc />
+    public string BaseUriString { get; }
 
     /// <inheritdoc />
     public bool IsMainStack => false;
@@ -90,6 +94,9 @@ public class RouteEventStack : IPageNavigation, IDialogNavigation, IRouteNavigat
     {
         throw new NotSupportedException($"{nameof(RouteEventStack)} does not support pages.");
     }
+
+    /// <summary>Event stacks do not register pages -> always empty.</summary>
+    public IReadOnlyList<RegisteredRoute> RegisteredRoutes => Array.Empty<RegisteredRoute>();
 
     /// <inheritdoc />
     public void Reset()

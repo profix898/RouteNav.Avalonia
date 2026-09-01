@@ -5,6 +5,7 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.Stacks;
 
 namespace RouteNav.Avalonia.Controls;
@@ -49,7 +50,7 @@ public class SidebarMenuItem : TemplatedControl
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
-        set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
+        set { SetValue(RouteUriProperty, value.ParseRoutePath()); }
     }
 
     /// <summary>Gets or sets where the target route is shown when this item is selected.</summary>

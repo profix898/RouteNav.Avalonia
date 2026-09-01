@@ -63,7 +63,7 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
             var items = new List<TabItem>();
             foreach (var pageKvp in pages)
             {
-                var page = pageKvp.Value(this.BuildRoute(pageKvp.Key));
+                var page = pageKvp.Value.PageFactory!(this.BuildRoute(pageKvp.Key));
                 var tabItem = new TabItem { Header = page.Title, Content = page };
                 tabItem.Classes.Add("RouteNavTabbedPageTab");
                 items.Add(tabItem);
@@ -89,7 +89,8 @@ public class TabbedPageStack<TC> : NavigationStackBase<TC>, IPageNavigation, IRo
     /// <inheritdoc />
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
-        pages.Set(relativeRoute.Trim('/'), pageFactory);
+        var pageKey = relativeRoute.Trim('/');
+        pages.Set(pageKey, new RegisteredRoute(pageKey, null, pageFactory));
     }
 
     #endregion

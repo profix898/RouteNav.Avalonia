@@ -104,6 +104,12 @@ routeUri
 
 This contains the full route URI that created the page. It is useful for stack identification, diagnostics and dialog-parent lookup.
 
+The same route URI is also available directly via `Page.RouteUri` (preferred over the `routeUri` query entry):
+
+```csharp
+var stackName = RouteUri?.GetStackName();
+```
+
 ## Query Helpers
 
 Use `AddQueryString` to add parameters to a URI:
@@ -183,12 +189,25 @@ When you navigate to a route, RouteNav:
 
 1. Determines the stack name from the absolute route URI.
 2. Finds or activates the target stack.
-3. Checks whether the route is based on that stack's `BaseUri`.
+3. Checks whether the route is based on that stack's `BaseUri` (segment-boundary match, ordinal comparison).
 4. Resolves the route through `PageResolver` or registered page factories.
 5. Injects query parameters into `Page.PageQuery`.
 6. Updates the page/dialog/window target.
 
 If the stack cannot resolve the page, RouteNav shows `NotFoundPage` in the active context.
+
+### Inspecting Registered Routes
+
+Stacks expose their registered routes as a read-only, live view:
+
+```csharp
+foreach (var route in stack.RegisteredRoutes)
+{
+    Console.WriteLine($"{route.RoutePath} -> {route.PageType?.Name ?? "<factory>"}");
+}
+```
+
+Each `RegisteredRoute` carries the stack-relative route path, the registered page type (when registered via `AddPage(route, typeof(...))`) and the page factory (when registered via `AddPage(route, factory)`). `RouteEventStack` does not register pages and always returns an empty collection.
 
 ## Cross-Stack Navigation
 

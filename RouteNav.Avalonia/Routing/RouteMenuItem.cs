@@ -36,7 +36,7 @@ public class RouteMenuItem : MenuItem, IRouteItem
     ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
     public string RoutePath
     {
-        set { SetValue(RouteUriProperty, value.StartsWith("/") ? new Uri(Navigation.BaseRouteUri, value.TrimEnd('/')) : new Uri(value.TrimEnd('/'), UriKind.Relative)); }
+        set { SetValue(RouteUriProperty, value.ParseRoutePath()); }
     }
 
     /// <summary>Gets or sets where the target route is shown when the item is clicked.</summary>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using RouteNav.Avalonia.Controls;
 using RouteNav.Avalonia.Internal;
+using RouteNav.Avalonia.Routing;
 using RouteNav.Avalonia.StackContainers;
 using static RouteNav.Avalonia.Controls.SidebarMenu;
 
@@ -78,7 +79,7 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
     /// <inheritdoc />
     public override INavigationStack? RequestStack(string stackName)
     {
-        if (stackName.Equals(Name, StringComparison.InvariantCulture))
+        if (stackName.Equals(Name, StringComparison.Ordinal))
             return this;
 
         return null;
@@ -88,7 +89,7 @@ public class SidebarMenuPageStack<TC> : NavigationStackBase<TC>, INavigationStac
     public override void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         var pageKey = relativeRoute.Trim('/');
-        pages.Set(pageKey, pageFactory);
+        pages.Set(pageKey, new RegisteredRoute(pageKey, null, pageFactory));
 
         // RootPage
         if (String.IsNullOrEmpty(pageKey))

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -9,6 +8,15 @@ namespace RouteNav.Avalonia.Routing;
 /// <summary>URI helper methods for building and parsing RouteNav route URIs.</summary>
 public static class UriExtensions
 {
+    /// <summary>Parses a route path into a route URI. Both relative paths (e.g. 'myPage' relative to current stack) and
+    ///          absolute paths (e.g. '/myStack/myPage') are supported. The leading '/' denotes an absolute path.</summary>
+    public static Uri ParseRoutePath(this string routePath)
+    {
+        return routePath.StartsWith('/')
+            ? new Uri(Navigation.BaseRouteUri, routePath.TrimEnd('/'))
+            : new Uri(routePath.TrimEnd('/'), UriKind.Relative);
+    }
+
     /// <summary>Constructs a URI with query string (from a key/value pair).</summary>
     public static Uri AddQueryString(this Uri uri, string name, string value)
     {
@@ -22,23 +30,63 @@ public static class UriExtensions
     }
 
     /// <summary>Parses a URI query string into a key/value dictionary.</summary>
-    /// <remarks>From: StackOverflow - Get URL parameters from a string in .NET (https://stackoverflow.com/a/20134983).</remarks>
+    /// <remarks>Duplicate keys are joined into a single comma-separated value; values containing '=' keep the embedded value.</remarks>
     public static Dictionary<string, string> ParseQueryString(this Uri uri)
     {
         if (!uri.IsAbsoluteUri)
             uri = new Uri(Navigation.BaseRouteUri, uri); // ParseQueryString support only absolute URIs
 
-        if (uri.Query.Length == 0)
+        var query = uri.Query;
+        if (query.Length <= 1)
             return new Dictionary<string, string>();
 
-        return uri.Query.TrimStart('?')
-                  .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                  .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
-                  .GroupBy(parts => parts[0],
-                           parts => parts.Length > 2 ? String.Join("=", parts.Select(Uri.UnescapeDataString), 1, parts.Length - 1) :
-                               parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : "")
-                  .ToDictionary(grouping => grouping.Key,
-                                grouping => String.Join(",", grouping));
+        var parameters = query.AsSpan(1); // Skip leading '?'
+        var result = new Dictionary<string, string>(CountParameters(parameters), StringComparer.Ordinal);
+
+        while (!parameters.IsEmpty)
+        {
+            var separatorIndex = parameters.IndexOfAny('&', ';');
+            ReadOnlySpan<char> pair;
+            if (separatorIndex >= 0)
+            {
+                pair = parameters[..separatorIndex];
+                parameters = parameters[(separatorIndex + 1)..];
+            }
+            else
+            {
+                pair = parameters;
+                parameters = ReadOnlySpan<char>.Empty;
+            }
+
+            if (pair.IsEmpty)
+                continue;
+
+            var equalsIndex = pair.IndexOf('=');
+            var keySpan = equalsIndex < 0 ? pair : pair[..equalsIndex];
+            var valueSpan = equalsIndex < 0 ? ReadOnlySpan<char>.Empty : pair[(equalsIndex + 1)..];
+
+            var key = Uri.UnescapeDataString(keySpan.ToString());
+            var value = Uri.UnescapeDataString(valueSpan.ToString());
+            if (result.TryGetValue(key, out var existing))
+                result[key] = String.Concat(existing, ",", value);
+            else
+                result[key] = value;
+        }
+
+        return result;
+    }
+
+    /// <summary>Counts the number of query parameters in the given (query-only) span.</summary>
+    private static int CountParameters(ReadOnlySpan<char> parameters)
+    {
+        var count = 1;
+        foreach (var c in parameters)
+        {
+            if (c == '&' || c == ';')
+                count++;
+        }
+
+        return count;
     }
 
     #region Nested Type: QueryHelpers

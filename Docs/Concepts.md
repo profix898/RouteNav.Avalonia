@@ -147,7 +147,7 @@ A stack resolves a route in this order:
 2. Look up the route in registered page factories.
 3. If resolution fails during top-level navigation, RouteNav displays `NotFoundPage` or an error page depending on the failure mode.
 
-Pages resolved through `Navigation.UIPlatform.GetPage(...)` receive `PageQuery` and `routeUri` automatically.
+Pages resolved through `Navigation.UIPlatform.GetPage(...)` receive `PageQuery`, `Page.RouteUri` and the `routeUri` query entry automatically.
 
 ## Events
 

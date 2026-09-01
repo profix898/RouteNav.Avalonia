@@ -15,8 +15,8 @@ namespace RouteNav.Avalonia.Stacks;
 public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigation, IRouteNavigation, INavigationStack
     where TC : NavigationContainer, new()
 {
-    /// <summary>Stores page factories by stack-relative route path.</summary>
-    protected readonly Dictionary<string, Func<Uri, Page>> pages = new Dictionary<string, Func<Uri, Page>>();
+    /// <summary>Stores page registrations by stack-relative route path.</summary>
+    protected readonly Dictionary<string, RegisteredRoute> pages = new Dictionary<string, RegisteredRoute>(StringComparer.Ordinal);
 
     /// <summary>Stores the active page history.</summary>
     protected readonly List<Page> pageStack = new List<Page>();
@@ -34,7 +34,9 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
 
         Name = name;
         Title = title;
+        isMainStack = name.Equals(Navigation.MainStackName, StringComparison.Ordinal);
         BaseUri = new Uri(Navigation.BaseRouteUri, name);
+        BaseUriString = BaseUri.AbsoluteUri;
         Container = new LazyValue<TC>(() =>
         {
             try
@@ -58,7 +60,11 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (page != null)
             return page;
 
-        return pages.TryGetValue(this.GetRoutePath(routeUri), out var pageFactory) ? pageFactory(routeUri) : null;
+        // Zero-allocation route path lookup (span-based dictionary key)
+        var lookup = pages.GetAlternateLookup<ReadOnlySpan<char>>();
+        return lookup.TryGetValue(this.GetRoutePathSpan(routeUri), out var registration)
+            ? registration.PageFactory?.Invoke(routeUri)
+            : null;
     }
 
     #region Implementation of INavigationStack
@@ -73,7 +79,13 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
     public virtual Uri BaseUri { get; }
 
     /// <inheritdoc />
-    public virtual bool IsMainStack => Name.Equals(Navigation.MainStackName);
+    public virtual string BaseUriString { get; }
+
+    /// <inheritdoc />
+    public virtual bool IsMainStack => isMainStack;
+
+    /// <summary>Cached main-stack check (the main stack name is set before stacks are registered).</summary>
+    private readonly bool isMainStack;
 
     /// <inheritdoc />
     public bool IsEventStack => false;
@@ -113,16 +125,23 @@ public abstract class NavigationStackBase<TC> : IPageNavigation, IDialogNavigati
         if (!pageType.IsSubclassOf(typeof(Page)))
             throw new ArgumentException($"Type '{pageType.FullName}' is not a page.", nameof(pageType));
 
-        AddPage(relativeRoute, uri => Navigation.UIPlatform.GetPage(pageType, uri)
-                                      ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved."));
+        var pageKey = relativeRoute.Trim('/');
+        pages.Set(pageKey, new RegisteredRoute(pageKey, pageType,
+            uri => Navigation.UIPlatform.GetPage(pageType, uri)
+                   ?? throw new NavigationException($"Page of type '{pageType}' can not be resolved.")));
     }
 
     /// <inheritdoc />
     public virtual void AddPage(string relativeRoute, Func<Uri, Page> pageFactory)
     {
         var pageKey = relativeRoute.Trim('/');
-        pages.Set(pageKey, pageFactory);
+        pages.Set(pageKey, new RegisteredRoute(pageKey, null, pageFactory));
     }
+
+    /// <inheritdoc />
+    public IReadOnlyList<RegisteredRoute> RegisteredRoutes => registeredRoutes ??= new RegisteredRouteCollection(pages);
+
+    private RegisteredRouteCollection? registeredRoutes;
 
     /// <inheritdoc />
     public virtual INavigationStack? RequestStack(string stackName)

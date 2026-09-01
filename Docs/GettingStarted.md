@@ -163,7 +163,7 @@ if (PageQuery.TryGetValue("id", out var id))
 }
 ```
 
-RouteNav also adds a `routeUri` entry containing the full resolved route URI.
+RouteNav also adds a `routeUri` entry containing the full resolved route URI. The same URI is available directly via `Page.RouteUri`.
 
 ## 10. Show a Dialog
 

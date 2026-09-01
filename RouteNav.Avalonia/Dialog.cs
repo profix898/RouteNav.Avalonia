@@ -414,9 +414,9 @@ public class Dialog : ContentControl
     public Task<object?> ShowDialog(Page? parentPage, bool forceOverlay = false)
     {
         INavigationStack? stack = null;
-        if (parentPage != null && parentPage.PageQuery.TryGetValue("routeUri", out var routeUriString))
+        if (parentPage?.RouteUri != null)
         {
-            var stackName = new Uri(routeUriString).GetStackName();
+            var stackName = parentPage.RouteUri.GetStackName();
             if (!String.IsNullOrEmpty(stackName))
                 stack = Navigation.UIPlatform.GetStack(stackName);
         }

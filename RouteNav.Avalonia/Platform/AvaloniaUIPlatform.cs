@@ -25,6 +25,7 @@ public class AvaloniaUIPlatform : IUIPlatform
 {
     private readonly Dictionary<string, INavigationStack> navigationStacks = new Dictionary<string, INavigationStack>();
     private readonly Dictionary<Window, INavigationStack> activeStacks = new Dictionary<Window, INavigationStack>();
+    private readonly Dictionary<string, Window> activeStackWindows = new Dictionary<string, Window>();
 
     private readonly Lazy<IServiceProvider> serviceProvider;
     private readonly IServiceCollection? serviceCollection;
@@ -77,7 +78,7 @@ public class AvaloniaUIPlatform : IUIPlatform
             throw new NavigationException("The window factory must return a fresh, unattached window instance.");
 
         // Lifecycle: when a window closes it no longer hosts its navigation stack
-        window.Closed += (_, _) => activeStacks.Remove(window);
+        window.Closed += (_, _) => RemoveActiveStack(window);
 
         if (context.Content is Control contentControl)
             window.SetInitialContent(contentControl);
@@ -103,6 +104,7 @@ public class AvaloniaUIPlatform : IUIPlatform
             return false;
 
         previousWindow.Content = null;
+        activeStackWindows[stack.Name] = newWindow;
         activeStacks.Add(newWindow, stack);
         newWindow.SetContent(stack.ContainerPage.Value);
         return true;
@@ -141,7 +143,8 @@ public class AvaloniaUIPlatform : IUIPlatform
         {
             var page = (Page) ActivatorUtilities.CreateInstance(serviceProvider.Value, pageType, parameters);
 
-            // Supply page with query parameters (if available)
+            // Supply page with route URI and query parameters (if available)
+            page.RouteUri = uri;
             page.PageQuery = uri.ParseQueryString();
             page.PageQuery.Add("routeUri", uri.ToString());
 
@@ -169,8 +172,11 @@ public class AvaloniaUIPlatform : IUIPlatform
     /// <inheritdoc />
     public void RemoveStack(string stackName)
     {
-        if (activeStacks.Any(stack => stack.Value.Name.Equals(stackName)))
-            throw new ArgumentException($"Stack '{stackName}' is currently in use.", nameof(stackName));
+        foreach (var stack in activeStacks.Values)
+        {
+            if (stack.Name.Equals(stackName, StringComparison.Ordinal))
+                throw new ArgumentException($"Stack '{stackName}' is currently in use.", nameof(stackName));
+        }
 
         navigationStacks.Remove(stackName);
     }
@@ -191,8 +197,10 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (navigationStacks.TryGetValue(Navigation.MainStackName, out var mainStack))
             return mainStack;
 
-        return activeStacks.Values.FirstOrDefault()
-               ?? throw new NavigationException($"Stack '{Navigation.MainStackName}' is not available.");
+        foreach (var stack in activeStacks.Values)
+            return stack;
+
+        throw new NavigationException($"Stack '{Navigation.MainStackName}' is not available.");
     }
 
     /// <inheritdoc />
@@ -201,7 +209,9 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (String.IsNullOrEmpty(stackName))
             return GetMainStack();
 
-        return activeStacks.FirstOrDefault(stack => stack.Value.Name.Equals(stackName)).Value;
+        return activeStackWindows.TryGetValue(stackName, out var window)
+            ? activeStacks[window]
+            : null;
     }
 
     /// <inheritdoc />
@@ -215,12 +225,13 @@ public class AvaloniaUIPlatform : IUIPlatform
     /// <inheritdoc />
     public Window? GetActiveWindowFromStack(INavigationStack? navigationStack)
     {
-        navigationStack ??= GetMainStack();
+        if (navigationStack == null)
+            return GetActiveWindowFromStack(GetMainStack());
 
-        if (activeStacks.ContainsValue(navigationStack))
-            return activeStacks.First(stackWindow => stackWindow.Value == navigationStack).Key;
-
-        return null;
+        return activeStackWindows.TryGetValue(navigationStack.Name, out var window) &&
+               activeStacks.TryGetValue(window, out var hostedStack) && hostedStack == navigationStack
+            ? window
+            : null;
     }
 
     /// <inheritdoc />
@@ -274,7 +285,7 @@ public class AvaloniaUIPlatform : IUIPlatform
                     // The source window hosted the (switched-away) stack and is no longer needed
                     if (sourceWindow != null)
                     {
-                        activeStacks.Remove(sourceWindow);
+                        RemoveActiveStack(sourceWindow);
                         sourceWindow.Close();
                         sourceStack?.Reset();
                     }
@@ -289,17 +300,17 @@ public class AvaloniaUIPlatform : IUIPlatform
 
                 // Associate initial/main window with stack
                 if (activeStacks.Count == 0)
-                    activeStacks.Add(sourceWindow, stack);
+                    AddActiveStack(sourceWindow, stack);
 
                 // Switch current/active stack
-                activeStacks[sourceWindow] = stack;
+                SetActiveStack(sourceWindow, stack);
                 sourceWindow.SetContent(stack.ContainerPage.Value);
                 sourceStack?.Reset();
             }
             else if (sourceWindow != null && window != sourceWindow)
             {
                 // Close source window
-                activeStacks.Remove(sourceWindow);
+                RemoveActiveStack(sourceWindow);
                 sourceWindow.Close();
                 sourceStack?.Reset();
 
@@ -338,7 +349,7 @@ public class AvaloniaUIPlatform : IUIPlatform
                 if (!WindowManager.OpenWindow(window))
                     return null;
 
-                activeStacks.Add(window, stack);
+                AddActiveStack(window, stack);
             }
             else
             {
@@ -364,8 +375,32 @@ public class AvaloniaUIPlatform : IUIPlatform
         if (!WindowManager.OpenWindow(window))
             throw new NavigationException("Failed to re-open the main window.");
 
-        activeStacks[window] = stack;
+        SetActiveStack(window, stack);
         AppUtility.ReplaceMainWindow(window);
+    }
+
+    /// <summary>Registers a window as host of the given stack (maintaining both active-stack indexes).</summary>
+    private void AddActiveStack(Window window, INavigationStack stack)
+    {
+        activeStacks.Add(window, stack);
+        activeStackWindows[stack.Name] = window;
+    }
+
+    /// <summary>Switches the stack hosted by the given window (maintaining both active-stack indexes).</summary>
+    private void SetActiveStack(Window window, INavigationStack stack)
+    {
+        if (activeStacks.TryGetValue(window, out var previous) && !previous.Name.Equals(stack.Name, StringComparison.Ordinal))
+            activeStackWindows.Remove(previous.Name);
+
+        activeStacks[window] = stack;
+        activeStackWindows[stack.Name] = window;
+    }
+
+    /// <summary>Removes the given window's active stack (maintaining both active-stack indexes).</summary>
+    private void RemoveActiveStack(Window window)
+    {
+        if (activeStacks.Remove(window, out var stack))
+            activeStackWindows.Remove(stack.Name);
     }
 
     #endregion

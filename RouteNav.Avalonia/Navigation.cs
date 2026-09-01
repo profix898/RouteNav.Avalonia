@@ -62,12 +62,7 @@ public static class Navigation
     /// <exception cref="NavigationException">Thrown when accessed before a UI platform has been bootstrapped.</exception>
     public static IUIPlatform UIPlatform
     {
-        get
-        {
-            return uiPlatform
-                   ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavUIPlatform)
-                   }().");
-        }
+        get { return uiPlatform ?? throw new NavigationException($"Implementation of {nameof(IUIPlatform)} is not available. Bootstrap via {nameof(AppBuilderExtensions.UseRouteNavUIPlatform)}()."); }
         set { uiPlatform = value; }
     }
 
@@ -321,13 +316,27 @@ public static class Navigation
     /// <summary>Builds an absolute route URI from a stack name and a relative route.</summary>
     public static Uri BuildRoute(string stackName, string relativeRoute)
     {
-        return new Uri(new Uri(BaseRouteUri, stackName + "/"), relativeRoute);
+        // Root-relative route ('/path'): resolve against the host root (legacy semantics)
+        if (relativeRoute.StartsWith('/'))
+            return new Uri(new Uri(BaseRouteUri, stackName + "/"), relativeRoute);
+
+        var baseUri = BaseRouteUri.AbsoluteUri;
+        if (!baseUri.EndsWith('/'))
+            baseUri += "/";
+
+        var stack = stackName.AsSpan().Trim('/');
+        return stack.IsEmpty
+            ? new Uri(String.Concat(baseUri, relativeRoute))
+            : new Uri(String.Concat(baseUri, stack, "/", relativeRoute));
     }
 
     /// <summary>Builds an absolute route URI from a stack name and a relative route.</summary>
     public static Uri BuildRoute(string stackName, Uri relativeRoute)
     {
-        return new Uri(new Uri(BaseRouteUri, stackName + "/"), relativeRoute);
+        if (relativeRoute.IsAbsoluteUri)
+            return relativeRoute;
+
+        return BuildRoute(stackName, relativeRoute.OriginalString);
     }
 
     #endregion
